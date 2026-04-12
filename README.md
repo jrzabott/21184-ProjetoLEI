@@ -1,111 +1,111 @@
-# [Título do Projecto]
+# Musical Theory Trainer
 
-> Subtítulo ou tagline curta — o problema que resolve e para quem.
+> Aprende teoria musical através de exercícios procedurais com feedback imediato — Duolingo para teoria musical.
 
-**Estudante:** [Nome] · [Número]  
+**Estudante:** Daniel Junior · 2304335  
 **Orientador:** Pedro Pestana  
 **UC:** Projecto de Engenharia Informática · Universidade Aberta · 2025/26  
-**Repositório:** [URL deste repositório]
+**Repositório:** https://github.com/jrzabott/21184-ProjetoLEI
 
 ---
 
 ## Estado actual
 
-<!-- Actualizar a cada entrega. Escolher um estado e apagar os outros. -->
-
-🟢 **Verde** — A correr conforme planeado.  
-🟡 **Amarelo** — [Descrever o que está em risco ou bloqueado, numa linha.]  
-🔴 **Vermelho** — [Descrever o problema crítico, numa linha.]
+🟡 **Amarelo** — Documentação inicial completa. Implementação não iniciada (Sem. 4 — a aguardar setup Spring Boot).
 
 ---
 
 ## O que está implementado
 
-<!-- Lista das funcionalidades do MVP que estão funcionais. -->
-<!-- Ser específico: não "o login está feito" mas "autenticação por email/password com JWT, sessão persistente em localStorage." -->
-
-- [ ] Funcionalidade A — [descrição breve]
-- [ ] Funcionalidade B — [descrição breve]
-- [ ] Funcionalidade C — [descrição breve]
+- [ ] Modelo de domínio Java (Note, Interval, Scale, Chord)
+- [ ] Geração procedural de exercícios (intervalos, escalas, acordes)
+- [ ] API REST (generate, answer, sessions, progress, sandbox)
+- [ ] Teclado virtual com som (Web Audio API)
+- [ ] Input MIDI físico (Web MIDI API)
+- [ ] Persistência de sessões e resultados (H2 / PostgreSQL)
+- [ ] Dashboard de progresso
+- [ ] Modo sandbox
+- [ ] Dificuldade adaptativa
 
 ---
 
 ## O que está pendente
 
-<!-- O que falta do MVP e porquê. Se algo foi descontinuado, explicar a decisão. -->
-
-- [ ] Funcionalidade D — [estado e razão do atraso se aplicável]
-- [ ] Funcionalidade E — [estado]
+- [ ] Setup Spring Boot + estrutura de packages — **próximo passo**
+- [ ] Modelo de domínio Java (Fase 1)
+- [ ] Entidades JPA e repositórios (Fase 2)
+- [ ] Geradores de exercícios (Fase 3)
+- [ ] REST Controllers (Fase 4)
+- [ ] Frontend: teclado virtual (Fase 5)
+- [ ] Frontend: ecrã de exercício (Fase 6)
+- [ ] Frontend: dashboard (Fase 7)
+- [ ] Ecrã de fim de sessão (Fase 8)
+- [ ] Ecrã de selecção de exercício (Fase 9)
 
 ---
 
 ## Como instalar e correr
 
-<!-- Instruções que funcionam numa máquina limpa. Se não funcionar na demo, não conta como feito. -->
-
 ### Pré-requisitos
 
 ```
-[ex: Node.js 20+, Python 3.11+, Docker, etc.]
+Java 21+
+Maven 3.9+
 ```
 
 ### Instalação
 
 ```bash
 # 1. Clonar o repositório
-git clone [URL]
-cd [nome-do-repo]
+git clone https://github.com/jrzabott/21184-ProjetoLEI.git
+cd 21184-ProjetoLEI
 
-# 2. Instalar dependências
-[ex: npm install / pip install -r requirements.txt]
-
-# 3. Configurar variáveis de ambiente
-cp .env.example .env
-# Editar .env com os valores correctos
-
-# 4. Correr
-[ex: npm run dev / python app.py]
+# 2. Correr o backend
+cd src
+mvn spring-boot:run
 ```
 
 ### Acesso
 
 ```
-[ex: http://localhost:3000]
-[Credenciais de teste se aplicável]
+Backend API: http://localhost:8080/api
+H2 Console (dev): http://localhost:8080/h2-console
+Frontend: abrir index.html no browser (sem servidor necessário)
 ```
 
 ---
 
 ## Decisões de arquitectura principais
 
-<!-- 2 a 4 decisões relevantes com justificação breve. Para o detalhe completo, ver docs/architecture/adr/. -->
-
 | Decisão | Alternativa considerada | Razão da escolha |
 |---------|------------------------|-----------------|
-| [ex: PostgreSQL] | [ex: MongoDB] | [ex: dados relacionais com integridade referencial necessária] |
-| [ex: React] | [ex: Vue] | [ex: maior familiaridade da equipa, ecossistema] |
+| Java 21 + Spring Boot (backend) | Node.js / FastAPI | Experiência profissional do estudante — backend é o ponto forte |
+| HTML + JS vanilla (frontend) | React / Vue | Zero experiência frontend — frameworks adicionariam curva desnecessária |
+| Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, demonstra que o modelo musical está formalizado no código |
+| Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope |
+| H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01) |
+
+Para detalhe completo: `docs/architecture/adr/`
 
 ---
 
 ## Referências e IA utilizada
 
-<!-- Bibliotecas, APIs externas, tutoriais seguidos. -->
-<!-- Distinguir o que foi escrito de raiz do que foi adaptado ou gerado. -->
-
 ### Referências técnicas
 
-- [Referência 1]
-- [Referência 2]
+- Spring Boot — https://spring.io/projects/spring-boot
+- Web Audio API — https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+- Web MIDI API — https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
+- C4 Model — https://c4model.com
+- Conventional Commits — https://www.conventionalcommits.org
 
 ### Ferramentas de IA utilizadas
 
-<!-- Obrigatório declarar. Não é penalizado. -->
-
 | Ferramenta | Para que foi usada |
 |-----------|-------------------|
-| [ex: GitHub Copilot] | [ex: autocompletar código boilerplate] |
-| [ex: Claude] | [ex: explorar alternativas de arquitectura] |
+| Claude (claude.ai) | Definição de arquitectura, levantamento de requisitos, modelação do domínio musical, planeamento de implementação |
+| Claude Code | Assistência na implementação (a partir de Sem. 5), documentação técnica, revisão de código |
 
 ---
 
-*Última actualização: [data] · [semana do semestre, ex: Sem. 7]*
+*Última actualização: 2026-04-12 · Sem. 4*
