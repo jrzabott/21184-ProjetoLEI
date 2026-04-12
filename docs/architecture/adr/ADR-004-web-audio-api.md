@@ -37,5 +37,6 @@ O som é gerado inteiramente no browser via **Web Audio API nativa**, usando sí
 - Sons de feedback (acerto/erro) facilmente implementados com formas de onda e frequências distintas
 
 **Negativas / trade-offs:**
-- Sons de osciladores sintéticos são menos realistas do que samples gravados de piano real - aceitável para o scope académico
+- Sons de osciladores sintéticos são menos realistas do que samples gravados de piano real - aceitável para o âmbito do projeto
 - Web Audio API requer interacção do utilizador antes de criar som (limitação de segurança do browser) - requer gestão de AudioContext na primeira interacção
+  - Ainda sem solução e documentação, pois ainda não deparei-me com o problema na prática.
