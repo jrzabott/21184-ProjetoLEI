@@ -6,8 +6,8 @@ Esta pasta contém os artefactos de arquitectura do projecto.
 
 | Ficheiro | Descrição | Quando |
 |---------|-----------|--------|
-| `c4-context.png` | C4 Nível 1 — sistema, utilizadores, sistemas externos | Até à Entrega 1 |
-| `c4-containers.png` | C4 Nível 2 — contentores principais e tecnologias | Até à Entrega 1 |
+| `c4-context.png` | C4 Nível 1 - sistema, utilizadores, sistemas externos | Até à Entrega 1 |
+| `c4-containers.png` | C4 Nível 2 - contentores principais e tecnologias | Até à Entrega 1 |
 | `data-model.png` | Modelo de dados (ER, schema, ou equivalente) | Até à Entrega 1 |
 | `adr/` | Decisões de arquitectura | Durante todo o semestre |
 

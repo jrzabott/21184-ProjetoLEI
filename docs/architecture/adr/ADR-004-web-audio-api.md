@@ -1,4 +1,4 @@
-# ADR-004 — Web Audio API para reprodução de som
+# ADR-004 - Web Audio API para reprodução de som
 
 **Data:** 2026-03-25  
 **Estado:** Aceite  
@@ -24,7 +24,7 @@ O som é gerado inteiramente no browser via **Web Audio API nativa**, usando sí
 |------------|------------------|
 | Tone.js (biblioteca de áudio) | Dependência externa desnecessária para o scope; adiciona complexidade de gestão de pacotes; Web Audio API nativa é suficiente para tocar notas isoladas |
 | Ficheiros MP3/WAV por nota | Requer 88+ ficheiros de áudio; deployment mais complexo; sem flexibilidade para ajustar timbre; incompatível com CB08 (sem dependências externas de áudio) |
-| Howler.js | Idem Tone.js — overhead desnecessário |
+| Howler.js | Idem Tone.js - overhead desnecessário |
 
 ---
 
@@ -37,5 +37,5 @@ O som é gerado inteiramente no browser via **Web Audio API nativa**, usando sí
 - Sons de feedback (acerto/erro) facilmente implementados com formas de onda e frequências distintas
 
 **Negativas / trade-offs:**
-- Sons de osciladores sintéticos são menos realistas do que samples gravados de piano real — aceitável para o scope académico
-- Web Audio API requer interacção do utilizador antes de criar som (limitação de segurança do browser) — requer gestão de AudioContext na primeira interacção
+- Sons de osciladores sintéticos são menos realistas do que samples gravados de piano real - aceitável para o scope académico
+- Web Audio API requer interacção do utilizador antes de criar som (limitação de segurança do browser) - requer gestão de AudioContext na primeira interacção

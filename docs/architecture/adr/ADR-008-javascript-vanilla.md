@@ -1,4 +1,4 @@
-# ADR-008 — JavaScript vanilla no frontend (sem frameworks)
+# ADR-008 - JavaScript vanilla no frontend (sem frameworks)
 
 **Data:** 2026-03-25  
 **Estado:** Aceite  
@@ -22,7 +22,7 @@ O frontend é implementado em **HTML e JavaScript ES6+ puro (vanilla)**, sem fra
 
 | Alternativa | Razão de rejeição |
 |------------|------------------|
-| React | Requer JSX, bundler, npm, gestão de estado — tudo novo para o estudante. Curva de aprendizagem desproporcional ao scope. |
+| React | Requer JSX, bundler, npm, gestão de estado - tudo novo para o estudante. Curva de aprendizagem desproporcional ao scope. |
 | Vue 3 | Mais simples que React mas ainda requer setup de build tools ou CDN com limitações. A directiva `v-model` e o sistema de componentes têm a sua própria curva. |
 | HTMX + templates Thymeleaf | Mistura frontend e backend (ver ADR-001); reduz separação de camadas. |
 | Alpine.js | Mais simples, mas ainda é uma dependência externa desnecessária para o scope. |
@@ -32,12 +32,12 @@ O frontend é implementado em **HTML e JavaScript ES6+ puro (vanilla)**, sem fra
 ## Consequências
 
 **Positivas:**
-- Zero curva de aprendizagem de frameworks — o estudante aprende JS puro, que é mais transferível
-- Zero ferramentas de build — `abrir no browser` é suficiente
-- Código mais transparente e legível para o júri — sem abstracções de framework
+- Zero curva de aprendizagem de frameworks - o estudante aprende JS puro, que é mais transferível
+- Zero ferramentas de build - `abrir no browser` é suficiente
+- Código mais transparente e legível para o júri - sem abstracções de framework
 - Compatível com CB07 (sem frameworks JavaScript)
 
 **Negativas / trade-offs:**
-- Gestão de DOM manual — mais verboso do que frameworks declarativas
-- Sem reactivity automática — actualizações de UI requerem manipulação explícita do DOM
-- Código JavaScript frontend requer mais comentários explicativos — mitigado pelo facto de Claude Code estar disponível para assistência linha a linha
+- Gestão de DOM manual - mais verboso do que frameworks declarativas
+- Sem reactivity automática - actualizações de UI requerem manipulação explícita do DOM
+- Código JavaScript frontend requer mais comentários explicativos - mitigado pelo facto de Claude Code estar disponível para assistência linha a linha

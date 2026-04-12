@@ -17,7 +17,7 @@
 ## Sem. 2 · 24–28 mar
 
 **Feito:** Semana de Páscoa. Sessão de planeamento detalhado com Claude: arquitectura em 3 camadas, decisões de design (AD01–AD09), modelação de dados (Note, Interval, Scale, Chord, Exercise, Session, UserScore), contrato de API REST completo.  
-**Bloqueou:** Nada crítico. Decisão de base de dados de produção (PostgreSQL vs SQLite3) em aberto — OI01.  
+**Bloqueou:** Nada crítico. Decisão de base de dados de produção (PostgreSQL vs SQLite3) em aberto - OI01.  
 **Próxima semana:** Formalizar requisitos MoSCoW. Preparar documento de handoff para implementação.
 
 ---
@@ -129,5 +129,5 @@
 ## Sem. 16 · 24 jun · ENTREGA FINAL
 
 **Feito:**  
-**Bloqueou:** —  
-**Próxima semana:** — Defesa pública (6–10 Jul).
+**Bloqueou:** -  
+**Próxima semana:** - Defesa pública (6–10 Jul).

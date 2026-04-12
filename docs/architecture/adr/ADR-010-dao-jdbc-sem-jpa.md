@@ -1,7 +1,7 @@
-# ADR-010 — DAO classes com JDBC puro em vez de Spring Data JPA
+# ADR-010 - DAO classes com JDBC puro em vez de Spring Data JPA
 
 **Data:** 2026-04-12  
-**Estado:** Aceite — substitui a abordagem JPA referenciada em ADR-007  
+**Estado:** Aceite - substitui a abordagem JPA referenciada em ADR-007  
 **Decisores:** Daniel Junior
 
 ---
@@ -20,16 +20,16 @@ A camada de persistência usa **DAO classes (Data Access Objects) com JDBC puro 
 ```
 pt.uab.musicaltrainer
   .dao/
-      ExerciseDao.java      — CRUD + queries de Exercise
-      SessionDao.java       — CRUD + queries de Session
-      UserScoreDao.java     — CRUD + queries de UserScore
+      ExerciseDao.java      - CRUD + queries de Exercise
+      SessionDao.java       - CRUD + queries de Session
+      UserScoreDao.java     - CRUD + queries de UserScore
   .dto/
-      ExerciseRequest.java  — record
-      ExerciseResponse.java — record
-      AnswerRequest.java    — record
-      AnswerResponse.java   — record
-      SessionResponse.java  — record
-      ProgressResponse.java — record
+      ExerciseRequest.java  - record
+      ExerciseResponse.java - record
+      AnswerRequest.java    - record
+      AnswerResponse.java   - record
+      SessionResponse.java  - record
+      ProgressResponse.java - record
 ```
 
 **Exemplo de DAO:**
@@ -75,7 +75,7 @@ public class ExerciseDao {
 
 | Alternativa | Razão de rejeição |
 |------------|------------------|
-| Spring Data JPA + `@Entity` + `JpaRepository` | Introduz Hibernate, lazy loading, proxies, cache — "plumbing" que o estudante não controla completamente e que é difícil de defender em detalhe se o júri perguntar sobre comportamento inesperado. Abstracção excessiva para o scope. |
+| Spring Data JPA + `@Entity` + `JpaRepository` | Introduz Hibernate, lazy loading, proxies, cache - "plumbing" que o estudante não controla completamente e que é difícil de defender em detalhe se o júri perguntar sobre comportamento inesperado. Abstracção excessiva para o scope. |
 | MyBatis | Mais configuração que `JdbcTemplate`; menos standard no ecossistema Spring; sem vantagem sobre JDBC directo para este scope. |
 | JDBC puro sem Spring (`DriverManager`, `Connection`) | Mais verboso que `JdbcTemplate` sem ganho real; gestão manual de conexões é propensa a erros (connection leaks). `JdbcTemplate` resolve isso mantendo o SQL explícito. |
 
@@ -84,17 +84,17 @@ public class ExerciseDao {
 ## Consequências
 
 **Positivas:**
-- Todo o SQL é visível e explícito nos DAOs — zero magia escondida
+- Todo o SQL é visível e explícito nos DAOs - zero magia escondida
 - O estudante controla exactamente o que acontece em cada operação de base de dados
 - Fácil de explicar e defender numa defesa académica: "este método executa este SQL com estes parâmetros"
 - Schema em `schema.sql` é legível e documenta a estrutura da base de dados de forma inequívoca
 - DTOs como Java records são imutáveis, concisos, e demonstram conhecimento de Java moderno (Java 16+)
-- Mudança de base de dados (H2 → PostgreSQL/SQLite3) requer apenas alterar o driver e o `schema.sql` — sem anotações JPA para ajustar
+- Mudança de base de dados (H2 → PostgreSQL/SQLite3) requer apenas alterar o driver e o `schema.sql` - sem anotações JPA para ajustar
 
 **Negativas / trade-offs:**
 - Mais código boilerplate do que JPA para operações simples (INSERT, SELECT por ID)
-- Row mapping manual em cada DAO (sem `@Column` automático) — mitigado pela consistência e legibilidade
-- Sem DDL automático — o schema tem de ser escrito explicitamente em `schema.sql` (isto é uma vantagem disfarçada: o schema é explícito e revisto)
+- Row mapping manual em cada DAO (sem `@Column` automático) - mitigado pela consistência e legibilidade
+- Sem DDL automático - o schema tem de ser escrito explicitamente em `schema.sql` (isto é uma vantagem disfarçada: o schema é explícito e revisto)
 
 ---
 

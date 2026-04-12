@@ -1,4 +1,4 @@
-# ADR-003 — Geração procedural de exercícios sem datasets externos
+# ADR-003 - Geração procedural de exercícios sem datasets externos
 
 **Data:** 2026-03-25  
 **Estado:** Aceite  
@@ -30,11 +30,11 @@ Os exercícios são gerados **algoritmicamente** a partir do modelo de domínio 
 ## Consequências
 
 **Positivas:**
-- Variedade virtualmente infinita — nunca esgota os exercícios
+- Variedade virtualmente infinita - nunca esgota os exercícios
 - Deployment simples: sem ficheiros de dados, sem seed de base de dados de conteúdo
-- Demonstra que o modelo musical está correctamente formalizado no código — valor académico directo
+- Demonstra que o modelo musical está correctamente formalizado no código - valor académico directo
 - Dificuldade adaptativa implementável de forma natural (parâmetros do gerador)
 
 **Negativas / trade-offs:**
-- A qualidade dos exercícios depende da correcta implementação do modelo de domínio — erros no modelo propagam para todos os exercícios
+- A qualidade dos exercícios depende da correcta implementação do modelo de domínio - erros no modelo propagam para todos os exercícios
 - Requer testes unitários rigorosos do modelo de domínio antes de usar os geradores

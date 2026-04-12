@@ -1,4 +1,4 @@
-# ADR-001 — [Título curto da decisão]
+# ADR-001 - [Título curto da decisão]
 
 **Data:** [Data]  
 **Estado:** Proposto | Aceite | Substituído por ADR-XXX  
@@ -18,7 +18,7 @@
 ## Decisão
 
 <!-- O que foi decidido, de forma afirmativa e directa. -->
-<!-- "Decidimos usar X" — não "Poderemos considerar X". -->
+<!-- "Decidimos usar X" - não "Poderemos considerar X". -->
 
 [Descrever a decisão tomada]
 

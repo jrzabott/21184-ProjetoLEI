@@ -9,9 +9,9 @@ Todas as mensagens de commit devem seguir o standard [Conventional Commits](http
 ```
 <tipo>: <descrição curta em minúsculas>
 
-[corpo opcional — explicação mais detalhada]
+[corpo opcional - explicação mais detalhada]
 
-[rodapé opcional — referências a issues]
+[rodapé opcional - referências a issues]
 ```
 
 ### Tipos obrigatórios
@@ -48,8 +48,8 @@ asjdklasjd                      ← não commitar código não testado com mensa
 ## Workflow recomendado
 
 1. **Trabalhar em branches** para funcionalidades novas: `git checkout -b feat/nome-da-funcionalidade`
-2. **Commits pequenos e frequentes** — um commit por alteração lógica, não por sessão de trabalho
-3. **Não commitar código quebrado** — o branch `main` deve estar sempre num estado funcional
+2. **Commits pequenos e frequentes** - um commit por alteração lógica, não por sessão de trabalho
+3. **Não commitar código quebrado** - o branch `main` deve estar sempre num estado funcional
 4. **Pull request para `main`** quando a funcionalidade estiver completa e testada
 
 ## Frequência esperada
