@@ -77,13 +77,13 @@ Frontend: abrir index.html no browser (sem servidor necessário)
 
 ## Decisões de arquitectura principais
 
-| Decisão | Alternativa considerada | Razão da escolha |
-|---------|------------------------|-----------------|
-| Java 21 + Spring Boot + JDBC (backend) | Node.js / FastAPI | Experiência profissional do estudante - JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic |
-| HTML + JS vanilla (frontend) | React / Vue | Zero experiência frontend - frameworks adicionariam curva desnecessária |
-| Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, demonstra que o modelo musical está formalizado no código |
-| Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope |
-| H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01) |
+| Decisão | Alternativa considerada | Razão da escolha                                                                                                               |
+|---------|------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| Java 21 + Spring Boot | Node.js / FastAPI | Experiência prévia — JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic                                     |
+| HTML + JS vanilla (frontend) | React / Vue | Pouca experiência c/ frontend — frameworks adicionariam curva de aprendizado desnecessária                                     |
+| Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, modelo musical está formalizado no código                                                                   |
+| Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope                                                                            |
+| H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01); ainda incerto se tentari suportar múltiplas engines de DB |
 
 Para detalhe completo: `docs/architecture/adr/`
 
@@ -103,10 +103,12 @@ Para detalhe completo: `docs/architecture/adr/`
 
 ### Ferramentas de IA utilizadas
 
-| Ferramenta | Para que foi usada |
-|-----------|-------------------|
-| Claude (claude.ai) | Definição de arquitectura, levantamento de requisitos, modelação do domínio musical, planeamento de implementação |
-| Claude Code | Assistência na implementação (a partir de Sem. 5), documentação técnica, revisão de código |
+| Ferramenta                 | Para que foi usada                                                                                                           |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| Claude (claude.ai)         | Definição de arquitectura, levantamento de requisitos, modelação do domínio musical, planeamento de implementação            |
+| Gemini (gemini.google.com) | Desafiar, validar e dupla verificação de sugestões da IA principal                                                           |
+| Grok (grok.com)            | Desafiar, validar e tripla verificação de sugestões da IA principal. Diferentes ferramentas, sugerem diferentes perspectivas |
+| Claude Code                | Assistência na implementação (a partir de Sem. 5), documentação técnica, revisão de código  
 
 ---
 
