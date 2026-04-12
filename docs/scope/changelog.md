@@ -8,7 +8,7 @@
 
 ## Sem. 1 · 17–21 mar
 
-**Feito:** Kick-off com orientador Pedro Pestana. Proposta de projecto entregue a 25 de Março: sinopse, MVP com critérios de aceitação, stack tecnológica e calendário individual.  
+**Feito:** Kick-off assíncrono com orientador Pedro Pestana. Proposta de projecto entregue a 25 de Março: sinopse, MVP com critérios de aceitação, stack tecnológica e calendário individual.  
 **Bloqueou:** Nada.  
 **Próxima semana:** Aprofundar levantamento de requisitos e definição de API. Planear estrutura do repositório.
 
@@ -25,8 +25,8 @@
 ## Sem. 3 · 31 mar–4 abr
 
 **Feito:** Documento de handoff completo: requisitos RF01–RF14, RNF01–RNF08, constraints CB01–CB12, ordem de implementação por fases (0–9), definition of done, open items identificados (OI01–OI08).  
-**Bloqueou:** Nada.  
-**Próxima semana:** Criar repositório GitHub. Preencher documentação do template do orientador.
+**Bloqueou:** Documentos parciais, dediquei pouco tempo para as tarefas, e muita coisa ficou acumulada para revisão na semana seguinte.  
+**Próxima semana:** Criar repositório GitHub. Preencher documentação do template do orientador e rever rascunhos de ADRs.
 
 ---
 
