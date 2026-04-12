@@ -24,7 +24,7 @@
 
 ## Sem. 3 · 31 mar–4 abr
 
-**Feito:** Documento de handoff completo: requisitos RF01–RF14, RNF01–RNF08, constraints CB01–CB12, ordem de implementação por fases (0–9), definition of done, open items identificados (OI01–OI08 - ver docs/scope/open-items.md).  
+**Feito:** Documento de handoff completo: requisitos RF01–RF14, RNF01–RNF08, constraints CB01–CB12, ordem de implementação por fases (0–9), definition of done, open items identificados (OI01–OI08 - ver docs/scope/requirements.md).  
 **Bloqueou:** Documentos parciais, dediquei pouco tempo para as tarefas, e muita coisa ficou acumulada para revisão na semana seguinte.  
 **Próxima semana:** Criar repositório GitHub. Preencher documentação do template do orientador e rever rascunhos de ADRs.
 

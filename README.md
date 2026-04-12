@@ -46,32 +46,9 @@
 
 ## Como instalar e correr
 
-### Pré-requisitos
+> Instruções a completar na Fase 0 (setup Spring Boot). Nenhum código existe ainda.
 
-```
-Java 21+
-Maven 3.9+
-```
-
-### Instalação
-
-```bash
-# 1. Clonar o repositório
-git clone https://github.com/jrzabott/21184-ProjetoLEI.git
-cd 21184-ProjetoLEI
-
-# 2. Correr o backend
-cd src
-mvn spring-boot:run
-```
-
-### Acesso
-
-```
-Backend API: http://localhost:8080/api
-H2 Console (dev): http://localhost:8080/h2-console
-Frontend: abrir index.html no browser (sem servidor necessário)
-```
+Requisitos previstos: Java 21+, Maven 3.9+. O backend arrancará com `mvn spring-boot:run`; o frontend abre directamente no browser sem servidor adicional.
 
 ---
 
