@@ -8,7 +8,13 @@
 
 ## Contexto
 
-A aplicação tem 5 ecrãs conceptuais distintos. A questão é a abordagem de navegação: Single Page Application (SPA) com estados em JS vs páginas HTML separadas com navegação browser nativa. Esta decisão foi inicialmente identificada como open item (OI08) e resolvida com base na experiência do estudante.
+A aplicação tem 5 ecrãs conceptuais distintos. 
+
+Fiquei em dúvida quanto à abordagem de navegação: 
+  1. Single Page Application (SPA) com estados em JS 
+  2. páginas HTML separadas com navegação nativa. 
+
+Esta decisão foi inicialmente identificada como open item (OI08) e resolvida com base na simplicidade e experiência prévia do desenvolvedor (o próprio Daniel).
 
 ---
 
@@ -28,21 +34,22 @@ A navegação é feita com **páginas HTML separadas**, cada uma servida directa
 
 ## Alternativas consideradas
 
-| Alternativa | Razão de rejeição |
-|------------|------------------|
-| SPA com router em JavaScript puro | Requer gestão de histórico de browser (`pushState`), lógica de routing, e gestão de estado global - complexidade desnecessária para o scope e para o nível de experiência frontend do estudante |
-| SPA com framework (React Router, Vue Router) | Viola CB07 (sem frameworks); curva de aprendizagem desproporcional |
+| Alternativa | Razão de rejeição                                                                                                                                                                                                                                                                                        |
+|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| SPA com router em JavaScript puro | Requer gestão de histórico de browser (`pushState`), lógica de routing, e gestão de estado global - complexidade desnecessária para o scope e para o nível de experiência atual.<br> Além do mais *Single Page Applications*, sem um framework implicaria meta-desenvolvimento para lidar com o routing. |
+| SPA com framework (React Router, Vue Router) | Viola CB07 (sem frameworks); curva de aprendizagem desproporcional                                                                                                                                                                                                                                       |
 
 ---
 
 ## Consequências
 
 **Positivas:**
-- Abordagem mais simples possível para um estudante sem experiência frontend
+- Abordagem mais simples possível
 - Cada página é autónoma e testável independentemente
 - Navegação browser nativa (botão "voltar") funciona sem configuração adicional
-- Mais simples de explicar e defender perante o júri
+- Mais simples de explicar e visualizar
 
 **Negativas / trade-offs:**
 - Estado de sessão (`sessionId`) precisa de ser passado entre páginas via URL query params ou `sessionStorage` - solução: `sessionStorage` para `sessionId` activo
-- Cada página carrega os seus scripts de raiz - sem lazy loading (irrelevante para o scope)
+  - Ainda estou a pensar na possibilidade de tornar o estado obsfuscado com uma String codificada em Base64
+- Cada página carrega os seus scripts de raiz - sem lazy loading (irrelevante neste momento inicial)
