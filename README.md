@@ -79,7 +79,7 @@ Frontend: abrir index.html no browser (sem servidor necessário)
 
 | Decisão | Alternativa considerada | Razão da escolha |
 |---------|------------------------|-----------------|
-| Java 21 + Spring Boot (backend) | Node.js / FastAPI | Experiência profissional do estudante — backend é o ponto forte |
+| Java 21 + Spring Boot + JDBC (backend) | Node.js / FastAPI | Experiência profissional do estudante — JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic |
 | HTML + JS vanilla (frontend) | React / Vue | Zero experiência frontend — frameworks adicionariam curva desnecessária |
 | Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, demonstra que o modelo musical está formalizado no código |
 | Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope |

@@ -14,9 +14,9 @@ O sistema necessita de persistência relacional para Exercise, Session e UserSco
 
 ## Decisão
 
-**Desenvolvimento:** H2 in-memory ou ficheiro, configurado via `application.properties`. A consola H2 (`/h2-console`) fica activa em desenvolvimento para verificação de tabelas. Schema gerido por `spring.jpa.hibernate.ddl-auto=create-drop` (in-memory) ou `update` (ficheiro).
+**Desenvolvimento:** H2 in-memory ou ficheiro, configurado via `application.properties`. A consola H2 (`/h2-console`) fica activa em desenvolvimento para verificação de tabelas. Schema criado pelo ficheiro `src/main/resources/schema.sql`, carregado automaticamente pelo Spring Boot no arranque (ver ADR-010 — sem JPA/Hibernate, sem DDL automático).
 
-**Produção/entrega:** PostgreSQL ou SQLite3 — decisão pendente (OI01). A decidir antes de Sem. 7 (demo interna). O backend usa JPA/Hibernate, pelo que a mudança de base de dados requer apenas alteração de `application.properties` e dependência Maven — sem mudança de código.
+**Produção/entrega:** PostgreSQL ou SQLite3 — decisão pendente (OI01). A decidir antes de Sem. 7 (demo interna). Com JDBC puro (ADR-010), a mudança de base de dados requer apenas alteração do driver Maven, da `datasource.url` em `application.properties`, e eventual ajuste de SQL dialect no `schema.sql` — sem mudança nos DAOs.
 
 ---
 
@@ -44,9 +44,9 @@ Decidir antes de Sem. 7. Actualizar este ADR com a decisão final.
 
 **Positivas:**
 - H2 permite iniciar desenvolvimento imediatamente sem setup de base de dados
-- Abstracção JPA garante portabilidade entre bases de dados
-- `spring.jpa.show-sql=true` facilita debugging durante desenvolvimento
+- Consola web `/h2-console` permite inspecção directa das tabelas durante desenvolvimento
+- Portabilidade garantida por JDBC puro — driver é a única dependência da base de dados concreta
 
 **Negativas / trade-offs:**
-- H2 in-memory perde dados ao reiniciar — usar modo ficheiro (`jdbc:h2:file:./musicaltrainer`) para persistência entre execuções
-- Decisão de produção adiada cria incerteza — mitigado por abstracção JPA
+- H2 in-memory perde dados ao reiniciar — usar modo ficheiro (`jdbc:h2:file:./musicaltrainer`) para persistência entre execuções durante desenvolvimento
+- Decisão de produção adiada cria incerteza — mitigado pela portabilidade do JDBC e isolamento do SQL nos DAOs

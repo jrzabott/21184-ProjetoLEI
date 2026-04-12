@@ -71,7 +71,7 @@ Se o utilizador acertar mais de 80% dos últimos 10 exercícios do mesmo tipo, o
 
 | Componente | Tecnologia escolhida | Justificação |
 |-----------|---------------------|-------------|
-| Backend | Java 21 + Spring Boot | Experiência profissional do estudante; backend é o ponto forte; Spring Boot minimiza configuração |
+| Backend | Java 21 + Spring Boot + JDBC | Experiência profissional do estudante; Spring Boot minimiza configuração; JDBC puro com DAOs em vez de JPA — SQL explícito e defensável (ver ADR-010) |
 | Frontend | HTML + JavaScript ES6+ vanilla | Zero experiência frontend — frameworks adicionariam curva de aprendizagem desnecessária; vanilla JS é suficiente para o scope |
 | Áudio | Web Audio API (nativa do browser) | Zero dependências externas; funciona em qualquer browser moderno; suficiente para tocar notas isoladas |
 | MIDI | Web MIDI API (nativa do browser) | Zero dependências externas; detecção automática de dispositivos; implementação mínima com efeito desproporcional na demo |

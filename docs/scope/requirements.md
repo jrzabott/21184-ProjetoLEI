@@ -57,7 +57,7 @@
 
 ### Must have
 
-- **RNF01** — **Stack backend:** Java 21 com Spring Boot (versão estável mais recente). Package raiz: `pt.uab.musicaltrainer`.
+- **RNF01** — **Stack backend:** Java 21 com Spring Boot (versão estável mais recente). Package raiz: `pt.uab.musicaltrainer`. Persistência via JDBC puro (`JdbcTemplate`) com DAOs — sem Spring Data JPA, sem Hibernate (ver ADR-010). DTOs implementados como Java records.
 - **RNF02** — **Stack frontend:** HTML e JavaScript vanilla (ES6+). Proibido o uso de frameworks (React, Vue, Angular, Svelte) e de bundlers ou gestores de pacotes frontend (npm, Vite, Webpack).
 - **RNF03** — **Áudio:** reprodução via Web Audio API nativa do browser exclusivamente. Sem bibliotecas externas de áudio.
 - **RNF04** — **MIDI:** captura via Web MIDI API nativa do browser exclusivamente. Sem bibliotecas externas de MIDI.
