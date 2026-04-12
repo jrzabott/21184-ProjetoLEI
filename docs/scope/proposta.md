@@ -69,15 +69,15 @@ Se o utilizador acertar mais de 80% dos últimos 10 exercícios do mesmo tipo, o
 
 ## Stack tecnológica
 
-| Componente | Tecnologia escolhida | Justificação |
-|-----------|---------------------|-------------|
-| Backend | Java 21 + Spring Boot + JDBC | Experiência profissional do estudante; Spring Boot minimiza configuração; JDBC puro com DAOs em vez de JPA - SQL explícito e defensável (ver ADR-010) |
-| Frontend | HTML + JavaScript ES6+ vanilla | Zero experiência frontend - frameworks adicionariam curva de aprendizagem desnecessária; vanilla JS é suficiente para o scope |
-| Áudio | Web Audio API (nativa do browser) | Zero dependências externas; funciona em qualquer browser moderno; suficiente para tocar notas isoladas |
-| MIDI | Web MIDI API (nativa do browser) | Zero dependências externas; detecção automática de dispositivos; implementação mínima com efeito desproporcional na demo |
-| Base de dados (dev) | H2 in-memory / ficheiro | Arranca sem configuração; console web integrada para verificação de tabelas |
-| Base de dados (prod) | PostgreSQL ou SQLite3 | Decisão em aberto - ver OI01 em docs/scope/risks.md |
-| Build | Maven | Standard no ecossistema Java/Spring |
+| Componente | Tecnologia escolhida | Justificação                                                                                                                   |
+|-----------|---------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| Backend | Java 21 + Spring Boot | Experiência prévia; Spring Boot minimiza configuração; JDBC puro com DAOs em vez de JPA - SQL explícito (ver ADR-010)          |
+| Frontend | HTML + JavaScript ES6+ vanilla | Pouca experiência frontend - frameworks adicionariam curva de aprendizagem desnecessária; vanilla JS é suficiente para o scope |
+| Áudio | Web Audio API (nativa do browser) | Zero dependências externas; funciona em qualquer browser moderno; suficiente para tocar notas isoladas                         |
+| MIDI | Web MIDI API (nativa do browser) | Zero dependências externas; detecção automática de dispositivos; implementação mínima com efeito desproporcional na demo       |
+| Base de dados (dev) | H2 in-memory / ficheiro | Arranca sem configuração; console web integrada para verificação de tabelas                                                    |
+| Base de dados (prod) | PostgreSQL ou SQLite3 | Decisão em aberto - ver OI01 em docs/scope/risks.md                                                                            |
+| Build | Maven | Standard no ecossistema Java/Spring                                                                                            |
 
 ---
 
@@ -90,7 +90,7 @@ Se o utilizador acertar mais de 80% dos últimos 10 exercícios do mesmo tipo, o
 
 **Sistemas externos:**
 - Controlador MIDI USB (hardware físico, opcional) - ligado ao computador do utilizador; browser captura eventos via Web MIDI API sem intermediários de software
-- Nenhum outro sistema externo - a aplicação é completamente autossuficiente; não há APIs de terceiros, não há serviços externos, não há autenticação externa
+- Nenhum outro sistema externo - a aplicação é completamente autossuficiente; não há APIs de terceiros, não há serviços externos, não há autenticação externa. Dependências são *open source* e são distribuídas junto com o código.
 
 > Diagrama formal em `docs/architecture/c4-context.png` (a criar em Sem. 5–6)
 
@@ -98,16 +98,16 @@ Se o utilizador acertar mais de 80% dos últimos 10 exercícios do mesmo tipo, o
 
 ## Calendário individual detalhado
 
-| Semanas | Datas | Conteúdo planeado | Marco |
-|---------|-------|------------------|-------|
-| Sem. 1–2 | 17–28 mar | Kick-off com orientador. Proposta: sinopse, MVP com critérios de aceitação, stack, C4 nível 1. | **Proposta (25 mar) ✅** |
-| Sem. 3–4 | 31 mar–11 abr | Levantamento de requisitos MoSCoW. Definição completa da API. Modelação de dados. Configuração do repositório GitHub com estrutura completa. | |
-| Sem. 5–6 | 14–25 abr | Fase 0–2: Setup Spring Boot, modelo de domínio Java (Note, Interval, Scale, Chord), testes unitários, schema SQL + DAOs com JDBC. ADRs das decisões principais. | |
-| Sem. 7 | 28 abr–2 mai | Fase 3–4: Geradores de exercícios, REST Controllers. Demo interna ao orientador: backend funcional com todos os endpoints testados via curl. | **Demo interna** |
-| Sem. 8 | 5–6 mai | Relatório intercalar: Cap. 1 e Cap. 2 completos (arquitectura C4 nível 1+2, modelo de dados, ADRs). Cap. 3: estado de implementação. | **Intercalar (6 mai)** |
-| Sem. 9–10 | 7–16 mai | Fase 5–6: Frontend - teclado virtual com som (Web Audio API), input MIDI, ecrã de exercício activo com fluxo completo. | |
-| Sem. 11–12 | 19–30 mai | Fase 7–9: Dashboard de progresso, ecrã de fim de sessão, ecrã de selecção. Testes de funcionalidade e integração. | |
-| Sem. 13 | 2–6 jun | Revisão geral do sistema. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4. | |
-| Sem. 14 | 9–13 jun | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Preparação de anexos. | |
-| Sem. 15 | 16–20 jun | Reunião de preparação para defesa com orientador. Ensaio de perguntas de júri. Revisão final do relatório. | **Prep. defesa** |
-| Sem. 16 | 24 jun | Submissão do relatório final. Código e demo linkados no repositório. | **Final (24 jun)** |
+| Semanas | Datas | Conteúdo planeado                                                                                                                                           | Marco                   |
+|---------|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| Sem. 1–2 | 17–28 mar | Kick-off com orientador. Proposta: sinopse, MVP com critérios de aceitação, stack, C4 nível 1.                                                              | **✅ Proposta (25 mar)** |
+| Sem. 3–4 | 31 mar–11 abr | Levantamento de requisitos MoSCoW. Definição completa da API. Modelação de dados. Configuração do repositório GitHub com estrutura completa.                | 🟡 Em progresso         |
+| Sem. 5–6 | 14–25 abr | Fase 0–2: Setup Spring Boot, modelo de domínio Java (Note, Interval, Scale, Chord), testes unitários, schema SQL + DAOs. <br> ADRs das decisões principais. |                         |
+| Sem. 7 | 28 abr–2 mai | Fase 3–4: Geradores de exercícios, REST Controllers. Demo interna ao orientador: backend funcional com todos os endpoints testados via curl.                | **Demo interna**        |
+| Sem. 8 | 5–6 mai | Relatório intercalar: Cap. 1 e Cap. 2 completos (arquitectura C4 nível 1+2, modelo de dados, ADRs). Cap. 3: estado de implementação.                        | **Intercalar (6 mai)**  |
+| Sem. 9–10 | 7–16 mai | Fase 5–6: Frontend - teclado virtual com som (Web Audio API), input MIDI, ecrã de exercício activo com fluxo completo.                                      |                         |
+| Sem. 11–12 | 19–30 mai | Fase 7–9: Dashboard de progresso, ecrã de fim de sessão, ecrã de selecção. Testes de funcionalidade e integração.                                           |                         |
+| Sem. 13 | 2–6 jun | Revisão geral do sistema. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4.                                                       |                         |
+| Sem. 14 | 9–13 jun | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Preparação de anexos.                                                                     |                         |
+| Sem. 15 | 16–20 jun | Reunião de preparação para defesa com orientador. Ensaio de perguntas de júri. Revisão final do relatório.                                                  | **Prep. defesa**        |
+| Sem. 16 | 24 jun | Submissão do relatório final. Código e demo linkados no repositório.                                                                                        | **Final (24 jun)**      |
