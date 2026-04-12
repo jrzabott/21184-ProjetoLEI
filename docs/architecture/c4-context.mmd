@@ -1,0 +1,13 @@
+C4Context
+    title Diagrama de Contexto - Musical Theory Trainer
+
+    Person(utilizador, "Utilizador", "Estudante de teoria musical que pratica exercícios no browser")
+
+    System(sistema, "Musical Theory Trainer", "Aplicação web que gera exercícios procedurais de teoria musical e fornece feedback imediato")
+
+    System_Ext(midi, "Controlador MIDI USB", "Teclado ou controlador MIDI físico (opcional)")
+
+    Rel(utilizador, sistema, "Acede via browser, responde a exercícios, consulta progresso")
+    Rel(midi, sistema, "Envia eventos MIDI via Web MIDI API (opcional)")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

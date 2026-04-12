@@ -1,0 +1,29 @@
+erDiagram
+    exercises {
+        INTEGER id PK "Identificador único"
+        TEXT type "Tipo: NOTE, INTERVAL, SCALE, CHORD"
+        INTEGER difficulty "Nível de dificuldade (1-5)"
+        TEXT question_data "JSON com dados da pergunta"
+        TEXT correct_answer "Resposta correcta serializada"
+        DATETIME created_at "Data de criação"
+    }
+
+    sessions {
+        INTEGER id PK "Identificador único"
+        DATETIME started_at "Início da sessão"
+        DATETIME ended_at "Fim da sessão (null se activa)"
+        INTEGER exercise_count "Total de exercícios na sessão"
+        INTEGER correct_count "Total de respostas correctas"
+    }
+
+    user_scores {
+        INTEGER id PK "Identificador único"
+        INTEGER session_id FK "Referência à sessão"
+        INTEGER exercise_id FK "Referência ao exercício"
+        TEXT answer_given "Resposta dada pelo utilizador"
+        BOOLEAN is_correct "Acertou ou errou"
+        DATETIME answered_at "Data e hora da resposta"
+    }
+
+    sessions ||--o{ user_scores : "contém"
+    exercises ||--o{ user_scores : "é respondido em"

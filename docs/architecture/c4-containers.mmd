@@ -1,0 +1,18 @@
+C4Container
+    title Diagrama de Contentores - Musical Theory Trainer
+
+    Person(utilizador, "Utilizador", "Estudante de teoria musical")
+    System_Ext(midi, "Controlador MIDI USB", "Hardware externo opcional")
+
+    System_Boundary(sistema, "Musical Theory Trainer") {
+        Container(frontend, "Frontend", "HTML + JavaScript ES6+", "Interface de utilizador: teclado virtual, ecrã de exercício, dashboard de progresso, modo sandbox")
+        Container(backend, "Backend", "Java 21 + Spring Boot", "Gera exercícios procedurais, valida respostas, persiste sessões e resultados via JDBC + DAOs")
+        ContainerDb(db, "Base de Dados", "H2 (dev) / SQLite3 ou PostgreSQL (prod)", "Armazena exercícios, sessões, respostas e pontuações")
+    }
+
+    Rel(utilizador, frontend, "Interage via browser", "HTTP / Web Audio API")
+    Rel(midi, frontend, "Envia eventos de nota", "Web MIDI API")
+    Rel(frontend, backend, "Gera exercícios, valida respostas, consulta progresso", "REST / JSON")
+    Rel(backend, db, "Lê e escreve dados", "JDBC / SQL")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
