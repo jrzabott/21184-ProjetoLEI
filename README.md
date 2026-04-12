@@ -93,12 +93,13 @@ Para detalhe completo: `docs/architecture/adr/`
 
 ### Referências técnicas
 
-- Spring Boot - https://spring.io/projects/spring-boot
-- Spring JDBC (JdbcTemplate) - https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
-- Web Audio API - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
-- Web MIDI API - https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
-- C4 Model - https://c4model.com
-- Conventional Commits - https://www.conventionalcommits.org
+- Spring Boot — https://spring.io/projects/spring-boot
+- Web Audio API (MDN) — https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+- Web Audio API (compatibilidade) — https://caniuse.com/audio-api
+- Web MIDI API (MDN) — https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
+- Web MIDI API (compatibilidade) — https://caniuse.com/midi *(não suportado em Safari — ver ADR-005)*
+- C4 Model — https://c4model.com
+- Conventional Commits — https://www.conventionalcommits.org
 
 ### Ferramentas de IA utilizadas
 
