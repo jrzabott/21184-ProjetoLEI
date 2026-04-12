@@ -20,10 +20,10 @@ Os exercícios são gerados **algoritmicamente** a partir do modelo de domínio 
 
 ## Alternativas consideradas
 
-| Alternativa | Razão de rejeição |
-|------------|------------------|
-| Base de dados de exercícios pré-definidos (CSV, JSON, tabela SQL) | Requer criação e manutenção de conteúdo; não demonstra que o modelo musical está correctamente formalizado; variedade limitada ao que foi pré-escrito. |
-| API de teoria musical externa (ex: teoria.ly, APIs de musicologia) | Introduz dependência externa; viola CB03 (sem IA) se a API usar ML; adiciona latência de rede; ponto de falha fora do controlo do sistema. |
+| Alternativa | Razão de rejeição                                                                                                                                                                                                                                                             |
+|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Base de dados de exercícios pré-definidos (CSV, JSON, tabela SQL) | Requer criação e manutenção de conteúdo; não demonstra que o modelo musical está correctamente formalizado; variedade limitada ao que foi pré-escrito.                                                                                                                        |
+| API de teoria musical externa (ex: teoria.ly, APIs de musicologia) | Introduz dependência externa; viola CB03 (sem IA) se a API usar ML; adiciona latência de rede; ponto de falha fora do controlo do sistema. Adicionalmente, complexidade além do âmbito do projecto, porém grande oportunidade de melhoria e laboratório de novas tecnologias. |
 
 ---
 
@@ -32,7 +32,7 @@ Os exercícios são gerados **algoritmicamente** a partir do modelo de domínio 
 **Positivas:**
 - Variedade virtualmente infinita - nunca esgota os exercícios
 - Deployment simples: sem ficheiros de dados, sem seed de base de dados de conteúdo
-- Demonstra que o modelo musical está correctamente formalizado no código - valor académico directo
+- Demonstra que o modelo musical está correctamente formalizado no código — o modelo é a fonte de verdade para a geração de exercícios
 - Dificuldade adaptativa implementável de forma natural (parâmetros do gerador)
 
 **Negativas / trade-offs:**
