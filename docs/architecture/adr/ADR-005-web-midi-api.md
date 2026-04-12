@@ -18,9 +18,9 @@ O sistema deve suportar input musical via controlador MIDI físico (teclado USB)
 
 O input MIDI físico é captado via **Web MIDI API nativa do browser** (`navigator.requestMIDIAccess()`). \
 
-O browser detecta automaticamente os dispositivos MIDI ligados. Ao receber evento `noteon`, o mesmo callback `onNotePressed(midiNumber)` usado pelo teclado virtual é invocado — independente da entrada o processamento ocorre da mesma maneira após tradução pelo FrontEnd (ver ADR-002). 
+O browser detecta automaticamente os dispositivos MIDI ligados. Ao receber evento `noteon`, o mesmo callback `onNotePressed(midiNumber)` usado pelo teclado virtual é invocado - independente da entrada o processamento ocorre da mesma maneira após tradução pelo FrontEnd (ver ADR-002). 
 
-Se a API não estiver disponível (Firefox, Safari), a aplicação funciona normalmente com o teclado virtual e exibe uma mensagem discreta.
+Se a API não estiver disponível (Safari), a aplicação funciona normalmente com o teclado virtual e exibe uma mensagem discreta.
 
 ---
 
@@ -43,6 +43,6 @@ Se a API não estiver disponível (Firefox, Safari), a aplicação funciona norm
 - Efeito na demo ao vivo é significativo - distingue o projecto de implementações puramente simuladas ou teóricas
 
 **Negativas / trade-offs:**
-- **Safari não suportado:** Web MIDI API funciona em Chrome, Edge, Firefox e Opera. Safari é o único browser moderno sem suporte (ver https://caniuse.com/midi). A aplicação funciona normalmente em Safari — apenas o input de hardware MIDI físico fica indisponível. Documentado como R03 em risks.md.
+- **Safari não suportado:** Web MIDI API funciona em Chrome, Edge, Firefox e Opera. Safari é o único browser moderno sem suporte (ver https://caniuse.com/midi). A aplicação funciona normalmente em Safari - apenas o input de hardware MIDI físico fica indisponível. Documentado como R03 em risks.md.
 - Requer `{ sysex: false }` no request de acesso - pode gerar prompt de permissão no browser na primeira utilização
 - RF04 classificado como "Should have" para que a ausência de hardware MIDI não impeça a entrega

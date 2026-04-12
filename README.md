@@ -79,8 +79,8 @@ Frontend: abrir index.html no browser (sem servidor necessário)
 
 | Decisão | Alternativa considerada | Razão da escolha                                                                                                               |
 |---------|------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| Java 21 + Spring Boot | Node.js / FastAPI | Experiência prévia — JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic                                     |
-| HTML + JS vanilla (frontend) | React / Vue | Pouca experiência c/ frontend — frameworks adicionariam curva de aprendizado desnecessária                                     |
+| Java 21 + Spring Boot | Node.js / FastAPI | Experiência prévia - JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic                                     |
+| HTML + JS vanilla (frontend) | React / Vue | Pouca experiência c/ frontend - frameworks adicionariam curva de aprendizado desnecessária                                     |
 | Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, modelo musical está formalizado no código                                                                   |
 | Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope                                                                            |
 | H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01); ainda incerto se tentari suportar múltiplas engines de DB |
@@ -93,13 +93,13 @@ Para detalhe completo: `docs/architecture/adr/`
 
 ### Referências técnicas
 
-- Spring Boot — https://spring.io/projects/spring-boot
-- Web Audio API (MDN) — https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
-- Web Audio API (compatibilidade) — https://caniuse.com/audio-api
-- Web MIDI API (MDN) — https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
-- Web MIDI API (compatibilidade) — https://caniuse.com/midi *(não suportado em Safari — ver ADR-005)*
-- C4 Model — https://c4model.com
-- Conventional Commits — https://www.conventionalcommits.org
+- Spring Boot - https://spring.io/projects/spring-boot
+- Web Audio API (MDN) - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+- Web Audio API (compatibilidade) - https://caniuse.com/audio-api
+- Web MIDI API (MDN) - https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
+- Web MIDI API (compatibilidade) - https://caniuse.com/midi *(não suportado em Safari - ver ADR-005)*
+- C4 Model - https://c4model.com
+- Conventional Commits - https://www.conventionalcommits.org
 
 ### Ferramentas de IA utilizadas
 

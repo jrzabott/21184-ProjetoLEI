@@ -32,7 +32,7 @@ Os exercícios são gerados **algoritmicamente** a partir do modelo de domínio 
 **Positivas:**
 - Variedade virtualmente infinita - nunca esgota os exercícios
 - Deployment simples: sem ficheiros de dados, sem seed de base de dados de conteúdo
-- Demonstra que o modelo musical está correctamente formalizado no código — o modelo é a fonte de verdade para a geração de exercícios
+- Demonstra que o modelo musical está correctamente formalizado no código - o modelo é a fonte de verdade para a geração de exercícios
 - Dificuldade adaptativa implementável de forma natural (parâmetros do gerador)
 
 **Negativas / trade-offs:**

@@ -64,7 +64,7 @@
 - **RNF05** - **Base de dados:** H2 in-memory/ficheiro em desenvolvimento. PostgreSQL ou SQLite3 na versão de entrega (decisão pendente - OI01).
 - **RNF06** - **Performance:** tempo de resposta do backend à validação de uma resposta < 200ms em ambiente local.
 - **RNF07** - **Legibilidade académica:** código estruturado de forma que um docente de engenharia informática consiga ler e avaliar as decisões de arquitectura sem contexto adicional. Classes de domínio musical com Javadoc explicando o conceito musical subjacente.
-- **RNF09** — **TDD:** todo o código de produção é precedido por um teste falhante (Red → Green → Refactor). Nenhuma feature implementada sem teste failing primeiro; nenhum bug corrigido sem teste que o reproduza. Stack: JUnit 5 + AssertJ + MockMvc + H2 in-memory (ver ADR-011).
+- **RNF09** - **TDD:** todo o código de produção é precedido por um teste falhante (Red → Green → Refactor). Nenhuma feature implementada sem teste failing primeiro; nenhum bug corrigido sem teste que o reproduza. Stack: JUnit 5 + AssertJ + MockMvc + H2 in-memory (ver ADR-011).
 
 ### Should have
 
