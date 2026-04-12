@@ -14,7 +14,7 @@ O projecto necessita de uma estrutura que demonstre competências de engenharia 
 
 ## Decisão
 
-A aplicação é dividida em três camadas separadas e independentes: **Frontend** (browser — HTML/JS vanilla), **Backend** (Java/Spring Boot — lógica de negócio e API REST), e **Persistência** (base de dados — H2 em desenvolvimento, PostgreSQL/SQLite3 em produção). As camadas comunicam exclusivamente através de contratos definidos: o frontend chama a API REST do backend via `fetch`; o backend acede à base de dados via Spring Data JPA.
+A aplicação é dividida em três camadas separadas e independentes: **Frontend** (browser — HTML/JS vanilla), **Backend** (Java/Spring Boot — lógica de negócio e API REST), e **Persistência** (base de dados — H2 em desenvolvimento, PostgreSQL/SQLite3 em produção). As camadas comunicam exclusivamente através de contratos definidos: o frontend chama a API REST do backend via `fetch`; o backend acede à base de dados via JDBC (JdbcTemplate) com DAOs (ver ADR-010).
 
 ---
 
