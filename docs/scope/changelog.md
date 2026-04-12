@@ -30,11 +30,11 @@
 
 ---
 
-## Sem. 4 · 7–11 abr
+## Sem. 4 · 7–12 abr
 
-**Feito:** Repositório GitHub criado (jrzabott/21184-ProjetoLEI) com estrutura do template do orientador. README, proposta, requisitos, changelog e risks preenchidos. ADRs ADR-001 a ADR-011 documentados. Repositório enviado ao orientador.  
-**Bloqueou:** Nada.  
-**Próxima semana:** Setup Spring Boot (Fase 0). Criar projecto Maven, configurar H2, verificar arranque. Início do modelo de domínio (Fase 1).
+**Feito:** Repositório GitHub criado (jrzabott/21184-ProjetoLEI) com estrutura do template do orientador. README, proposta, requisitos, changelog e risks preenchidos. ADRs ADR-001 a ADR-011 formalizados. RNF09 (TDD) adicionado. Diagramas C4 (contexto e contentores) e modelo de dados gerados e versionados. Open items OI01-OI08 registados formalmente em requirements.md. Revisão de linguagem em toda a documentação.  
+**Bloqueou:** Link do repositório ainda por enviar ao orientador.  
+**Próxima semana:** Enviar repositório ao orientador. Setup Spring Boot (Fase 0): criar projecto Maven, configurar H2, verificar arranque.
 
 ---
 
