@@ -1,6 +1,6 @@
 # Design
 
-Esta pasta contém os artefactos de design de interface.
+Esta pasta ~~contém~~ conterá os artefactos de design de interface.
 
 ## Conteúdo esperado
 
@@ -11,7 +11,7 @@ Esta pasta contém os artefactos de design de interface.
 
 ## Nível de detalhe esperado
 
-Os wireframes não são design final. O que importa é:
+Os wireframes não são o design final. O que importa é:
 
 1. **Estrutura de navegação** - que ecrãs existem e como se relacionam
 2. **Conteúdo principal** de cada ecrã - não o visual, mas o que está lá
@@ -22,3 +22,7 @@ Os wireframes não são design final. O que importa é:
 - [Figma](https://figma.com) - gratuito para uso individual, exporta PDF
 - [Balsamiq](https://balsamiq.com) - específico para wireframes de baixa fidelidade
 - [draw.io](https://draw.io) - para fluxos de navegação simples
+
+### Ferramenta escolhida e adicionais:
+
+- Ainda não definido.

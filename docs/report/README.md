@@ -1,6 +1,6 @@
 # Relatórios
 
-Esta pasta contém as versões PDF dos relatórios formais.
+Esta pasta ~~contém~~ conterá as versões PDF dos relatórios formais.
 
 ## Ficheiros esperados
 
@@ -9,7 +9,7 @@ Esta pasta contém as versões PDF dos relatórios formais.
 | `relatorio-intercalar.pdf` | Relatório intercalar | 6 de maio |
 | `relatorio-final.pdf` | Relatório final | 24 de junho |
 
-## Notas
+## Notas e Pontos de Atenção
 
 - Os relatórios são submetidos em PDF nesta pasta **e** pelo canal formal da UC.
 - Usar o template de relatório fornecido pelo orientador.

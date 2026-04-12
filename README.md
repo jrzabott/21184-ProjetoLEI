@@ -46,44 +46,21 @@
 
 ## Como instalar e correr
 
-### Pré-requisitos
+> Instruções a completar na Fase 0 (setup Spring Boot). Nenhum código existe ainda.
 
-```
-Java 21+
-Maven 3.9+
-```
-
-### Instalação
-
-```bash
-# 1. Clonar o repositório
-git clone https://github.com/jrzabott/21184-ProjetoLEI.git
-cd 21184-ProjetoLEI
-
-# 2. Correr o backend
-cd src
-mvn spring-boot:run
-```
-
-### Acesso
-
-```
-Backend API: http://localhost:8080/api
-H2 Console (dev): http://localhost:8080/h2-console
-Frontend: abrir index.html no browser (sem servidor necessário)
-```
+Requisitos previstos: Java 21+, Maven 3.9+. O backend arrancará com `mvn spring-boot:run`; o frontend abre directamente no browser sem servidor adicional.
 
 ---
 
 ## Decisões de arquitectura principais
 
-| Decisão | Alternativa considerada | Razão da escolha |
-|---------|------------------------|-----------------|
-| Java 21 + Spring Boot + JDBC (backend) | Node.js / FastAPI | Experiência profissional do estudante - JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic |
-| HTML + JS vanilla (frontend) | React / Vue | Zero experiência frontend - frameworks adicionariam curva desnecessária |
-| Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, demonstra que o modelo musical está formalizado no código |
-| Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope |
-| H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01) |
+| Decisão | Alternativa considerada | Razão da escolha                                                                                                               |
+|---------|------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| Java 21 + Spring Boot | Node.js / FastAPI | Experiência prévia - JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic                                     |
+| HTML + JS vanilla (frontend) | React / Vue | Pouca experiência c/ frontend - frameworks adicionariam curva de aprendizado desnecessária                                     |
+| Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, modelo musical está formalizado no código                                                                   |
+| Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope                                                                            |
+| H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01); ainda incerto se tentari suportar múltiplas engines de DB |
 
 Para detalhe completo: `docs/architecture/adr/`
 
@@ -94,18 +71,21 @@ Para detalhe completo: `docs/architecture/adr/`
 ### Referências técnicas
 
 - Spring Boot - https://spring.io/projects/spring-boot
-- Spring JDBC (JdbcTemplate) - https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
-- Web Audio API - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
-- Web MIDI API - https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
+- Web Audio API (MDN) - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+- Web Audio API (compatibilidade) - https://caniuse.com/audio-api
+- Web MIDI API (MDN) - https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
+- Web MIDI API (compatibilidade) - https://caniuse.com/midi *(não suportado em Safari - ver ADR-005)*
 - C4 Model - https://c4model.com
 - Conventional Commits - https://www.conventionalcommits.org
 
 ### Ferramentas de IA utilizadas
 
-| Ferramenta | Para que foi usada |
-|-----------|-------------------|
-| Claude (claude.ai) | Definição de arquitectura, levantamento de requisitos, modelação do domínio musical, planeamento de implementação |
-| Claude Code | Assistência na implementação (a partir de Sem. 5), documentação técnica, revisão de código |
+| Ferramenta                 | Para que foi usada                                                                                                           |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| Claude (claude.ai)         | Definição de arquitectura, levantamento de requisitos, modelação do domínio musical, planeamento de implementação            |
+| Gemini (gemini.google.com) | Desafiar, validar e dupla verificação de sugestões da IA principal                                                           |
+| Grok (grok.com)            | Desafiar, validar e tripla verificação de sugestões da IA principal. Diferentes ferramentas, sugerem diferentes perspectivas |
+| Claude Code                | Assistência na implementação (a partir de Sem. 5), documentação técnica, revisão de código  
 
 ---
 

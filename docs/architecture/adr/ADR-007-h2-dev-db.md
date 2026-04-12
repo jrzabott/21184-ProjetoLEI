@@ -8,25 +8,31 @@
 
 ## Contexto
 
-O sistema necessita de persistência relacional para Exercise, Session e UserScore. A questão é a base de dados a usar durante o desenvolvimento e na entrega final. O scope é single-user (CB01/CB02) - não há requisitos de escalabilidade horizontal.
+O sistema necessita de persistência relacional para `Exercise`, `Session` e `UserScore`. 
+
+A base de dados a usar durante o desenvolvimento e na entrega final é um dos pontos tecnológicos flexíveis que impacta o desenvolvimento. O âmvbito é *single-user* (CB01/CB02) - não há requisitos de escalabilidade horizontal.
 
 ---
 
 ## Decisão
 
-**Desenvolvimento:** H2 in-memory ou ficheiro, configurado via `application.properties`. A consola H2 (`/h2-console`) fica activa em desenvolvimento para verificação de tabelas. Schema criado pelo ficheiro `src/main/resources/schema.sql`, carregado automaticamente pelo Spring Boot no arranque (ver ADR-010 - sem JPA/Hibernate, sem DDL automático).
+**Desenvolvimento:** H2 in-memory ou ficheiro (*plain text*), configurado via `application.properties`. 
 
-**Produção/entrega:** PostgreSQL ou SQLite3 - decisão pendente (OI01). A decidir antes de Sem. 7 (demo interna). Com JDBC puro (ADR-010), a mudança de base de dados requer apenas alteração do driver Maven, da `datasource.url` em `application.properties`, e eventual ajuste de SQL dialect no `schema.sql` - sem mudança nos DAOs.
+A consola H2 (`/h2-console`) fica activa em desenvolvimento para verificação de tabelas. 
+
+Schema criado em ficheiro `src/main/resources/schema.sql`, carregado automaticamente pelo Spring Boot no arranque (como em ADR-010, sem DDL automático).
+
+**Produção/entrega:** PostgreSQL ou SQLite3 - decisão pendente (OI01). A decidir antes de Sem. 7 (demo interna). Com JDBC puro (ADR-010), a mudança de base de dados requer apenas alteração do driver no Maven, da `datasource.url` em `application.properties`, e eventual ajuste de SQL dialect no `schema.sql` - sem mudança nos DAOs.
 
 ---
 
 ## Alternativas consideradas
 
-| Alternativa | Razão de rejeição |
-|------------|------------------|
-| PostgreSQL desde o início | Requer instalação e configuração antes de escrever uma linha de código - H2 elimina essa fricção no arranque |
-| MongoDB | Base de dados não relacional não adequada para os relacionamentos definidos (Session 1:N UserScore, Exercise 1:N UserScore); modelo relacional é mais defensável academicamente |
-| SQLite3 desde o início | Não tem consola web integrada; H2 oferece melhor experiência de desenvolvimento |
+| Alternativa | Razão de rejeição                                                                                                                                                                                                                                                                    |
+|------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| PostgreSQL desde o início | Requer instalação e configuração antes de escrever uma linha de código <br> H2 elimina essa fricção no arranque e aumenta portabilidade.                                                                                                                                             |
+| MongoDB | Base de dados não relacional pouco adequada para os relacionamentos definidos (Session 1:N UserScore, Exercise 1:N UserScore); modelo relacional é mais torna os conceitos e a regras de cada mais "amarrados". Mais uma ferramenta para aprender, incluir e documentar.             |
+| SQLite3 desde o início | Não tem consola web integrada, não é um grande bloqueio; Ainda continua forte candidato. H2 oferece melhor experiência de desenvolvimento e portabilidade, tal e qual sqlite3 com seu cliente externo para desenvolvimento (ou ainda DBeaver, Heidi e outras soluções *open-source*. |
 
 ---
 
@@ -36,7 +42,8 @@ A decisão entre PostgreSQL e SQLite3 para produção:
 - **SQLite3:** ficheiro único, zero configuração de servidor, suficiente para single-user, mais simples de incluir no repositório
 - **PostgreSQL:** mais reconhecível academicamente, melhor para o relatório demonstrar conhecimento de SGBD industrial
 
-Decidir antes de Sem. 7. Actualizar este ADR com a decisão final.
+[//]: # (TODO)
+🟡 **NOTA:**  Decidir antes de Sem. 7. Actualizar este ADR com a decisão final.
 
 ---
 
