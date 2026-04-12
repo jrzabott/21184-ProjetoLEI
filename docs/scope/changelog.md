@@ -16,7 +16,7 @@
 
 ## Sem. 2 · 24–28 mar
 
-**Feito:** Semana de Páscoa. Sessão de planeamento detalhado com Claude: arquitectura em 3 camadas, decisões de design (AD01–AD09), modelação de dados (Note, Interval, Scale, Chord, Exercise, Session, UserScore), contrato de API REST completo.  
+**Feito:** Semana de Páscoa. Sessão de planeamento detalhado com Claude: arquitectura em 3 camadas, decisões de arquitectura (ADR-001 a ADR-011 em rascunho), modelação de dados (Note, Interval, Scale, Chord, Exercise, Session, UserScore), contrato de API REST completo.  
 **Bloqueou:** Nada crítico. Decisão de base de dados de produção (PostgreSQL vs SQLite3) em aberto - OI01.  
 **Próxima semana:** Formalizar requisitos MoSCoW. Preparar documento de handoff para implementação.
 
@@ -24,7 +24,7 @@
 
 ## Sem. 3 · 31 mar–4 abr
 
-**Feito:** Documento de handoff completo: requisitos RF01–RF14, RNF01–RNF08, constraints CB01–CB12, ordem de implementação por fases (0–9), definition of done, open items identificados (OI01–OI08).  
+**Feito:** Documento de handoff completo: requisitos RF01–RF14, RNF01–RNF08, constraints CB01–CB12, ordem de implementação por fases (0–9), definition of done, open items identificados (OI01–OI08 - ver docs/scope/open-items.md).  
 **Bloqueou:** Documentos parciais, dediquei pouco tempo para as tarefas, e muita coisa ficou acumulada para revisão na semana seguinte.  
 **Próxima semana:** Criar repositório GitHub. Preencher documentação do template do orientador e rever rascunhos de ADRs.
 
@@ -32,7 +32,7 @@
 
 ## Sem. 4 · 7–11 abr
 
-**Feito:** Repositório GitHub criado (jrzabott/21184-ProjetoLEI) com estrutura do template do orientador. README, proposta, requisitos, changelog e risks preenchidos. ADRs AD01–AD09 documentados. Repositório enviado ao orientador.  
+**Feito:** Repositório GitHub criado (jrzabott/21184-ProjetoLEI) com estrutura do template do orientador. README, proposta, requisitos, changelog e risks preenchidos. ADRs ADR-001 a ADR-011 documentados. Repositório enviado ao orientador.  
 **Bloqueou:** Nada.  
 **Próxima semana:** Setup Spring Boot (Fase 0). Criar projecto Maven, configurar H2, verificar arranque. Início do modelo de domínio (Fase 1).
 
