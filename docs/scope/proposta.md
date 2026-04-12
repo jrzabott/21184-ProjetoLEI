@@ -102,7 +102,7 @@ Se o utilizador acertar mais de 80% dos últimos 10 exercícios do mesmo tipo, o
 |---------|-------|------------------|-------|
 | Sem. 1–2 | 17–28 mar | Kick-off com orientador. Proposta: sinopse, MVP com critérios de aceitação, stack, C4 nível 1. | **Proposta (25 mar) ✅** |
 | Sem. 3–4 | 31 mar–11 abr | Levantamento de requisitos MoSCoW. Definição completa da API. Modelação de dados. Configuração do repositório GitHub com estrutura completa. | |
-| Sem. 5–6 | 14–25 abr | Fase 0–2: Setup Spring Boot, modelo de domínio Java (Note, Interval, Scale, Chord), testes unitários, entidades JPA. ADRs das decisões principais. | |
+| Sem. 5–6 | 14–25 abr | Fase 0–2: Setup Spring Boot, modelo de domínio Java (Note, Interval, Scale, Chord), testes unitários, schema SQL + DAOs com JDBC. ADRs das decisões principais. | |
 | Sem. 7 | 28 abr–2 mai | Fase 3–4: Geradores de exercícios, REST Controllers. Demo interna ao orientador: backend funcional com todos os endpoints testados via curl. | **Demo interna** |
 | Sem. 8 | 5–6 mai | Relatório intercalar: Cap. 1 e Cap. 2 completos (arquitectura C4 nível 1+2, modelo de dados, ADRs). Cap. 3: estado de implementação. | **Intercalar (6 mai)** |
 | Sem. 9–10 | 7–16 mai | Fase 5–6: Frontend — teclado virtual com som (Web Audio API), input MIDI, ecrã de exercício activo com fluxo completo. | |

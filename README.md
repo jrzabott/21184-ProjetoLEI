@@ -33,7 +33,7 @@
 
 - [ ] Setup Spring Boot + estrutura de packages — **próximo passo**
 - [ ] Modelo de domínio Java (Fase 1)
-- [ ] Entidades JPA e repositórios (Fase 2)
+- [ ] Schema SQL + DAO classes com JDBC (Fase 2)
 - [ ] Geradores de exercícios (Fase 3)
 - [ ] REST Controllers (Fase 4)
 - [ ] Frontend: teclado virtual (Fase 5)
@@ -94,6 +94,7 @@ Para detalhe completo: `docs/architecture/adr/`
 ### Referências técnicas
 
 - Spring Boot — https://spring.io/projects/spring-boot
+- Spring JDBC (JdbcTemplate) — https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
 - Web Audio API — https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
 - Web MIDI API — https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
 - C4 Model — https://c4model.com

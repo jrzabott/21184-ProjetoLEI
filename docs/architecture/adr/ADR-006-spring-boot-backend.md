@@ -14,7 +14,7 @@ O backend necessita de expor uma API REST, gerir persistência em base de dados 
 
 ## Decisão
 
-O backend é implementado em **Java 21** com **Spring Boot** (versão estável mais recente). Dependências: Spring Web (REST), Spring Data JPA (persistência), H2 (base de dados em desenvolvimento). Package raiz: `pt.uab.musicaltrainer`.
+O backend é implementado em **Java 21** com **Spring Boot** (versão estável mais recente). Dependências: Spring Web (REST), Spring JDBC / `JdbcTemplate` (persistência via DAOs — ver ADR-010), H2 (base de dados em desenvolvimento). Package raiz: `pt.uab.musicaltrainer`.
 
 ---
 
@@ -34,7 +34,7 @@ O backend é implementado em **Java 21** com **Spring Boot** (versão estável m
 **Positivas:**
 - O estudante maximiza qualidade do código backend — é o seu terreno de conforto
 - Spring Boot minimiza configuração (auto-configuration, embedded Tomcat)
-- JPA + H2 permite arrancar sem instalar base de dados
+- Spring JDBC + H2 permite arrancar sem instalar base de dados; schema criado via `schema.sql`
 - Ecossistema extenso — qualquer decisão tem documentação e exemplos disponíveis
 
 **Negativas / trade-offs:**
