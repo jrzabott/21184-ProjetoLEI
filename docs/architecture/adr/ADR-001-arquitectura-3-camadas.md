@@ -20,10 +20,10 @@ A aplicação é dividida em três camadas separadas e independentes: **Frontend
 
 ## Alternativas consideradas
 
-| Alternativa | Razão de rejeição |
-|------------|------------------|
-| Monolito com templates server-side (Thymeleaf) | Mistura frontend e backend - dificulta avaliação independente de cada camada. A separação HTML/JS puro + API REST tem maior valor académico demonstrável. |
-| Arquitectura de microserviços | Overhead de complexidade desproporcional ao scope. Um serviço com API REST bem estruturado é suficiente e mais defensável. |
+| Alternativa | Razão de rejeição                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Monolito com templates server-side (Thymeleaf) | Mistura frontend e backend - dificulta avaliação independente de cada camada. A separação HTML/JS puro + API REST agregam valor. <br> Ademais, favorecem uma clara separação entre backend e frontend, permitindo que o desenvolvimento ocorra em simultâneo sem a necessidade de, em caso de problemas, um módulo depender de outro. <br> Pode mesmo favorecer em termos de escalabilidade se necessário mais do que uma simples instância por vez. |
+| Arquitectura de microserviços | Overhead de complexidade desproporcional ao âmbito deste projeto.<br> Um serviço com API REST bem estruturado é suficiente e mais simples de denfender.                                                                                                                                                                                                                                                                                   |
 
 ---
 
@@ -32,9 +32,10 @@ A aplicação é dividida em três camadas separadas e independentes: **Frontend
 **Positivas:**
 - Cada camada pode ser avaliada e testada independentemente pelo júri
 - Separação clara de responsabilidades facilita documentação no relatório
-- Frontend e backend podem ser desenvolvidos em paralelo se necessário
+- Frontend e backend podem ser desenvolvidos em paralelo se necessário (e principalmente, em caso de problemas que bloqueiem o avanço. Suítes de tests em separado)
 - Extensível: futura adição de mobile app ou CLI não exige alterar o backend
 
 **Negativas / trade-offs:**
-- Necessidade de configurar CORS no backend para aceitar requests do frontend local
+- **(PENDENTE -** *necessário?***)** Necessidade de configurar CORS (Cross-Origin Resource Sharing) no backend para aceitar requests do frontend local
 - Ligeiramente mais código boilerplate do que um monolito integrado
+- Partilha de modelo de dados entre frontend e backend pode ser mais complexa (pode vir a ser mitigada por DTOs e documentação/contratos clara/os)
