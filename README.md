@@ -102,6 +102,9 @@ Classe Note implementada com conversão MIDI para notação musical (C4, D#4, et
 **Task 1.3 - Modelo de Domínio (Interval)**
 Classe Interval implementada para identificação de intervalos musicais. Factory estático `Interval.between(Note, Note)` calcula distância em semítoms e mapeia para nome completo (Uníssono, 2ª Menor/Maior, 5ª Perfeita, Oitava Perfeita, etc). 10 testes cobrindo todos intervalos até oitava, incluindo casos descendentes. TDD aplicado - IntervalTest escrito e falhado antes da implementação.
 
+**Task 1.4 - Modelo de Domínio (Scale)**
+Classe Scale implementada com suporte para 6 tipos de escalas: MAJOR, MINOR_NATURAL, HARMONIC_MINOR, DORIAN, PENTATONIC_MINOR, BLUES. Factory estático `Scale.get(type, root)` gera notas usando padrões de semítons (interval patterns). 8 testes cobrindo diferentes escalas e raízes, incluindo diferenças entre tipos. TDD aplicado - testes escritos antes da implementação.
+
 ---
 
 *Última actualização: 2026-04-24 · Sem. 5*
