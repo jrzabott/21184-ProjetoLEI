@@ -89,4 +89,16 @@ Para detalhe completo: `docs/architecture/adr/`
 
 ---
 
-*Última actualização: 2026-04-12 · Sem. 4*
+## Changelog
+
+### 2026-04-24 · Sem. 5
+
+**Task 1.1 - Setup Spring Boot** 
+Spring Boot 3.3.0 configurado com Java 21 e Maven 3.9.15. Package base `pt.uab.musicaltrainer` criado, aplicação arranca sem erros. Schema SQL definido com tabelas para exercises, sessions, results. H2 em memória para desenvolvimento. `mvn clean test` passa, build sucesso.
+
+**Task 1.2 - Modelo de Domínio (Note)**
+Classe Note implementada com conversão MIDI para notação musical (C4, D#4, etc). Static cache de 128 notas (C-1 a G9) - O(1) lookups. Métodos: `fromMidi(int)`, `getName()`, `getOctave()`, `getMidiNumber()`. 7 testes, todos passing. TDD aplicado - testes escritos antes da implementação.
+
+---
+
+*Última actualização: 2026-04-24 · Sem. 5*
