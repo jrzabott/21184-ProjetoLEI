@@ -487,4 +487,69 @@ class ScaleTest {
         Scale doubleHarmonic = Scale.get("DOUBLE_HARMONIC_MAJOR", c4);
         assertThat(byzantine.getNotes()).isEqualTo(doubleHarmonic.getNotes());
     }
+
+    // Value object equality tests
+    @Test
+    void shouldBeEqualWhenTypeAndRootMatch() {
+        Note c4 = Note.fromMidi(60);
+        Scale major1 = Scale.get("MAJOR", c4);
+        Scale major2 = Scale.get("MAJOR", c4);
+        assertThat(major1).isEqualTo(major2);
+    }
+
+    @Test
+    void shouldNotBeEqualWhenTypesDiffer() {
+        Note c4 = Note.fromMidi(60);
+        Scale major = Scale.get("MAJOR", c4);
+        Scale minor = Scale.get("MINOR_NATURAL", c4);
+        assertThat(major).isNotEqualTo(minor);
+    }
+
+    @Test
+    void shouldNotBeEqualWhenRootsDiffer() {
+        Note c4 = Note.fromMidi(60);
+        Note d4 = Note.fromMidi(62);
+        Scale cMajor = Scale.get("MAJOR", c4);
+        Scale dMajor = Scale.get("MAJOR", d4);
+        assertThat(cMajor).isNotEqualTo(dMajor);
+    }
+
+    @Test
+    void shouldHaveSameHashCodeWhenEqual() {
+        Note c4 = Note.fromMidi(60);
+        Scale major1 = Scale.get("MAJOR", c4);
+        Scale major2 = Scale.get("MAJOR", c4);
+        assertThat(major1.hashCode()).isEqualTo(major2.hashCode());
+    }
+
+    @Test
+    void shouldBeUsableInHashBasedCollections() {
+        Note c4 = Note.fromMidi(60);
+        Note d4 = Note.fromMidi(62);
+        Scale cMajor = Scale.get("MAJOR", c4);
+        Scale dMajor = Scale.get("MAJOR", d4);
+
+        java.util.Set<Scale> scaleSet = new java.util.HashSet<>();
+        scaleSet.add(cMajor);
+        scaleSet.add(dMajor);
+        scaleSet.add(cMajor);  // duplicate
+
+        assertThat(scaleSet).hasSize(2);  // duplicate not added
+        assertThat(scaleSet).contains(cMajor, dMajor);
+    }
+
+    @Test
+    void shouldNotBeEqualToNull() {
+        Note c4 = Note.fromMidi(60);
+        Scale major = Scale.get("MAJOR", c4);
+        assertThat(major).isNotEqualTo(null);
+    }
+
+    @Test
+    void shouldNotBeEqualToDifferentType() {
+        Note c4 = Note.fromMidi(60);
+        Scale major = Scale.get("MAJOR", c4);
+        assertThat(major).isNotEqualTo("MAJOR");
+        assertThat(major).isNotEqualTo(c4);
+    }
 }
