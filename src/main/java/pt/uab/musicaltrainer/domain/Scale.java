@@ -5,7 +5,20 @@ import java.util.List;
 
 /**
  * Representa uma escala musical.
- * Imutável. Gerada a partir de uma nota raiz e tipo de escala (Maior, Menor, etc.).
+ * <p>
+ * Value object imutável definido por dois componentes: tipo de escala (MAJOR, MINOR_NATURAL, etc.)
+ * e nota raiz. Duas escalas com o mesmo tipo e raiz são semanticamente equivalentes.
+ * <p>
+ * <b>Comparação e igualdade:</b> Scale implementa equals() e hashCode() baseados em type e root.
+ * Isto permite comparação confiável entre escalas e uso em coleções hash-based (Set, HashMap).
+ * As notas são derivadas dos componentes (type + root), logo não influenciam igualdade.
+ * <p>
+ * <b>Uso em persistência:</b> Atualmente, escalas geram exercícios cujas respostas são serializadas
+ * como strings (nota por nota). No futuro, metadados de escala (tipo, raiz) podem ser armazenados
+ * em resultados para análise de padrões de erro. A igualdade confiável permite comparação segura.
+ * <p>
+ * Suporta 25+ tipos de escalas: modos diatónicos, menores alteradas, simétricas, harmónicas,
+ * pentatónicas. Aliases (ex: IONIAN=MAJOR) partilham os mesmos intervalos via constructor overloading.
  *
  * @author Daniel Junior
  */
@@ -137,6 +150,13 @@ public final class Scale {
         return notes;
     }
 
+    /**
+     * Compara escalas por value object: igualdade quando type e root coincidem.
+     * <p>
+     * Notas NÃO influenciam igualdade; são derivadas determinísticamente de (type + root).
+     * Assim, Scale.get("MAJOR", C4).equals(Scale.get("MAJOR", C4)) == true,
+     * mesmo que sejam instâncias diferentes.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -145,6 +165,10 @@ public final class Scale {
         return type.equals(scale.type) && root.equals(scale.root);
     }
 
+    /**
+     * Hash code baseado em type e root, consistente com equals().
+     * Permite uso seguro em Set<Scale> e como chave em Map<Scale, V>.
+     */
     @Override
     public int hashCode() {
         return java.util.Objects.hash(type, root);
