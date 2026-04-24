@@ -99,6 +99,9 @@ Spring Boot 3.3.0 configurado com Java 21 e Maven 3.9.15. Package base `pt.uab.m
 **Task 1.2 - Modelo de Domínio (Note)**
 Classe Note implementada com conversão MIDI para notação musical (C4, D#4, etc). Static cache de 128 notas (C-1 a G9) - O(1) lookups. Métodos: `fromMidi(int)`, `getName()`, `getOctave()`, `getMidiNumber()`. 7 testes, todos passing. TDD aplicado - testes escritos antes da implementação.
 
+**Task 1.3 - Modelo de Domínio (Interval)**
+Classe Interval implementada para identificação de intervalos musicais. Factory estático `Interval.between(Note, Note)` calcula distância em semítoms e mapeia para nome completo (Uníssono, 2ª Menor/Maior, 5ª Perfeita, Oitava Perfeita, etc). 10 testes cobrindo todos intervalos até oitava, incluindo casos descendentes. TDD aplicado - IntervalTest escrito e falhado antes da implementação.
+
 ---
 
 *Última actualização: 2026-04-24 · Sem. 5*
