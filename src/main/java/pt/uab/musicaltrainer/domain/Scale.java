@@ -138,6 +138,19 @@ public final class Scale {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Scale scale = (Scale) o;
+        return type.equals(scale.type) && root.equals(scale.root);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(type, root);
+    }
+
+    @Override
     public String toString() {
         return getType() + " scale starting from " + getRoot().getName();
     }
