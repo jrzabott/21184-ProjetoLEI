@@ -24,7 +24,7 @@ public final class Scale {
     /**
      * Cria uma escala a partir de uma nota raiz e tipo.
      *
-     * @param scaleType tipo de escala (MAJOR, MINOR_NATURAL, HARMONIC_MINOR, DORIAN, PENTATONIC_MINOR, BLUES)
+     * @param scaleType tipo de escala
      * @param root nota raiz da escala
      * @return escala gerada
      */
@@ -39,15 +39,66 @@ public final class Scale {
      * Os valores são as distâncias em semítons a partir da nota raiz.
      */
     private static int[] getIntervalPattern(String scaleType) {
-        return switch (scaleType) {
-            case "MAJOR" -> new int[]{0, 2, 4, 5, 7, 9, 11};
-            case "MINOR_NATURAL" -> new int[]{0, 2, 3, 5, 7, 8, 10};
-            case "HARMONIC_MINOR" -> new int[]{0, 2, 3, 5, 7, 8, 11};
-            case "DORIAN" -> new int[]{0, 2, 3, 5, 7, 9, 10};
-            case "PENTATONIC_MINOR" -> new int[]{0, 3, 5, 7, 10};
-            case "BLUES" -> new int[]{0, 3, 5, 6, 7, 10};
-            default -> throw new IllegalArgumentException("Tipo de escala desconhecido: " + scaleType);
-        };
+        return ScaleType.valueOf(scaleType).getIntervals();
+    }
+
+    private enum ScaleType {
+        // Família das escalas maiores diatónicas
+        MAJOR(new int[]{0, 2, 4, 5, 7, 9, 11}),
+        IONIAN(MAJOR),
+
+        // Família das escalas menores diatónicas
+        MINOR_NATURAL(new int[]{0, 2, 3, 5, 7, 8, 10}),
+        AEOLIAN(MINOR_NATURAL),
+        HARMONIC_MINOR(new int[]{0, 2, 3, 5, 7, 8, 11}),
+        MELODIC_MINOR(new int[]{0, 2, 3, 5, 7, 9, 11}),
+
+        // Modos derivados da escala diatónica
+        DORIAN(new int[]{0, 2, 3, 5, 7, 9, 10}),
+        PHRYGIAN(new int[]{0, 1, 3, 5, 7, 8, 10}),
+        LYDIAN(new int[]{0, 2, 4, 6, 7, 9, 11}),
+        MIXOLYDIAN(new int[]{0, 2, 4, 5, 7, 9, 10}),
+        LOCRIAN(new int[]{0, 1, 3, 5, 6, 8, 10}),
+
+        // Variantes menores e cores dominantes alteradas
+        PHRYGIAN_DOMINANT(new int[]{0, 1, 4, 5, 7, 8, 10}),
+        LYDIAN_DOMINANT(new int[]{0, 2, 4, 6, 7, 9, 10}),
+        DORIAN_FLAT_2(new int[]{0, 1, 3, 5, 7, 9, 10}),
+        LOCRIAN_NATURAL_2(new int[]{0, 2, 3, 5, 6, 8, 10}),
+        ALTERED(new int[]{0, 1, 3, 4, 6, 8, 10}),
+        SUPER_LOCRIAN(ALTERED),
+
+        // Escalas pentatónicas e blues
+        PENTATONIC_MAJOR(new int[]{0, 2, 4, 7, 9}),
+        PENTATONIC_MINOR(new int[]{0, 3, 5, 7, 10}),
+        BLUES(new int[]{0, 3, 5, 6, 7, 10}),
+        MINOR_BLUES(BLUES),
+
+        // Escalas simétricas
+        CHROMATIC(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}),
+        WHOLE_TONE(new int[]{0, 2, 4, 6, 8, 10}),
+        HALF_WHOLE_OCTATONIC(new int[]{0, 1, 3, 4, 6, 7, 9, 10}),
+        WHOLE_HALF_OCTATONIC(new int[]{0, 2, 3, 5, 6, 8, 9, 11}),
+
+        // Família da escala maior harmónica
+        HARMONIC_MAJOR(new int[]{0, 2, 4, 5, 7, 8, 11}),
+        DOUBLE_HARMONIC_MAJOR(new int[]{0, 1, 4, 5, 7, 8, 11}),
+        BYZANTINE(DOUBLE_HARMONIC_MAJOR),
+        ;
+
+        private final int[] intervals;
+
+        ScaleType(int[] intervals) {
+            this.intervals = intervals;
+        }
+
+        ScaleType(ScaleType aliasOf) {
+            this.intervals = aliasOf.intervals;
+        }
+
+        public int[] getIntervals() {
+            return intervals;
+        }
     }
 
     /**
@@ -88,6 +139,6 @@ public final class Scale {
 
     @Override
     public String toString() {
-        return type + " scale starting from " + root.getName();
+        return getType() + " scale starting from " + getRoot().getName();
     }
 }
