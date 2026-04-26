@@ -36,11 +36,15 @@ public abstract class AbstractDao<T> {
         logger.debug("Executando queryForObject com SQL: {}", sql);
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            logger.debug("Vinculando parâmetros ao PreparedStatement");
             setter.setParameters(ps);
+            logger.debug("Parâmetros vinculados com sucesso, executando query");
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    logger.debug("Resultado encontrado, mapeando para objeto");
                     return Optional.of(mapper.mapRow(rs));
                 }
+                logger.debug("Nenhum resultado encontrado");
             }
         }
         return Optional.empty();
@@ -59,11 +63,14 @@ public abstract class AbstractDao<T> {
         List<T> results = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            logger.debug("Vinculando parâmetros ao PreparedStatement");
             setter.setParameters(ps);
+            logger.debug("Parâmetros vinculados com sucesso, executando query");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     results.add(mapper.mapRow(rs));
                 }
+                logger.debug("Query concluída, {} registros retornados", results.size());
             }
         }
         return results;
