@@ -1,0 +1,58 @@
+package pt.uab.musicaltrainer.domain;
+
+/**
+ * Tipos de acordes musicais com padrões de semítons.
+ * <p>
+ * Enum que define todos os tipos de acordes suportados (atualmente tríades)
+ * e seus padrões de intervalos. Os valores são as distâncias em semítons
+ * a partir da nota raiz.
+ * <p>
+ * Suportados:
+ * - MAJOR: raiz + terça maior (4 semítons) + quinta perfeita (7 semítons)
+ * - MINOR: raiz + terça menor (3 semítons) + quinta perfeita (7 semítons)
+ * - DIMINISHED: raiz + terça menor (3 semítons) + quinta diminuta (6 semítons)
+ * - AUGMENTED: raiz + terça maior (4 semítons) + quinta aumentada (8 semítons)
+ * <p>
+ * Futuras expansões: inversões (1ª, 2ª), acordes estendidos (7, maj7, etc).
+ * Ver OI09 em docs/scope/requirements.md para plano de evolução.
+ *
+ * @author Daniel Junior
+ */
+public enum ChordType {
+    /**
+     * Acorde Maior: raiz, terça maior, quinta perfeita.
+     * Intervalos: +0, +4, +7 semítons.
+     */
+    MAJOR(new int[]{0, 4, 7}),
+
+    /**
+     * Acorde Menor: raiz, terça menor, quinta perfeita.
+     * Intervalos: +0, +3, +7 semítons.
+     */
+    MINOR(new int[]{0, 3, 7}),
+
+    /**
+     * Acorde Diminuto: raiz, terça menor, quinta diminuta.
+     * Intervalos: +0, +3, +6 semítons.
+     */
+    DIMINISHED(new int[]{0, 3, 6}),
+
+    /**
+     * Acorde Aumentado: raiz, terça maior, quinta aumentada.
+     * Intervalos: +0, +4, +8 semítons.
+     */
+    AUGMENTED(new int[]{0, 4, 8});
+
+    private final int[] intervals;
+
+    ChordType(int[] intervals) {
+        this.intervals = intervals;
+    }
+
+    /**
+     * Retorna o padrão de semítons para este tipo de acorde.
+     */
+    public int[] getIntervals() {
+        return intervals;
+    }
+}
