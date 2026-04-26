@@ -6,17 +6,23 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DAO para Sessão de Treino.
  */
 public class SessionDao extends AbstractDao<SessionRecord> {
+    private static final Logger logger = LoggerFactory.getLogger(SessionDao.class);
+
     public SessionDao(DataSource dataSource) {
         super(dataSource);
     }
 
     public SessionRecord save(SessionRecord session) throws SQLException {
         String sql = "INSERT INTO sessions (start_time, end_time, total_exercises, correct_answers, incorrect_answers) VALUES (?, ?, ?, ?, ?)";
+        logger.debug("Salvando nova sessão: startTime={}, endTime={}, totalExercises={}, correctAnswers={}, incorrectAnswers={}",
+            session.startTime(), session.endTime(), session.totalExercises(), session.correctAnswers(), session.incorrectAnswers());
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -25,13 +31,17 @@ public class SessionDao extends AbstractDao<SessionRecord> {
             ps.setInt(3, session.totalExercises());
             ps.setInt(4, session.correctAnswers());
             ps.setInt(5, session.incorrectAnswers());
+            logger.debug("Parâmetros vinculados, executando INSERT");
             ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
             if (keys.next()) {
-                return findById(keys.getLong(1)).orElse(null);
+                long newId = keys.getLong(1);
+                logger.info("Sessão salva com sucesso, ID gerado: {}", newId);
+                return findById(newId).orElse(null);
             }
         }
+        logger.warn("Falha ao recuperar ID gerado para nova sessão");
         return null;
     }
 
@@ -42,6 +52,8 @@ public class SessionDao extends AbstractDao<SessionRecord> {
 
     public SessionRecord update(SessionRecord session) throws SQLException {
         String sql = "UPDATE sessions SET start_time = ?, end_time = ?, total_exercises = ?, correct_answers = ?, incorrect_answers = ? WHERE id = ?";
+        logger.debug("Atualizando sessão ID={}: startTime={}, endTime={}, totalExercises={}, correctAnswers={}, incorrectAnswers={}",
+            session.id(), session.startTime(), session.endTime(), session.totalExercises(), session.correctAnswers(), session.incorrectAnswers());
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,7 +63,9 @@ public class SessionDao extends AbstractDao<SessionRecord> {
             ps.setInt(4, session.correctAnswers());
             ps.setInt(5, session.incorrectAnswers());
             ps.setLong(6, session.id());
-            ps.executeUpdate();
+            logger.debug("Parâmetros vinculados, executando UPDATE para ID={}", session.id());
+            int rowsAffected = ps.executeUpdate();
+            logger.info("Sessão ID={} atualizada com sucesso, {} linhas afetadas", session.id(), rowsAffected);
         }
         return session;
     }
