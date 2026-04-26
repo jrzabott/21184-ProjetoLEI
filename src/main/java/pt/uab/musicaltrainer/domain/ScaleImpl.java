@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Daniel Junior
  */
-final class ScaleImpl implements Scale {
+final class ScaleImpl implements Scale, NoteGenerator {
 
     private final String type;
     private final Note root;
@@ -43,7 +43,8 @@ final class ScaleImpl implements Scale {
      */
     static Scale get(String scaleType, Note root) {
         int[] intervals = getIntervalPattern(scaleType);
-        List<Note> notes = generateNotes(root, intervals);
+        ScaleImpl scaleImpl = new ScaleImpl(scaleType, root, new ArrayList<>());
+        List<Note> notes = scaleImpl.generateNotes(root, intervals);
         return new ScaleImpl(scaleType, root, notes);
     }
 
@@ -55,20 +56,6 @@ final class ScaleImpl implements Scale {
         return ScaleType.valueOf(scaleType).getIntervals();
     }
 
-    /**
-     * Gera as notas da escala aplicando os intervalos à nota raiz.
-     */
-    private static List<Note> generateNotes(Note root, int[] intervals) {
-        List<Note> result = new ArrayList<>();
-        int rootMidi = root.getMidiNumber();
-
-        for (int interval : intervals) {
-            int noteMidi = rootMidi + interval;
-            result.add(Note.fromMidi(noteMidi));
-        }
-
-        return result;
-    }
 
     /**
      * Retorna o tipo da escala.

@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Daniel Junior
  */
-final class ChordImpl implements Chord {
+final class ChordImpl implements Chord, NoteGenerator {
 
     private final String type;
     private final Note root;
@@ -44,7 +44,8 @@ final class ChordImpl implements Chord {
      */
     static Chord get(String chordType, Note root) {
         int[] intervals = getIntervalPattern(chordType);
-        List<Note> notes = generateNotes(root, intervals);
+        ChordImpl chordImpl = new ChordImpl(chordType, root, new ArrayList<>());
+        List<Note> notes = chordImpl.generateNotes(root, intervals);
         return new ChordImpl(chordType, root, notes);
     }
 
@@ -56,20 +57,6 @@ final class ChordImpl implements Chord {
         return ChordType.valueOf(chordType).getIntervals();
     }
 
-    /**
-     * Gera as notas do acorde aplicando os intervalos à nota raiz.
-     */
-    private static List<Note> generateNotes(Note root, int[] intervals) {
-        List<Note> result = new ArrayList<>();
-        int rootMidi = root.getMidiNumber();
-
-        for (int interval : intervals) {
-            int noteMidi = rootMidi + interval;
-            result.add(Note.fromMidi(noteMidi));
-        }
-
-        return result;
-    }
 
     /**
      * Retorna o tipo do acorde.
