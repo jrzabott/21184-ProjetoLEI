@@ -105,6 +105,9 @@ Classe Interval implementada para identificação de intervalos musicais. Factor
 **Task 1.4 - Modelo de Domínio (Scale)**
 Classe Scale implementada com suporte para 6 tipos de escalas: MAJOR, MINOR_NATURAL, HARMONIC_MINOR, DORIAN, PENTATONIC_MINOR, BLUES. Factory estático `Scale.get(type, root)` gera notas usando padrões de semítons (interval patterns). 8 testes cobrindo diferentes escalas e raízes, incluindo diferenças entre tipos. TDD aplicado - testes escritos antes da implementação.
 
+**Task 1.5 - Modelo de Domínio (Chord)**
+Classe Chord implementada com suporte para 4 tipos de tríades: MAJOR, MINOR, DIMINISHED, AUGMENTED. Factory estático `Chord.get(type, root)` gera notas usando padrões de semítons. Value object com equals()/hashCode() para comparação confiável. 13 testes cobrindo todos tipos de tríades, diferenciação entre tipos e raízes, igualdade, e uso em coleções hash-based. TDD aplicado - testes escritos antes da implementação.
+
 ---
 
 *Última actualização: 2026-04-24 · Sem. 5*
