@@ -9,7 +9,6 @@ import java.util.Optional;
 
 /**
  * DAO para Resultado de Exercício.
- * JDBC puro com SQL hardcoded (sem Spring Data JPA).
  */
 public class ResultDao extends AbstractDao<ResultRecord> {
     public ResultDao(DataSource dataSource) {

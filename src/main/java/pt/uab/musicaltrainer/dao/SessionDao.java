@@ -9,7 +9,6 @@ import java.util.Optional;
 
 /**
  * DAO para Sessão de Treino.
- * JDBC puro com SQL hardcoded (sem Spring Data JPA).
  */
 public class SessionDao extends AbstractDao<SessionRecord> {
     public SessionDao(DataSource dataSource) {
