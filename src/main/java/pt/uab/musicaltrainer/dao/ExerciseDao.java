@@ -4,19 +4,16 @@ import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Exercise Data Access Object.
- * Plain JDBC with hardcoded SQL statements.
+ * DAO para Exercício.
+ * JDBC puro com SQL hardcoded (sem Spring Data JPA).
  */
-public class ExerciseDao {
-    private final DataSource dataSource;
-
+public class ExerciseDao extends AbstractDao<ExerciseRecord> {
     public ExerciseDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     public ExerciseRecord save(ExerciseRecord exercise) throws SQLException {
@@ -40,45 +37,17 @@ public class ExerciseDao {
 
     public Optional<ExerciseRecord> findById(Long id) throws SQLException {
         String sql = "SELECT id, type, difficulty, question, correct_answer, created_at FROM exercises WHERE id = ?";
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return Optional.of(mapRow(rs));
-            }
-        }
-        return Optional.empty();
+        return queryForObject(sql, ps -> ps.setLong(1, id), this::mapRow);
     }
 
     public List<ExerciseRecord> findByType(String type) throws SQLException {
         String sql = "SELECT id, type, difficulty, question, correct_answer, created_at FROM exercises WHERE type = ? ORDER BY created_at DESC";
-        List<ExerciseRecord> exercises = new ArrayList<>();
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, type);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                exercises.add(mapRow(rs));
-            }
-        }
-        return exercises;
+        return queryForList(sql, ps -> ps.setString(1, type), this::mapRow);
     }
 
     public List<ExerciseRecord> findAll() throws SQLException {
         String sql = "SELECT id, type, difficulty, question, correct_answer, created_at FROM exercises ORDER BY created_at DESC";
-        List<ExerciseRecord> exercises = new ArrayList<>();
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                exercises.add(mapRow(rs));
-            }
-        }
-        return exercises;
+        return queryForList(sql, this::mapRow);
     }
 
     private ExerciseRecord mapRow(ResultSet rs) throws SQLException {

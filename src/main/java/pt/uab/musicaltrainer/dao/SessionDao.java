@@ -4,19 +4,16 @@ import pt.uab.musicaltrainer.dto.SessionRecord;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Session Data Access Object.
- * Plain JDBC with hardcoded SQL statements.
+ * DAO para Sessão de Treino.
+ * JDBC puro com SQL hardcoded (sem Spring Data JPA).
  */
-public class SessionDao {
-    private final DataSource dataSource;
-
+public class SessionDao extends AbstractDao<SessionRecord> {
     public SessionDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     public SessionRecord save(SessionRecord session) throws SQLException {
@@ -41,16 +38,7 @@ public class SessionDao {
 
     public Optional<SessionRecord> findById(Long id) throws SQLException {
         String sql = "SELECT id, start_time, end_time, total_exercises, correct_answers, incorrect_answers, created_at FROM sessions WHERE id = ?";
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return Optional.of(mapRow(rs));
-            }
-        }
-        return Optional.empty();
+        return queryForObject(sql, ps -> ps.setLong(1, id), this::mapRow);
     }
 
     public SessionRecord update(SessionRecord session) throws SQLException {
@@ -71,16 +59,7 @@ public class SessionDao {
 
     public List<SessionRecord> findAll() throws SQLException {
         String sql = "SELECT id, start_time, end_time, total_exercises, correct_answers, incorrect_answers, created_at FROM sessions ORDER BY created_at DESC";
-        List<SessionRecord> sessions = new ArrayList<>();
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                sessions.add(mapRow(rs));
-            }
-        }
-        return sessions;
+        return queryForList(sql, this::mapRow);
     }
 
     private SessionRecord mapRow(ResultSet rs) throws SQLException {
