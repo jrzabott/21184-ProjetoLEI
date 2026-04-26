@@ -196,6 +196,15 @@ public record ResultRecord(
 - **Fase 4 (Controllers):** Controllers injectam DAOs, usam para `GET /api/progress`, `POST /api/sessions/start`, etc.
 - **Testes:** Testes de integração criam DataSource (via `@SpringBootTest` H2), injectam em DAOs, testam operações reais
 
+## Histórico de Exercícios para Dificuldade Adaptativa
+
+O schema suporta rastreamento ilimitado de exercícios por sessão. Para implementar dificuldade adaptativa (F09), o gerador consulta `ResultDao.findBySessionId()` e calcula estatísticas sobre os **últimos 100 exercícios** do mesmo tipo:
+
+- Se acertos ≥ 80% → incrementa difficulty
+- Se acertos < 40% → decrementa difficulty
+
+O limite de 100 exercícios (vs. 10 na proposta) permite estatísticas mais significativas e evita oscilação de dificuldade por variância aleatória em pequenas amostras.
+
 ---
 
 **Status:** ✅ Pronto para Fase 3  
