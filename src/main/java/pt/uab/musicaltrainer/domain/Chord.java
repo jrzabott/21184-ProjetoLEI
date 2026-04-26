@@ -52,13 +52,7 @@ public final class Chord {
      * Os valores são as distâncias em semítons a partir da nota raiz.
      */
     private static int[] getIntervalPattern(String chordType) {
-        return switch (chordType) {
-            case "MAJOR" -> new int[]{0, 4, 7};           // raiz, major 3rd, perfect 5th
-            case "MINOR" -> new int[]{0, 3, 7};           // raiz, minor 3rd, perfect 5th
-            case "DIMINISHED" -> new int[]{0, 3, 6};      // raiz, minor 3rd, diminished 5th
-            case "AUGMENTED" -> new int[]{0, 4, 8};       // raiz, major 3rd, augmented 5th
-            default -> throw new IllegalArgumentException("Tipo de acorde desconhecido: " + chordType);
-        };
+        return ChordType.valueOf(chordType).getIntervals();
     }
 
     /**
