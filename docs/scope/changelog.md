@@ -48,9 +48,9 @@
 
 ## Sem. 6 · 22–25 abr
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** (26 abr) Phase 2 Persistência: DTOs (SessionRecord, ExerciseRecord, ResultRecord). DAOs com JDBC puro: SessionDao, ExerciseDao, ResultDao. 24 testes de integração. ADR-012 (data model + persistence strategy).  
+**Bloqueou:** -  
+**Próxima semana:** Phase 3 (Geradores de exercícios), Phase 4 (REST Controllers)
 
 ---
 

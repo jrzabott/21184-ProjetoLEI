@@ -34,7 +34,7 @@
 
 - **RF04** - O utilizador deve poder responder através de um controlador MIDI físico ligado por USB.
 - **RF08** - A aplicação deve apresentar um dashboard com métricas de progresso: taxa de acerto por tipo de exercício, evolução ao longo do tempo, padrões de erro.
-- **RF09** - A dificuldade dos exercícios deve ajustar-se automaticamente com base no desempenho recente (>80% sobe, <40% desce).
+- **RF09** - A dificuldade dos exercícios deve ajustar-se automaticamente com base no desempenho recente. Algoritmo: analisar os últimos 100 exercícios completados do mesmo tipo; se taxa de acerto >= 80%, incrementar dificuldade (+1); se taxa de acerto < 40%, decrementar (-1); caso contrário, manter. (Nota: limite de 100 exercícios em vez de 10 permite estatísticas mais significativas e evita oscilação de dificuldade por variância em amostras pequenas.)
 - **RF12** - O sistema deve detectar automaticamente um controlador MIDI físico ligado via Web MIDI API, sem configuração manual.
 
 ### Could have
