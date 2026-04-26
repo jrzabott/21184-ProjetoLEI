@@ -48,9 +48,9 @@
 
 ## Sem. 6 · 22–25 abr
 
-**Feito:** (26 abr) Phase 2 Persistência: DTOs (SessionRecord, ExerciseRecord, ResultRecord). DAOs com JDBC puro: SessionDao, ExerciseDao, ResultDao. 24 testes de integração. ADR-012 (data model + persistence strategy). OI01 (Opção de BD de produção): Strategy + Factory patterns, suporte multi-BD (H2, SQLite, PostgreSQL), DataSourceConfig, testes de integração.  
+**Feito:** (26 abr) Phase 2 Persistência: DTOs (SessionRecord, ExerciseRecord, ResultRecord). DAOs com JDBC puro: SessionDao, ExerciseDao, ResultDao. 24 testes de integração. ADR-012 (data model + persistence strategy). OI01 (Opção de BD de produção): Strategy + Factory patterns, suporte multi-BD (H2, SQLite, PostgreSQL), DataSourceConfig, testes de integração. DaoFactory para criação de DAOs com DataSource selecionada, logging de entradas/saídas.  
 **Bloqueou:** -  
-**Próxima semana:** Phase 3 (Geradores de exercícios), Phase 4 (REST Controllers), logging em todas as operações backend
+**Próxima semana:** Phase 3 (Geradores de exercícios), Phase 4 (REST Controllers), logging completo em todas as operações backend
 
 ---
 
