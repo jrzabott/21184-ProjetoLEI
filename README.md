@@ -31,9 +31,23 @@
 
 ## O que está pendente
 
-- [ ] Setup Spring Boot + estrutura de packages - **próximo passo**
-- [ ] Modelo de domínio Java (Fase 1)
-- [ ] Schema SQL + DAO classes com JDBC (Fase 2)
+### Fase 1: Modelo de Domínio (Domain Models)
+- [x] Task 1.1 - Setup Spring Boot + estrutura
+- [x] Task 1.2 - Modelo de Domínio (Note)
+- [x] Task 1.3 - Modelo de Domínio (Interval)
+- [x] Task 1.4 - Modelo de Domínio (Scale)
+- [x] Task 1.5 - Modelo de Domínio (Chord)
+- [ ] **Task 1.6 - Refactor domínio para interfaces** ⚠️ **CRÍTICO antes Fase 2**
+  - Extrair Note, Interval, Scale, Chord para interfaces
+  - Mover enums para implementações (ou interfaces com enum implementations)
+  - Preparar para mocking em testes
+  - Aplicar SOLID principles em toda a base de código
+  - Documentação em interfaces, não em implementações
+
+### Fase 2: Persistência (Persistence Layer)
+- [ ] Schema SQL + DAO classes com JDBC (refatorar DAOs para usar interfaces de domínio)
+
+### Fase 3+
 - [ ] Geradores de exercícios (Fase 3)
 - [ ] REST Controllers (Fase 4)
 - [ ] Frontend: teclado virtual (Fase 5)

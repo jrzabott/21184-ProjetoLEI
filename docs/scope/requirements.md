@@ -115,6 +115,7 @@
 | OI06 | Progressões de acordes | 🔵 Diferido | Após MVP completo |
 | OI07 | Formato de serialização de `questionData` | 🟡 Em aberto | Início Fase 3 |
 | OI08 | Navegação entre ecrãs (SPA vs páginas separadas) | ✅ Resolvido | Sem. 3-4 |
+| OI09 | Inversões e acordes estendidos | 🔵 Diferido | Após MVP (tríades) completo |
 
 ### OI01 - Base de dados de produção
 
@@ -181,3 +182,21 @@ SCALE:     { "root": 60, "type": "MAJOR" }  vs  { "rootMidi": 60, "scaleType": "
 **Estado:** ✅ Resolvido - páginas HTML separadas (`index.html`, `select.html`, `exercise.html`, `progress.html`). Estado de sessão via `sessionStorage`.
 
 **Resolvido em:** ADR-009 · Sem. 3-4
+
+### OI09 - Inversões e acordes estendidos
+
+**Estado:** 🔵 Diferido - explicitamente fora do scope do MVP (tríades apenas). Considerar após MVP completo se o tempo permitir.
+
+**Questão:** Deve o modelo de domínio `Chord` suportar inversões (1ª inversão, 2ª inversão) e acordes estendidos (C7, Cmaj7, Cm7, Cmaj7♯5, etc.)?
+
+**Contexto:** O MVP implementa tríades (C, Cm, Cdim, Caug). Inversões e acordes estendidos são comuns em música real (jazz, pop), mas adicionam complexidade significativa ao modelo de domínio.
+
+**Tradeoffs:**
+- **Pro:** Mais realista para treino de teoria musical; melhor cobre vocabulário musical completo.
+- **Con:** Explosão de combinações (4 tipos × 3 inversões × 8+ extensões ≈ 96+ acordes); refactoring futuro do Chord necessário; complexidade matemática nas inversões.
+
+**Possível aproximação:** Refactoração de domínio (Fase 1.6) para extrair contrato de interface `ChordType` antes de estender. Isso permite adicionar inversões e extensões sem quebrar a API existente.
+
+**Referências:** CB10, OI05, OI06
+
+**Prazo:** Decidir após MVP (tríades) entregue. Se implementar, requere ADR específico sobre representação de inversões e serialização.
