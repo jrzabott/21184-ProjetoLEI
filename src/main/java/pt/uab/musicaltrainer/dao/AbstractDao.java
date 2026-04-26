@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe base para DAOs que usam JDBC puro.
@@ -15,6 +17,7 @@ import java.util.Optional;
  * Encapsula o padrão try-with-resources e mapagem de ResultSet.
  */
 public abstract class AbstractDao<T> {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDao.class);
     protected final DataSource dataSource;
 
     public AbstractDao(DataSource dataSource) {
@@ -30,6 +33,7 @@ public abstract class AbstractDao<T> {
      * @return Optional contendo o objeto mapeado ou vazio
      */
     protected Optional<T> queryForObject(String sql, ParameterSetter setter, RowMapper<T> mapper) throws SQLException {
+        logger.debug("Executando queryForObject com SQL: {}", sql);
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             setter.setParameters(ps);
@@ -51,6 +55,7 @@ public abstract class AbstractDao<T> {
      * @return Lista de objetos mapeados (vazia se nenhum resultado)
      */
     protected List<T> queryForList(String sql, ParameterSetter setter, RowMapper<T> mapper) throws SQLException {
+        logger.debug("Executando queryForList com SQL: {}", sql);
         List<T> results = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
