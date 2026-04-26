@@ -31,9 +31,23 @@
 
 ## O que está pendente
 
-- [ ] Setup Spring Boot + estrutura de packages - **próximo passo**
-- [ ] Modelo de domínio Java (Fase 1)
-- [ ] Schema SQL + DAO classes com JDBC (Fase 2)
+### Fase 1: Modelo de Domínio (Domain Models)
+- [x] Task 1.1 - Setup Spring Boot + estrutura
+- [x] Task 1.2 - Modelo de Domínio (Note)
+- [x] Task 1.3 - Modelo de Domínio (Interval)
+- [x] Task 1.4 - Modelo de Domínio (Scale)
+- [x] Task 1.5 - Modelo de Domínio (Chord)
+- [ ] **Task 1.6 - Refactor domínio para interfaces** ⚠️ **CRÍTICO antes Fase 2**
+  - Extrair Note, Interval, Scale, Chord para interfaces
+  - Mover enums para implementações (ou interfaces com enum implementations)
+  - Preparar para mocking em testes
+  - Aplicar SOLID principles em toda a base de código
+  - Documentação em interfaces, não em implementações
+
+### Fase 2: Persistência (Persistence Layer)
+- [ ] Schema SQL + DAO classes com JDBC (refatorar DAOs para usar interfaces de domínio)
+
+### Fase 3+
 - [ ] Geradores de exercícios (Fase 3)
 - [ ] REST Controllers (Fase 4)
 - [ ] Frontend: teclado virtual (Fase 5)
@@ -104,6 +118,9 @@ Classe Interval implementada para identificação de intervalos musicais. Factor
 
 **Task 1.4 - Modelo de Domínio (Scale)**
 Classe Scale implementada com suporte para 6 tipos de escalas: MAJOR, MINOR_NATURAL, HARMONIC_MINOR, DORIAN, PENTATONIC_MINOR, BLUES. Factory estático `Scale.get(type, root)` gera notas usando padrões de semítons (interval patterns). 8 testes cobrindo diferentes escalas e raízes, incluindo diferenças entre tipos. TDD aplicado - testes escritos antes da implementação.
+
+**Task 1.5 - Modelo de Domínio (Chord)**
+Classe Chord implementada com suporte para 4 tipos de tríades: MAJOR, MINOR, DIMINISHED, AUGMENTED. Factory estático `Chord.get(type, root)` gera notas usando padrões de semítons. Value object com equals()/hashCode() para comparação confiável. 13 testes cobrindo todos tipos de tríades, diferenciação entre tipos e raízes, igualdade, e uso em coleções hash-based. TDD aplicado - testes escritos antes da implementação.
 
 ---
 
