@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.domain.ChordType;
-import pt.uab.musicaltrainer.domain.ScaleType;
+import pt.uab.musicaltrainer.domain.Note;
+import pt.uab.musicaltrainer.domain.Scale;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.generator.*;
 
@@ -143,26 +144,42 @@ public class ExerciseService {
     }
 
     /**
-     * SCALE: padrão de semítons, independente de oitava (ADR-014).
-     * Nota count = intervalos da escala + 1 (raiz→raiz). Funciona para qualquer escala:
-     * diatónica (8 notas), pentatónica (6 notas), blues (7 notas), etc.
+     * SCALE: validação usando o domínio directamente — Scale.get() reconstrói as notas esperadas.
+     * Qualquer oitava de partida é válida desde que o pitch class coincida com a raiz esperada.
+     * N notas = scale.getNotes().size() + 1 (raiz→raiz). Funciona para qualquer tipo de escala.
      */
     private boolean evaluateScale(String questionJson, int[] user) {
         String scaleType = extractStringField(questionJson, "type");
-        int[] expectedPattern = ScaleType.valueOf(scaleType).getSemitonePattern();
-        int expectedNoteCount = expectedPattern.length + 1; // passos + 1 = notas
+        int expectedRootMidi = extractIntField(questionJson, "root");
 
-        if (user.length != expectedNoteCount) return false;
+        // o utilizador deve começar no mesmo pitch class que a raiz esperada
+        if (user[0] % 12 != expectedRootMidi % 12) return false;
+        // notas devem ser ascendentes
         for (int i = 1; i < user.length; i++) {
             if (user[i] <= user[i - 1]) return false;
         }
-        if (user[user.length - 1] - user[0] != 12) return false;
+        // reconstruir escala esperada a partir da raiz do utilizador (para suportar qualquer oitava)
+        Scale expectedScale = Scale.get(scaleType, Note.fromMidi(user[0]));
+        int[] expectedNotes = expectedScale.getNotes().stream()
+            .mapToInt(Note::getMidiNumber)
+            .toArray();
 
-        int[] userPattern = new int[user.length - 1];
-        for (int i = 1; i < user.length; i++) {
-            userPattern[i - 1] = user[i] - user[i - 1];
+        int expectedCount = expectedNotes.length + 1; // escala + regresso à raiz
+        if (user.length != expectedCount) return false;
+        if (user[user.length - 1] != user[0] + 12) return false;
+
+        for (int i = 0; i < expectedNotes.length; i++) {
+            if (user[i] != expectedNotes[i]) return false;
         }
-        return Arrays.equals(expectedPattern, userPattern);
+        return true;
+    }
+
+    private static int extractIntField(String json, String field) {
+        java.util.regex.Matcher m = java.util.regex.Pattern
+            .compile("\"" + field + "\":(\\d+)")
+            .matcher(json);
+        if (m.find()) return Integer.parseInt(m.group(1));
+        throw new IllegalArgumentException("Campo '" + field + "' nao encontrado em: " + json);
     }
 
     /**
