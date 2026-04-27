@@ -11,7 +11,9 @@ public class H2Strategy implements DatabaseStrategy {
 
     @Override
     public String getUrl() {
-        return "jdbc:h2:mem:musicaltrainerdb";
+        // DB_CLOSE_DELAY=-1 mantém a BD em memória enquanto a JVM está activa.
+        // Sem isto, a BD é apagada quando a última ligação fecha, o que quebra testes.
+        return "jdbc:h2:mem:musicaltrainerdb;DB_CLOSE_DELAY=-1";
     }
 
     @Override
