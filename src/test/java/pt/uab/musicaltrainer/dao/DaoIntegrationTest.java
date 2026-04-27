@@ -11,12 +11,13 @@ import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(properties = "db.type=H2")
 class DaoIntegrationTest {
     private SessionDao sessionDao;
     private ExerciseDao exerciseDao;
@@ -35,13 +36,14 @@ class DaoIntegrationTest {
     // SessionDao Tests
     @Test
     void testSessionDao_SaveAndRetrieve() throws Exception {
-        LocalDateTime now = LocalDateTime.now();
+        // H2 TIMESTAMP tem precisão de microsegundos; truncar para evitar falha de nanosegundos
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         SessionRecord session = new SessionRecord(null, now, null, 0, 0, 0, now);
 
         SessionRecord saved = sessionDao.save(session);
 
         assertThat(saved.id()).isGreaterThan(0);
-        assertThat(saved.startTime()).isEqualTo(now);
+        assertThat(saved.startTime()).isCloseTo(now, within(1, ChronoUnit.MILLIS));
 
         SessionRecord retrieved = sessionDao.findById(saved.id()).orElse(null);
         assertThat(retrieved).isNotNull();
@@ -50,7 +52,7 @@ class DaoIntegrationTest {
 
     @Test
     void testSessionDao_Update() throws Exception {
-        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         SessionRecord session = new SessionRecord(null, start, null, 0, 0, 0, start);
         SessionRecord saved = sessionDao.save(session);
 
@@ -59,7 +61,7 @@ class DaoIntegrationTest {
         sessionDao.update(updated);
 
         SessionRecord retrieved = sessionDao.findById(saved.id()).orElse(null);
-        assertThat(retrieved.endTime()).isEqualTo(end);
+        assertThat(retrieved.endTime()).isCloseTo(end, within(1, ChronoUnit.MILLIS));
         assertThat(retrieved.totalExercises()).isEqualTo(5);
     }
 

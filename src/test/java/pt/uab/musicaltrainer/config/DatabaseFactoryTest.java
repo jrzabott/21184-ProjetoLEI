@@ -71,18 +71,15 @@ class DatabaseFactoryTest {
         }
     }
 
-    @SpringBootTest
-    @TestPropertySource(properties = "db.type=INVALID_TYPE")
     @Nested
     class InvalidTypeTests {
-        @Autowired
-        private DatabaseFactory databaseFactory;
-
+        // Teste unitário directo — não precisa de contexto Spring
         @Test
         void testInvalidDatabaseTypeThrowsException() {
-            assertThrows(IllegalArgumentException.class, () -> {
-                databaseFactory.getStrategy();
-            });
+            DatabaseFactory factory = new DatabaseFactory(
+                "INVALID_TYPE", "localhost", 5432, "db", "user", ""
+            );
+            assertThrows(IllegalArgumentException.class, factory::getStrategy);
         }
     }
 }
