@@ -56,9 +56,9 @@
 
 ## Sem. 7 · 28 abr–2 mai · DEMO INTERNA
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** (27 abr) Fase 3 concluída - geradores de exercícios (IntervalExerciseGenerator, ScaleExerciseGenerator, ChordExerciseGenerator) com Strategy pattern, TDD, logging. ExerciseService com Factory pattern. Fase 4 concluída - REST API completa: POST /api/exercises/generate, POST /api/exercises/{id}/answer, POST /api/sessions/start, POST /api/sessions/{id}/end, GET /api/progress, GET /api/sandbox/note-info. SessionService + ProgressService. Logging adicionado a ExerciseDao e ResultDao. OI07 resolvido (ADR-013). DataSourceConfig corrigido (schema H2 inicializado manualmente). 160 testes a passar. Bugs pré-existentes corrigidos (DaoIntegrationTest, DatabaseFactoryTest, timestamp precision).  
+**Bloqueou:** -  
+**Próxima semana:** Demo interna com Pestana. Relatório Intercalar (deadline 6 Mai): Cap. 1, 2, 3 estado actual.
 
 ---
 
