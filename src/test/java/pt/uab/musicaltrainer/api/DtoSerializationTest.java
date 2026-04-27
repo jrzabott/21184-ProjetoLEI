@@ -32,7 +32,7 @@ class DtoSerializationTest {
     void shouldSerializeGenerateResponse() throws Exception {
         GenerateResponse resp = new GenerateResponse(
             1L, "INTERVAL", 2,
-            new int[]{60, 67}, "Que intervalo é este?",
+            new int[]{60, 67}, "Que intervalo e este?",
             List.of("5a Perfeita", "4a Perfeita", "3a Maior", "2a Maior")
         );
         String json = mapper.writeValueAsString(resp);
@@ -40,18 +40,22 @@ class DtoSerializationTest {
     }
 
     @Test
-    void shouldDeserializeAnswerRequest() throws Exception {
-        String json = "{\"sessionId\":5,\"answer\":\"5a Perfeita\",\"responseTimeMs\":2000}";
+    void shouldDeserializeAnswerRequestWithNotes() throws Exception {
+        // ADR-014: AnswerRequest usa notes[] em vez de answer string
+        // exerciseId no corpo (nao no path)
+        String json = "{\"exerciseId\":42,\"sessionId\":5,\"notes\":[60,62,64,65,67,69,71,72],\"responseTimeMs\":6200}";
         AnswerRequest req = mapper.readValue(json, AnswerRequest.class);
-        assertThat(req.answer()).isEqualTo("5a Perfeita");
+        assertThat(req.exerciseId()).isEqualTo(42L);
         assertThat(req.sessionId()).isEqualTo(5L);
+        assertThat(req.notes()).containsExactly(60, 62, 64, 65, 67, 69, 71, 72);
+        assertThat(req.responseTimeMs()).isEqualTo(6200L);
     }
 
     @Test
     void shouldSerializeAnswerResponse() throws Exception {
-        AnswerResponse resp = new AnswerResponse(true, "MAJOR", "MAJOR", "Correcto!");
+        AnswerResponse resp = new AnswerResponse(true, "[60,62,64]", "[60,62,64]", "Correcto!");
         String json = mapper.writeValueAsString(resp);
-        assertThat(json).contains("\"correct\":true").contains("MAJOR");
+        assertThat(json).contains("\"correct\":true");
     }
 
     @Test
