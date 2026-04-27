@@ -32,8 +32,8 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
     private static final Random random = new Random();
 
     @Override
-    public String getExerciseType() {
-        return "INTERVAL";
+    public ExerciseType getExerciseType() {
+        return ExerciseType.INTERVAL;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             noteA, low.getDisplayName(), noteB, high.getDisplayName(), correctAnswer, difficulty);
 
         return new GeneratedExercise(
-            "INTERVAL", difficulty, questionJson, correctAnswer,
+            ExerciseType.INTERVAL.name(), difficulty, questionJson, correctAnswer,
             description, new int[]{noteA, noteB}, buildOptions(correctAnswer)
         );
     }
@@ -79,7 +79,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
                 + " e " + high.getDisplayName() + "?";
 
             return new GeneratedExercise(
-                "INTERVAL", difficulty, questionJson, correctAnswer,
+                ExerciseType.INTERVAL.name(), difficulty, questionJson, correctAnswer,
                 description, new int[]{noteA, noteB}, buildOptions(correctAnswer)
             );
         } catch (Exception e) {

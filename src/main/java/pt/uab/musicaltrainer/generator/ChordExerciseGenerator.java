@@ -30,8 +30,8 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
     static final List<String> CHORD_TYPES = Arrays.asList("MAJOR", "MINOR", "DIMINISHED", "AUGMENTED");
 
     @Override
-    public String getExerciseType() {
-        return "CHORD";
+    public ExerciseType getExerciseType() {
+        return ExerciseType.CHORD;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             rootMidi, root.getDisplayName(), chordType, difficulty);
 
         return new GeneratedExercise(
-            "CHORD", difficulty, questionJson, chordType,
+            ExerciseType.CHORD.name(), difficulty, questionJson, chordType,
             description, notes, options
         );
     }

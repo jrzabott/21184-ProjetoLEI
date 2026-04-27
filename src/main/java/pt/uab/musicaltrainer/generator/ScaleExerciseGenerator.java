@@ -30,8 +30,8 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
     static final List<String> SCALE_TYPES = Arrays.asList("MAJOR", "MINOR_NATURAL", "HARMONIC_MINOR");
 
     @Override
-    public String getExerciseType() {
-        return "SCALE";
+    public ExerciseType getExerciseType() {
+        return ExerciseType.SCALE;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             rootMidi, root.getDisplayName(), scaleType, difficulty);
 
         return new GeneratedExercise(
-            "SCALE", difficulty, questionJson, scaleType,
+            ExerciseType.SCALE.name(), difficulty, questionJson, scaleType,
             description, notes, options
         );
     }
