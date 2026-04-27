@@ -75,6 +75,17 @@ class IntervalExerciseGeneratorTest {
         assertThat(ex.options()).hasSize(4);
     }
 
+    @Test
+    void shouldReturnExactMidiNotesFromStoredForEvaluation() {
+        // ADR-014: intervalos requerem correspondência exacta de notas MIDI (mesma oitava)
+        // D4(62)→A4(69) é também uma 5a Perfeita, mas NÃO é a resposta correcta para C4(60)→G4(67)
+        String questionJson = "{\"notes\":[60,67]}";
+        GeneratedExercise ex = generator.fromStored(questionJson, "5a Perfeita", 1);
+
+        assertThat(ex.notesToPlay()).containsExactly(60, 67);
+        assertThat(ex.notesToPlay()).doesNotContain(62, 69);
+    }
+
     @RepeatedTest(20)
     void shouldGenerateNotesInPianoRange() {
         GeneratedExercise ex = generator.generate(5);
