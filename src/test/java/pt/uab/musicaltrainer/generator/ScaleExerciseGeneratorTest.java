@@ -1,6 +1,7 @@
 package pt.uab.musicaltrainer.generator;
 
 import org.junit.jupiter.api.Test;
+import pt.uab.musicaltrainer.domain.ScaleType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,15 +33,33 @@ class ScaleExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateSevenNotesForScale() {
+    void shouldGenerateEightNotesForScale() {
+        // ADR-014: escalas são raiz→raiz (oitava acima) — 8 notas, nao 7
         GeneratedExercise ex = generator.generate(1);
 
-        assertThat(ex.notesToPlay()).hasSize(7);
+        assertThat(ex.notesToPlay()).hasSize(8);
+    }
+
+    @Test
+    void shouldGenerateLastNoteOneOctaveAboveFirst() {
+        // última nota = primeira nota + 12 (regresso à raiz, oitava acima)
+        GeneratedExercise ex = generator.generate(1);
+        int[] notes = ex.notesToPlay();
+
+        assertThat(notes[7]).isEqualTo(notes[0] + 12);
+    }
+
+    @Test
+    void shouldGenerateCorrectMajorScalePattern() {
+        GeneratedExercise ex = generator.fromStored("{\"root\":60,\"type\":\"MAJOR\"}", "MAJOR", 1);
+        int[] notes = ex.notesToPlay();
+
+        // C major: C D E F G A B C
+        assertThat(notes).containsExactly(60, 62, 64, 65, 67, 69, 71, 72);
     }
 
     @Test
     void shouldGenerateThreeOptions() {
-        // MVP tem 3 tipos de escala — logo 3 opções
         GeneratedExercise ex = generator.generate(1);
 
         assertThat(ex.options()).hasSize(3);
@@ -75,19 +94,42 @@ class ScaleExerciseGeneratorTest {
 
         GeneratedExercise ex = generator.fromStored(questionJson, "MAJOR", 1);
 
-        assertThat(ex.notesToPlay()).hasSize(7);
-        assertThat(ex.notesToPlay()[0]).isEqualTo(60);  // raiz deve ser C4
+        assertThat(ex.notesToPlay()).hasSize(8);  // 8 notas: raiz→raiz
+        assertThat(ex.notesToPlay()[0]).isEqualTo(60);
+        assertThat(ex.notesToPlay()[7]).isEqualTo(72);  // C4 + oitava = C5
         assertThat(ex.correctAnswer()).isEqualTo("MAJOR");
-        assertThat(ex.options()).contains("MAJOR");
     }
 
     @Test
     void shouldGenerateNotesStartingFromRoot() {
         GeneratedExercise ex = generator.generate(1);
 
-        // A primeira nota deve ser a raiz (MIDI da raiz)
         String json = ex.questionJson();
         int root = Integer.parseInt(json.replaceAll(".*\"root\":(\\d+).*", "$1"));
         assertThat(ex.notesToPlay()[0]).isEqualTo(root);
+    }
+
+    @Test
+    void scaleTypeSemitonePatternIsCorrectForMajor() {
+        // Padrão MAJOR: W W H W W W H = [2, 2, 1, 2, 2, 2, 1]
+        int[] pattern = ScaleType.MAJOR.getSemitonePattern();
+
+        assertThat(pattern).containsExactly(2, 2, 1, 2, 2, 2, 1);
+    }
+
+    @Test
+    void scaleTypeSemitonePatternIsCorrectForMinorNatural() {
+        // Padrão MINOR_NATURAL: W H W W H W W = [2, 1, 2, 2, 1, 2, 2]
+        int[] pattern = ScaleType.MINOR_NATURAL.getSemitonePattern();
+
+        assertThat(pattern).containsExactly(2, 1, 2, 2, 1, 2, 2);
+    }
+
+    @Test
+    void scaleTypeSemitonePatternIsCorrectForHarmonicMinor() {
+        // Padrão HARMONIC_MINOR: W H W W H A H = [2, 1, 2, 2, 1, 3, 1]
+        int[] pattern = ScaleType.HARMONIC_MINOR.getSemitonePattern();
+
+        assertThat(pattern).containsExactly(2, 1, 2, 2, 1, 3, 1);
     }
 }
