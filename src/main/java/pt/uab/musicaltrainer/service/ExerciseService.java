@@ -144,17 +144,20 @@ public class ExerciseService {
 
     /**
      * SCALE: padrão de semítons, independente de oitava (ADR-014).
-     * 8 notas ascendentes: raiz → raiz uma oitava acima.
+     * Nota count = intervalos da escala + 1 (raiz→raiz). Funciona para qualquer escala:
+     * diatónica (8 notas), pentatónica (6 notas), blues (7 notas), etc.
      */
     private boolean evaluateScale(String questionJson, int[] user) {
-        if (user.length != 8) return false;
+        String scaleType = extractStringField(questionJson, "type");
+        int[] expectedPattern = ScaleType.valueOf(scaleType).getSemitonePattern();
+        int expectedNoteCount = expectedPattern.length + 1; // passos + 1 = notas
+
+        if (user.length != expectedNoteCount) return false;
         for (int i = 1; i < user.length; i++) {
             if (user[i] <= user[i - 1]) return false;
         }
-        if (user[7] - user[0] != 12) return false;
+        if (user[user.length - 1] - user[0] != 12) return false;
 
-        String scaleType = extractStringField(questionJson, "type");
-        int[] expectedPattern = ScaleType.valueOf(scaleType).getSemitonePattern();
         int[] userPattern = new int[user.length - 1];
         for (int i = 1; i < user.length; i++) {
             userPattern[i - 1] = user[i] - user[i - 1];
