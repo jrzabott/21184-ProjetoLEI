@@ -84,6 +84,32 @@ class ChordExerciseGeneratorTest {
     }
 
     @Test
+    void chordTypeVoicingIntervalsAreCorrect() {
+        // ADR-014: validação I-III-V por diferença de intervalos consecutivos
+        assertThat(pt.uab.musicaltrainer.domain.ChordType.MAJOR.getVoicingIntervals())
+            .containsExactly(4, 3);
+        assertThat(pt.uab.musicaltrainer.domain.ChordType.MINOR.getVoicingIntervals())
+            .containsExactly(3, 4);
+        assertThat(pt.uab.musicaltrainer.domain.ChordType.DIMINISHED.getVoicingIntervals())
+            .containsExactly(3, 3);
+        assertThat(pt.uab.musicaltrainer.domain.ChordType.AUGMENTED.getVoicingIntervals())
+            .containsExactly(4, 4);
+    }
+
+    @Test
+    void shouldAcceptMajorChordInAnyOctave() {
+        // ADR-014: qualquer oitava é válida para acordes — validação por padrão de intervalos
+        GeneratedExercise rootOctave = generator.fromStored("{\"root\":60,\"type\":\"MAJOR\"}", "MAJOR", 1);
+        GeneratedExercise higherOctave = generator.fromStored("{\"root\":72,\"type\":\"MAJOR\"}", "MAJOR", 1);
+
+        // Padrão [4,3] deve ser o mesmo em qualquer oitava
+        int[] low = rootOctave.notesToPlay();
+        int[] high = higherOctave.notesToPlay();
+        assertThat(low[1] - low[0]).isEqualTo(high[1] - high[0]);
+        assertThat(low[2] - low[1]).isEqualTo(high[2] - high[1]);
+    }
+
+    @Test
     void shouldGenerateNotesStartingFromRoot() {
         GeneratedExercise ex = generator.generate(1);
 
