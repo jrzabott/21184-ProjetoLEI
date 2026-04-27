@@ -9,6 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.generator.GeneratedExercise;
+import pt.uab.musicaltrainer.generator.GeneratorFactory;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -22,11 +23,14 @@ class ExerciseServiceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private GeneratorFactory generatorFactory;
+
     private ExerciseService service;
 
     @BeforeEach
     void setUp() {
-        service = new ExerciseService(daoFactory, objectMapper);
+        service = new ExerciseService(daoFactory, objectMapper, generatorFactory);
     }
 
     // --- Geração ---
