@@ -4,16 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pt.uab.musicaltrainer.dao.DaoFactory;
+import pt.uab.musicaltrainer.domain.ChordType;
+import pt.uab.musicaltrainer.domain.ScaleType;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.generator.*;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Orquestra a geração e avaliação de exercícios.
- * Delega geração aos generators, persistência aos DAOs.
- * Sem lógica musical aqui — toda nos generators e no domínio.
+ * Avaliação é baseada em notas MIDI tocadas pelo utilizador — sem múltipla escolha (ADR-014).
  */
 @Service
 public class ExerciseService {
@@ -35,10 +39,7 @@ public class ExerciseService {
 
     /**
      * Gera um exercício e guarda em BD.
-     *
-     * @param type tipo do exercício (INTERVAL, SCALE, CHORD)
-     * @param difficulty nível 1-10
-     * @return ExerciseRecord com id gerado pela BD
+     * correct_answer guarda as notas esperadas como JSON para feedback ao utilizador.
      */
     public ExerciseRecord generateAndSave(String type, int difficulty) throws Exception {
         logger.debug("Gerando exercício: type={}, difficulty={}", type, difficulty);
@@ -46,25 +47,30 @@ public class ExerciseService {
         ExerciseGenerator generator = getGenerator(type);
         GeneratedExercise generated = generator.generate(difficulty);
 
+        // ADR-014: correct_answer armazena notas esperadas como "[60,62,64]"
+        String expectedNotesJson = toNotesJson(generated.notesToPlay());
+
         ExerciseRecord toSave = new ExerciseRecord(
             null, generated.type(), generated.difficulty(),
-            generated.questionJson(), generated.correctAnswer(), null
+            generated.questionJson(), expectedNotesJson, null
         );
 
         ExerciseRecord saved = daoFactory.createExerciseDao().save(toSave);
-        logger.info("Exercício guardado: id={}, type={}", saved.id(), saved.type());
+        logger.info("Exercício guardado: id={}, type={}, expectedNotes={}",
+            saved.id(), saved.type(), expectedNotesJson);
         return saved;
     }
 
     /**
-     * Avalia a resposta do utilizador para um exercício.
+     * Avalia a resposta do utilizador baseada nas notas MIDI tocadas.
      *
-     * @param exerciseId id do exercício
-     * @param userAnswer resposta do utilizador
-     * @return true se correcta
+     * Regras por tipo (ADR-014):
+     * - INTERVAL: notas exactas obrigatórias (mesmo MIDI, mesma oitava)
+     * - SCALE:    padrão de semítons, qualquer oitava de partida, 8 notas (raiz→raiz)
+     * - CHORD:    voicing I-III-V ascendente, qualquer oitava, mesmo pitch class na raiz
      */
-    public boolean evaluateAnswer(Long exerciseId, String userAnswer) throws Exception {
-        logger.debug("Avaliando: exerciseId={}, answer={}", exerciseId, userAnswer);
+    public boolean evaluateAnswer(Long exerciseId, int[] userNotes) throws Exception {
+        logger.debug("Avaliando: exerciseId={}, notas={}", exerciseId, Arrays.toString(userNotes));
 
         Optional<ExerciseRecord> opt = daoFactory.createExerciseDao().findById(exerciseId);
         if (opt.isEmpty()) {
@@ -73,42 +79,105 @@ public class ExerciseService {
         }
 
         ExerciseRecord exercise = opt.get();
-        boolean correct = exercise.correctAnswer().equalsIgnoreCase(userAnswer.trim());
+        int[] expectedNotes = parseNotesJson(exercise.correctAnswer());
+        boolean correct = evaluate(exercise.type(), exercise.question(), expectedNotes, userNotes);
 
-        logger.info("Avaliação: exerciseId={}, expected='{}', got='{}', correct={}",
-            exerciseId, exercise.correctAnswer(), userAnswer, correct);
+        logger.info("Avaliação: exerciseId={}, type={}, expected={}, got={}, correct={}",
+            exerciseId, exercise.type(),
+            Arrays.toString(expectedNotes), Arrays.toString(userNotes), correct);
         return correct;
     }
 
     /**
+     * Retorna as notas esperadas para um exercício (para display/feedback).
+     */
+    public int[] getExpectedNotes(Long exerciseId) throws Exception {
+        return daoFactory.createExerciseDao().findById(exerciseId)
+            .map(e -> parseNotesJson(e.correctAnswer()))
+            .orElseThrow(() -> new IllegalArgumentException("Exercício nao encontrado: " + exerciseId));
+    }
+
+    /**
      * Retorna dados de exibição para um exercício existente.
-     * Reconstrói a partir do JSON guardado (não gera novo aleatório).
      */
     public GeneratedExercise getDisplayData(ExerciseRecord exercise) throws Exception {
         logger.debug("Reconstruindo display: exerciseId={}", exercise.id());
         ExerciseGenerator generator = getGenerator(exercise.type());
-        return generator.fromStored(exercise.question(), exercise.correctAnswer(), exercise.difficulty());
-    }
-
-    /**
-     * Retorna a resposta correcta de um exercício.
-     */
-    public String getCorrectAnswer(Long exerciseId) throws Exception {
-        return daoFactory.createExerciseDao().findById(exerciseId)
-            .map(ExerciseRecord::correctAnswer)
-            .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado: " + exerciseId));
+        return generator.fromStored(
+            exercise.question(),
+            exercise.correctAnswer(),
+            exercise.difficulty()
+        );
     }
 
     /**
      * Constrói explicação para a resposta do utilizador.
      */
-    public String buildExplanation(Long exerciseId, String userAnswer, boolean correct) throws Exception {
-        String correctAnswer = getCorrectAnswer(exerciseId);
+    public String buildExplanation(Long exerciseId, int[] userNotes, boolean correct) throws Exception {
+        int[] expected = getExpectedNotes(exerciseId);
         if (correct) {
-            return "Correcto! A resposta era '" + correctAnswer + "'.";
+            return "Correcto! Tocaste " + Arrays.toString(userNotes) + ".";
         }
-        return "Incorrecto. Respondeste '" + userAnswer + "', mas a resposta era '" + correctAnswer + "'.";
+        return "Incorrecto. Tocaste " + Arrays.toString(userNotes)
+            + " mas a resposta era " + Arrays.toString(expected) + ".";
     }
+
+    // --- Lógica de validação por tipo (ADR-014) ---
+
+    private boolean evaluate(String type, String questionJson, int[] expected, int[] user) {
+        return switch (type) {
+            case "INTERVAL" -> evaluateInterval(expected, user);
+            case "SCALE"    -> evaluateScale(questionJson, user);
+            case "CHORD"    -> evaluateChord(questionJson, expected, user);
+            default -> {
+                logger.error("Tipo desconhecido na avaliação: {}", type);
+                yield false;
+            }
+        };
+    }
+
+    /** INTERVAL: notas exactas (ADR-014 — treino enraizado). */
+    private boolean evaluateInterval(int[] expected, int[] user) {
+        if (user.length != 2) return false;
+        return Arrays.equals(expected, user);
+    }
+
+    /**
+     * SCALE: padrão de semítons, independente de oitava (ADR-014).
+     * 8 notas ascendentes: raiz → raiz uma oitava acima.
+     */
+    private boolean evaluateScale(String questionJson, int[] user) {
+        if (user.length != 8) return false;
+        for (int i = 1; i < user.length; i++) {
+            if (user[i] <= user[i - 1]) return false;
+        }
+        if (user[7] - user[0] != 12) return false;
+
+        String scaleType = extractStringField(questionJson, "type");
+        int[] expectedPattern = ScaleType.valueOf(scaleType).getSemitonePattern();
+        int[] userPattern = new int[user.length - 1];
+        for (int i = 1; i < user.length; i++) {
+            userPattern[i - 1] = user[i] - user[i - 1];
+        }
+        return Arrays.equals(expectedPattern, userPattern);
+    }
+
+    /**
+     * CHORD: voicing I-III-V ascendente, qualquer oitava, mesmo pitch class na raiz (ADR-014).
+     */
+    private boolean evaluateChord(String questionJson, int[] expected, int[] user) {
+        if (user.length != 3) return false;
+        if (user[0] >= user[1] || user[1] >= user[2]) return false;
+
+        // mesmo pitch class na raiz (% 12)
+        if (expected[0] % 12 != user[0] % 12) return false;
+
+        String chordType = extractStringField(questionJson, "type");
+        int[] voicing = ChordType.valueOf(chordType).getVoicingIntervals();
+        return user[1] - user[0] == voicing[0] && user[2] - user[1] == voicing[1];
+    }
+
+    // --- Utilitários ---
 
     private ExerciseGenerator getGenerator(String type) {
         ExerciseGenerator gen = generators.get(type);
@@ -117,5 +186,26 @@ public class ExerciseService {
             throw new IllegalArgumentException("Tipo de exercício desconhecido: " + type);
         }
         return gen;
+    }
+
+    static String toNotesJson(int[] notes) {
+        return "[" + IntStream.of(notes).mapToObj(String::valueOf)
+            .collect(Collectors.joining(",")) + "]";
+    }
+
+    static int[] parseNotesJson(String json) {
+        String inner = json.trim().replaceAll("^\\[|\\]$", "");
+        if (inner.isEmpty()) return new int[0];
+        return Arrays.stream(inner.split(","))
+            .mapToInt(s -> Integer.parseInt(s.trim()))
+            .toArray();
+    }
+
+    private static String extractStringField(String json, String field) {
+        java.util.regex.Matcher m = java.util.regex.Pattern
+            .compile("\"" + field + "\":\"([^\"]+)\"")
+            .matcher(json);
+        if (m.find()) return m.group(1);
+        throw new IllegalArgumentException("Campo '" + field + "' nao encontrado em: " + json);
     }
 }
