@@ -3,20 +3,26 @@ package pt.uab.musicaltrainer.dao;
 import pt.uab.musicaltrainer.dto.ResultRecord;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DAO para Resultado de Exercício.
  */
 public class ResultDao extends AbstractDao<ResultRecord> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResultDao.class);
+
     public ResultDao(DataSource dataSource) {
         super(dataSource);
     }
 
     public ResultRecord save(ResultRecord result) throws SQLException {
         String sql = "INSERT INTO results (session_id, exercise_id, user_answer, is_correct) VALUES (?, ?, ?, ?)";
+        logger.debug("Guardando resultado: sessionId={}, exerciseId={}, correct={}",
+            result.sessionId(), result.exerciseId(), result.isCorrect());
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -24,29 +30,41 @@ public class ResultDao extends AbstractDao<ResultRecord> {
             ps.setLong(2, result.exerciseId());
             ps.setString(3, result.userAnswer());
             ps.setBoolean(4, result.isCorrect());
+            logger.debug("Parâmetros vinculados, executando INSERT");
             ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
             if (keys.next()) {
-                return findById(keys.getLong(1)).orElse(null);
+                long newId = keys.getLong(1);
+                logger.info("Resultado guardado: id={}, sessionId={}, correct={}",
+                    newId, result.sessionId(), result.isCorrect());
+                return findById(newId).orElse(null);
             }
         }
+        logger.warn("Falha ao recuperar id gerado para novo resultado");
         return null;
     }
 
     public Optional<ResultRecord> findById(Long id) throws SQLException {
         String sql = "SELECT id, session_id, exercise_id, user_answer, is_correct, created_at FROM results WHERE id = ?";
+        logger.debug("Procurando resultado por id={}", id);
         return queryForObject(sql, ps -> ps.setLong(1, id), this::mapRow);
     }
 
     public List<ResultRecord> findBySessionId(Long sessionId) throws SQLException {
         String sql = "SELECT id, session_id, exercise_id, user_answer, is_correct, created_at FROM results WHERE session_id = ? ORDER BY created_at ASC";
-        return queryForList(sql, ps -> ps.setLong(1, sessionId), this::mapRow);
+        logger.debug("Procurando resultados por sessionId={}", sessionId);
+        List<ResultRecord> result = queryForList(sql, ps -> ps.setLong(1, sessionId), this::mapRow);
+        logger.info("Resultados encontrados: sessionId={}, count={}", sessionId, result.size());
+        return result;
     }
 
     public List<ResultRecord> findAll() throws SQLException {
         String sql = "SELECT id, session_id, exercise_id, user_answer, is_correct, created_at FROM results ORDER BY created_at DESC";
-        return queryForList(sql, this::mapRow);
+        logger.debug("Procurando todos os resultados");
+        List<ResultRecord> result = queryForList(sql, this::mapRow);
+        logger.info("Total de resultados: {}", result.size());
+        return result;
     }
 
     private ResultRecord mapRow(ResultSet rs) throws SQLException {
