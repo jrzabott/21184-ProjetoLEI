@@ -25,6 +25,8 @@ class ExerciseServiceTest {
         service = new ExerciseService(daoFactory);
     }
 
+    // --- Geração ---
+
     @Test
     void shouldGenerateAndSaveIntervalExercise() throws Exception {
         ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
@@ -41,7 +43,6 @@ class ExerciseServiceTest {
 
         assertThat(saved.type()).isEqualTo("SCALE");
         assertThat(saved.question()).contains("root");
-        assertThat(saved.question()).contains("type");
     }
 
     @Test
@@ -60,42 +61,104 @@ class ExerciseServiceTest {
     }
 
     @Test
-    void shouldEvaluateCorrectAnswerAsTrue() throws Exception {
+    void shouldStoreExpectedNotesInCorrectAnswerColumn() throws Exception {
+        // ADR-014: correct_answer guarda as notas esperadas como JSON para feedback
         ExerciseRecord saved = service.generateAndSave("CHORD", 1);
-        boolean correct = service.evaluateAnswer(saved.id(), saved.correctAnswer());
-        assertThat(correct).isTrue();
+
+        assertThat(saved.correctAnswer()).startsWith("[");
+        assertThat(saved.correctAnswer()).endsWith("]");
+        assertThat(saved.correctAnswer()).contains(",");
+    }
+
+    // --- Avaliação baseada em notas MIDI ---
+
+    @Test
+    void shouldEvaluateCorrectIntervalAsTrue() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
+        int[] expectedNotes = service.getExpectedNotes(saved.id());
+
+        boolean result = service.evaluateAnswer(saved.id(), expectedNotes);
+
+        assertThat(result).isTrue();
     }
 
     @Test
-    void shouldEvaluateWrongAnswerAsFalse() throws Exception {
-        ExerciseRecord saved = service.generateAndSave("CHORD", 1);
-        boolean correct = service.evaluateAnswer(saved.id(), "OBVIOUSLY_WRONG");
-        assertThat(correct).isFalse();
-    }
-
-    @Test
-    void shouldReturnDisplayDataForExercise() throws Exception {
-        ExerciseRecord saved = service.generateAndSave("INTERVAL", 3);
-        GeneratedExercise display = service.getDisplayData(saved);
-
-        assertThat(display.notesToPlay()).hasSize(2);
-        assertThat(display.options()).hasSize(4);
-        assertThat(display.description()).isNotBlank();
-    }
-
-    @Test
-    void shouldReturnCorrectAnswerString() throws Exception {
+    void shouldEvaluateCorrectScaleAsTrue() throws Exception {
         ExerciseRecord saved = service.generateAndSave("SCALE", 1);
-        String answer = service.getCorrectAnswer(saved.id());
+        int[] expectedNotes = service.getExpectedNotes(saved.id());
 
-        assertThat(answer).isIn("MAJOR", "MINOR_NATURAL", "HARMONIC_MINOR");
+        boolean result = service.evaluateAnswer(saved.id(), expectedNotes);
+
+        assertThat(result).isTrue();
     }
 
     @Test
-    void shouldBuildCorrectExplanation() throws Exception {
+    void shouldEvaluateCorrectChordAsTrue() throws Exception {
         ExerciseRecord saved = service.generateAndSave("CHORD", 1);
-        String explanation = service.buildExplanation(saved.id(), saved.correctAnswer(), true);
+        int[] expectedNotes = service.getExpectedNotes(saved.id());
 
-        assertThat(explanation).contains("Correcto").contains(saved.correctAnswer());
+        boolean result = service.evaluateAnswer(saved.id(), expectedNotes);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void shouldEvaluateWrongNotesAsFalse() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("CHORD", 1);
+
+        boolean result = service.evaluateAnswer(saved.id(), new int[]{0, 1, 2});
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldEvaluateWrongNumberOfNotesAsFalse() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
+
+        // intervalo requer exactamente 2 notas
+        boolean result = service.evaluateAnswer(saved.id(), new int[]{60, 64, 67});
+
+        assertThat(result).isFalse();
+    }
+
+    // --- Scale: qualquer oitava é válida ---
+
+    @Test
+    void shouldEvaluateScaleInDifferentOctaveAsCorrect() throws Exception {
+        // ADR-014: escala em oitava diferente é correcta (validação por padrão)
+        ExerciseRecord saved = service.generateAndSave("SCALE", 1);
+        GeneratedExercise display = service.getDisplayData(saved);
+        int[] expectedNotes = display.notesToPlay();
+
+        // transpor todas as notas uma oitava acima (+12)
+        int[] transposedNotes = new int[expectedNotes.length];
+        for (int i = 0; i < expectedNotes.length; i++) {
+            transposedNotes[i] = expectedNotes[i] + 12;
+        }
+
+        boolean result = service.evaluateAnswer(saved.id(), transposedNotes);
+
+        assertThat(result).isTrue();
+    }
+
+    // --- Display e feedback ---
+
+    @Test
+    void shouldReturnDisplayDataWithCorrectNoteCount() throws Exception {
+        ExerciseRecord intervalEx = service.generateAndSave("INTERVAL", 1);
+        ExerciseRecord scaleEx = service.generateAndSave("SCALE", 1);
+        ExerciseRecord chordEx = service.generateAndSave("CHORD", 1);
+
+        assertThat(service.getDisplayData(intervalEx).notesToPlay()).hasSize(2);
+        assertThat(service.getDisplayData(scaleEx).notesToPlay()).hasSize(8);
+        assertThat(service.getDisplayData(chordEx).notesToPlay()).hasSize(3);
+    }
+
+    @Test
+    void shouldReturnExpectedNotesArray() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("SCALE", 1);
+        int[] notes = service.getExpectedNotes(saved.id());
+
+        assertThat(notes).hasSize(8);
     }
 }
