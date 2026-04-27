@@ -78,20 +78,4 @@ public enum ScaleType {
         return intervals;
     }
 
-    /**
-     * Retorna os tamanhos dos passos entre notas consecutivas (raiz→raiz oitava acima).
-     * Usado para validar respostas de exercícios de forma independente de oitava.
-     * <p>
-     * Exemplo MAJOR: [2, 2, 1, 2, 2, 2, 1] (W W H W W W H)
-     * Tem sempre intervals.length elementos (um por passo, incluindo o regresso à raiz).
-     */
-    public int[] getSemitonePattern() {
-        int[] pattern = new int[intervals.length];
-        for (int i = 1; i < intervals.length; i++) {
-            pattern[i - 1] = intervals[i] - intervals[i - 1];
-        }
-        // último passo: de volta à raiz (oitava)
-        pattern[intervals.length - 1] = 12 - intervals[intervals.length - 1];
-        return pattern;
-    }
 }

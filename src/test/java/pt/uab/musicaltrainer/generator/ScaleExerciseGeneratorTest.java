@@ -110,27 +110,4 @@ class ScaleExerciseGeneratorTest {
         assertThat(ex.notesToPlay()[0]).isEqualTo(root);
     }
 
-    @Test
-    void scaleTypeSemitonePatternIsCorrectForMajor() {
-        // Padrão MAJOR: W W H W W W H = [2, 2, 1, 2, 2, 2, 1]
-        int[] pattern = ScaleType.MAJOR.getSemitonePattern();
-
-        assertThat(pattern).containsExactly(2, 2, 1, 2, 2, 2, 1);
-    }
-
-    @Test
-    void scaleTypeSemitonePatternIsCorrectForMinorNatural() {
-        // Padrão MINOR_NATURAL: W H W W H W W = [2, 1, 2, 2, 1, 2, 2]
-        int[] pattern = ScaleType.MINOR_NATURAL.getSemitonePattern();
-
-        assertThat(pattern).containsExactly(2, 1, 2, 2, 1, 2, 2);
-    }
-
-    @Test
-    void scaleTypeSemitonePatternIsCorrectForHarmonicMinor() {
-        // Padrão HARMONIC_MINOR: W H W W H A H = [2, 1, 2, 2, 1, 3, 1]
-        int[] pattern = ScaleType.HARMONIC_MINOR.getSemitonePattern();
-
-        assertThat(pattern).containsExactly(2, 1, 2, 2, 1, 3, 1);
-    }
 }
