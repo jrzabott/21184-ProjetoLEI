@@ -2,6 +2,7 @@ package pt.uab.musicaltrainer.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -18,11 +19,14 @@ class ExerciseServiceTest {
     @Autowired
     private DaoFactory daoFactory;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private ExerciseService service;
 
     @BeforeEach
     void setUp() {
-        service = new ExerciseService(daoFactory);
+        service = new ExerciseService(daoFactory, objectMapper);
     }
 
     // --- Geração ---
