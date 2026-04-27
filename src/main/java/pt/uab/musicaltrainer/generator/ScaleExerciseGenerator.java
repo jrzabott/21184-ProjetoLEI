@@ -59,9 +59,13 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         Note root = Note.fromMidi(rootMidi);
         Scale scale = Scale.get(scaleType, root);
 
-        int[] notes = scale.getNotes().stream()
-            .mapToInt(Note::getMidiNumber)
-            .toArray();
+        // ADR-014: 8 notas — raiz até raiz uma oitava acima (ex: C4 D E F G A B C5)
+        java.util.List<Note> scaleNotes = scale.getNotes();
+        int[] notes = new int[scaleNotes.size() + 1];
+        for (int i = 0; i < scaleNotes.size(); i++) {
+            notes[i] = scaleNotes.get(i).getMidiNumber();
+        }
+        notes[scaleNotes.size()] = rootMidi + 12;
 
         String questionJson = "{\"root\":" + rootMidi + ",\"type\":\"" + scaleType + "\"}";
         String description = "Que tipo de escala começa em " + root.getDisplayName() + "?";
