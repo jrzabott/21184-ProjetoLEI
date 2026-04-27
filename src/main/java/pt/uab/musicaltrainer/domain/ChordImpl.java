@@ -2,6 +2,7 @@ package pt.uab.musicaltrainer.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementação de um acorde musical.
@@ -103,7 +104,7 @@ final class ChordImpl implements Chord, NoteGenerator {
      */
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(type, root);
+        return Objects.hash(type, root);
     }
 
     @Override
