@@ -41,11 +41,15 @@ POST /api/exercises/answer
 - Racional: treino de ouvido enraizado — identificar o intervalo específico gerado, nao apenas qualquer intervalo com a mesma distância
 
 **SCALE:**
-- Exactamente 8 notas (root → root uma oitava acima)
+- Exactamente N notas, onde N = número de notas da escala + 1 (raiz → raiz uma oitava acima)
+  - Escalas de 7 notas (diatónicas: MAJOR, MINOR_NATURAL, HARMONIC_MINOR): 8 notas
+  - Escalas de 5 notas (pentatónicas): 6 notas
+  - Escalas de 6 notas (blues): 7 notas
+  - N é sempre determinado por `ScaleType.getSemitonePattern().length + 1`
 - Qualquer oitava de partida é válida: valida-se o padrão de intervalos, nao os MIDI absolutos
 - Padrão validado: diferenças entre notas consecutivas devem corresponder ao padrão da escala
-- Escala MAJOR: [2, 2, 1, 2, 2, 2, 1] (W W H W W W H)
-- Última nota = primeira nota + 12
+- Escala MAJOR: [2, 2, 1, 2, 2, 2, 1] (W W H W W W H) — exemplo
+- Última nota = primeira nota + 12 (sempre, independente do tipo)
 
 **CHORD:**
 - Exactamente 3 notas em ordem ascendente (I - III - V, sem inversões)
@@ -81,12 +85,10 @@ do exercício a partir do questionJson + domínio.
 
 - AnswerRequest DTO: `{ exerciseId, notes[], responseTimeMs }` — sem `answer: String`
 - ExerciseService.evaluateAnswer() aceita `int[] notes` e aplica lógica por tipo
-- ScaleExerciseGenerator produz 8 notas (raiz → raiz oitava acima)
-- Avaliação de escalas é independente de oitava (padrão de intervalos)
+- ScaleExerciseGenerator produz N notas (raiz → raiz oitava acima, N depende do tipo de escala)
+- Avaliação de escalas é independente de oitava (padrão de intervalos) e independente de N fixo
 - Avaliação de intervalos é dependente de oitava (notas exactas)
 - Avaliação de acordes é independente de oitava, dependente de ordem (I-III-V)
-- Swagger UI adicionado para demonstração interactiva da API ao orientador
-
 ## Referências
 
 - RF01, RF02, RF03, RF04, RF13 (backend agnóstico à origem da nota)
