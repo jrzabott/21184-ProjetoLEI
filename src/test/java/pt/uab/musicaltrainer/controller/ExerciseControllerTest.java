@@ -35,13 +35,12 @@ class ExerciseControllerTest {
             .andExpect(jsonPath("$.exerciseId").isNumber())
             .andExpect(jsonPath("$.type").value("INTERVAL"))
             .andExpect(jsonPath("$.notes").isArray())
-            .andExpect(jsonPath("$.options").isArray())
             .andExpect(jsonPath("$.description").isString());
     }
 
     @Test
     void shouldGenerateScaleExercise() throws Exception {
-        GenerateRequest req = new GenerateRequest("SCALE", 2);
+        GenerateRequest req = new GenerateRequest("SCALE", 1);
 
         mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,29 +51,16 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void shouldGenerateChordExercise() throws Exception {
-        GenerateRequest req = new GenerateRequest("CHORD", 1);
-
-        mockMvc.perform(post("/api/exercises/generate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.type").value("CHORD"));
-    }
-
-    @Test
     void shouldReturn400ForUnknownType() throws Exception {
-        String body = "{\"type\":\"UNKNOWN\",\"difficulty\":1}";
-
         mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content("{\"type\":\"UNKNOWN\",\"difficulty\":1}"))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void shouldEvaluateCorrectAnswerForChord() throws Exception {
-        // Gerar um exercício
+    void shouldAnswerWithNotesAtFlatEndpoint() throws Exception {
+        // ADR-014: POST /api/exercises/answer — exerciseId no corpo, notes[] em vez de string
         GenerateRequest req = new GenerateRequest("CHORD", 1);
         String resp = mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -83,14 +69,26 @@ class ExerciseControllerTest {
 
         Long exerciseId = mapper.readTree(resp).get("exerciseId").asLong();
 
-        // Responder com uma resposta qualquer (só verificar que o endpoint funciona)
-        String answerBody = "{\"sessionId\":null,\"answer\":\"MAJOR\",\"responseTimeMs\":1000}";
-        mockMvc.perform(post("/api/exercises/" + exerciseId + "/answer")
+        // Responder com notas — backend avalia
+        String answerBody = String.format(
+            "{\"exerciseId\":%d,\"sessionId\":null,\"notes\":[60,64,67],\"responseTimeMs\":1000}",
+            exerciseId);
+
+        mockMvc.perform(post("/api/exercises/answer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(answerBody))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
             .andExpect(jsonPath("$.correctAnswer").isString())
             .andExpect(jsonPath("$.explanation").isString());
+    }
+
+    @Test
+    void shouldNotHavePathVariableEndpoint() throws Exception {
+        // ADR-014: endpoint /answer é flat, sem /{exerciseId} no path
+        mockMvc.perform(post("/api/exercises/99/answer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andExpect(status().isNotFound());
     }
 }

@@ -11,7 +11,7 @@ import pt.uab.musicaltrainer.service.ExerciseService;
 
 /**
  * REST controller para operações de exercícios.
- * Sem lógica de negócio — delega tudo ao ExerciseService.
+ * O utilizador responde tocando notas MIDI — sem múltipla escolha (ADR-014).
  */
 @RestController
 @RequestMapping("/api/exercises")
@@ -28,8 +28,8 @@ public class ExerciseController {
 
     @PostMapping("/generate")
     public ResponseEntity<?> generate(@RequestBody GenerateRequest request) {
-        logger.debug("POST /api/exercises/generate: type={}, difficulty={}", request.type(), request.difficulty());
-
+        logger.debug("POST /api/exercises/generate: type={}, difficulty={}",
+            request.type(), request.difficulty());
         try {
             ExerciseRecord saved = service.generateAndSave(request.type(), request.difficulty());
             GeneratedExercise display = service.getDisplayData(saved);
@@ -38,38 +38,38 @@ public class ExerciseController {
                 saved.id(), saved.type(), saved.difficulty(),
                 display.notesToPlay(), display.description(), display.options()
             );
-
             logger.info("Exercício gerado: id={}, type={}", saved.id(), saved.type());
             return ResponseEntity.ok(response);
 
         } catch (IllegalArgumentException e) {
-            logger.warn("Tipo inválido no generate: {}", request.type());
+            logger.warn("Tipo inválido: {}", request.type());
             return ResponseEntity.badRequest().body("Tipo de exercício inválido: " + request.type());
         } catch (Exception e) {
             logger.error("Erro ao gerar exercício", e);
-            return ResponseEntity.internalServerError().body("Erro interno ao gerar exercício");
+            return ResponseEntity.internalServerError().body("Erro interno");
         }
     }
 
-    @PostMapping("/{exerciseId}/answer")
-    public ResponseEntity<?> answer(
-            @PathVariable Long exerciseId,
-            @RequestBody AnswerRequest request) {
-
-        logger.debug("POST /api/exercises/{}/answer: answer={}", exerciseId, request.answer());
-
+    @PostMapping("/answer")
+    public ResponseEntity<?> answer(@RequestBody AnswerRequest request) {
+        logger.debug("POST /api/exercises/answer: exerciseId={}, notes={}",
+            request.exerciseId(), request.notes().length);
         try {
-            boolean correct = service.evaluateAnswer(exerciseId, request.answer());
-            String correctAnswer = service.getCorrectAnswer(exerciseId);
-            String explanation = service.buildExplanation(exerciseId, request.answer(), correct);
+            boolean correct = service.evaluateAnswer(request.exerciseId(), request.notes());
+            int[] expectedNotes = service.getExpectedNotes(request.exerciseId());
+            String explanation = service.buildExplanation(request.exerciseId(), request.notes(), correct);
 
-            AnswerResponse response = new AnswerResponse(correct, correctAnswer, request.answer(), explanation);
-
-            logger.info("Resposta avaliada: exerciseId={}, correct={}", exerciseId, correct);
+            AnswerResponse response = new AnswerResponse(
+                correct,
+                java.util.Arrays.toString(expectedNotes),
+                java.util.Arrays.toString(request.notes()),
+                explanation
+            );
+            logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            logger.error("Erro ao avaliar resposta: exerciseId={}", exerciseId, e);
+            logger.error("Erro ao avaliar resposta: exerciseId={}", request.exerciseId(), e);
             return ResponseEntity.internalServerError().body("Erro ao avaliar resposta");
         }
     }
