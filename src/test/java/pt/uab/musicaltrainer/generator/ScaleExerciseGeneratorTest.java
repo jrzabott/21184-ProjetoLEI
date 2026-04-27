@@ -33,20 +33,20 @@ class ScaleExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateEightNotesForScale() {
-        // ADR-014: escalas são raiz→raiz (oitava acima) — 8 notas, nao 7
-        GeneratedExercise ex = generator.generate(1);
-
-        assertThat(ex.notesToPlay()).hasSize(8);
-    }
-
-    @Test
-    void shouldGenerateLastNoteOneOctaveAboveFirst() {
-        // última nota = primeira nota + 12 (regresso à raiz, oitava acima)
+    void shouldGenerateRootToRootNotes() {
+        // ADR-014: escalas são raiz→raiz (oitava acima)
+        // N notas: diatónicas=8, pentatónicas=6, blues=7. N = ScaleType.intervals.length + 1
         GeneratedExercise ex = generator.generate(1);
         int[] notes = ex.notesToPlay();
 
-        assertThat(notes[7]).isEqualTo(notes[0] + 12);
+        // Independentemente do tipo, última nota = primeira + oitava
+        assertThat(notes[notes.length - 1]).isEqualTo(notes[0] + 12);
+    }
+
+    @Test
+    void shouldGenerateMoreThanOneNote() {
+        GeneratedExercise ex = generator.generate(1);
+        assertThat(ex.notesToPlay().length).isGreaterThan(1);
     }
 
     @Test
@@ -94,9 +94,10 @@ class ScaleExerciseGeneratorTest {
 
         GeneratedExercise ex = generator.fromStored(questionJson, "MAJOR", 1);
 
-        assertThat(ex.notesToPlay()).hasSize(8);  // 8 notas: raiz→raiz
+        // MAJOR tem 7 notas → raiz-a-raiz = 8. Índice [7] é válido aqui (teste específico para MAJOR)
+        assertThat(ex.notesToPlay()).hasSize(8);
         assertThat(ex.notesToPlay()[0]).isEqualTo(60);
-        assertThat(ex.notesToPlay()[7]).isEqualTo(72);  // C4 + oitava = C5
+        assertThat(ex.notesToPlay()[7]).isEqualTo(72);  // C4(60) + 12 = C5(72)
         assertThat(ex.correctAnswer()).isEqualTo("MAJOR");
     }
 
