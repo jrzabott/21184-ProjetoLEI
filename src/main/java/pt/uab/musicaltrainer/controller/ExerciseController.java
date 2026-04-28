@@ -1,6 +1,8 @@
 package pt.uab.musicaltrainer.controller;
 
 import java.util.Arrays;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,9 @@ import pt.uab.musicaltrainer.service.ExerciseService;
 
 /**
  * REST controller para operações de exercícios.
- * O utilizador responde tocando notas MIDI — sem múltipla escolha (ADR-014).
+ * O utilizador responde tocando notas MIDI - sem múltipla escolha (ADR-014).
  */
+@Tag(name = "Exercícios", description = "Geração e avaliação de exercícios de teoria musical")
 @RestController
 @RequestMapping("/api/exercises")
 public class ExerciseController {
@@ -27,6 +30,7 @@ public class ExerciseController {
         logger.info("ExerciseController inicializado");
     }
 
+    @Operation(summary = "Gerar exercício", description = "Gera um exercício aleatório do tipo e dificuldade indicados")
     @PostMapping("/generate")
     public ResponseEntity<?> generate(@RequestBody GenerateRequest request) {
         logger.debug("POST /api/exercises/generate: type={}, difficulty={}",
@@ -51,6 +55,7 @@ public class ExerciseController {
         }
     }
 
+    @Operation(summary = "Avaliar resposta", description = "Recebe notas MIDI tocadas e avalia se correspondem ao exercício")
     @PostMapping("/answer")
     public ResponseEntity<?> answer(@RequestBody AnswerRequest request) {
         logger.debug("POST /api/exercises/answer: exerciseId={}, notes={}",
