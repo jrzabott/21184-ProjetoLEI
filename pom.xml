@@ -55,6 +55,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Swagger UI — interface interactiva para teste e demo da API -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
         <!-- Spring Boot Test Starter (includes JUnit 5, Mockito, AssertJ, etc.) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
