@@ -4,6 +4,7 @@ import pt.uab.musicaltrainer.dto.ResultRecord;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,5 +77,32 @@ public class ResultDao extends AbstractDao<ResultRecord> {
             rs.getBoolean("is_correct"),
             rs.getTimestamp("created_at").toLocalDateTime()
         );
+    }
+
+    /**
+     * Agrega resultados por tipo de exercício.
+     * Devolve mapa de tipo → [total, corrects].
+     */
+    public Map<String, long[]> countByExerciseType() throws SQLException {
+        String sql = "SELECT e.type, COUNT(*) as total, " +
+            "SUM(CASE WHEN r.is_correct THEN 1 ELSE 0 END) as correct_count " +
+            "FROM results r JOIN exercises e ON r.exercise_id = e.id " +
+            "GROUP BY e.type";
+
+        Map<String, long[]> result = new java.util.LinkedHashMap<>();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String type    = rs.getString("type");
+                long total     = rs.getLong("total");
+                long correct   = rs.getLong("correct_count");
+                result.put(type, new long[]{total, correct});
+                logger.debug("Tipo={}: total={}, correct={}", type, total, correct);
+            }
+        }
+        logger.info("Agregação por tipo: {} tipos encontrados", result.size());
+        return result;
     }
 }
