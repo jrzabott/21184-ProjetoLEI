@@ -29,10 +29,21 @@ public class ProgressService {
 
         List<SessionRecord> sessions = daoFactory.createSessionDao().findAll();
 
-        long totalSessions = sessions.size();
+        long totalSessions  = sessions.size();
         long totalExercises = sessions.stream().mapToLong(SessionRecord::totalExercises).sum();
-        long totalCorrect = sessions.stream().mapToLong(SessionRecord::correctAnswers).sum();
-        double accuracy = totalExercises == 0 ? 0.0 : (double) totalCorrect / totalExercises;
+        long totalCorrect   = sessions.stream().mapToLong(SessionRecord::correctAnswers).sum();
+        double accuracy     = totalExercises == 0 ? 0.0 : (double) totalCorrect / totalExercises;
+
+        // Agregação por tipo — dados reais da tabela results
+        Map<String, long[]> typeCounts = daoFactory.createResultDao().countByExerciseType();
+        Map<String, ProgressResponse.TypeStats> byType = typeCounts.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> new ProgressResponse.TypeStats(
+                    e.getValue()[0] == 0 ? 0.0 : (double) e.getValue()[1] / e.getValue()[0],
+                    e.getValue()[0]
+                )
+            ));
 
         List<ProgressResponse.SessionSummary> recent = sessions.stream()
             .limit(10)
@@ -43,8 +54,9 @@ public class ProgressService {
             ))
             .collect(Collectors.toList());
 
-        logger.info("Progresso: sessions={}, exercises={}, accuracy={}", totalSessions, totalExercises, accuracy);
+        logger.info("Progresso: sessions={}, exercises={}, accuracy={}, tipos={}",
+            totalSessions, totalExercises, accuracy, byType.keySet());
 
-        return new ProgressResponse(totalSessions, totalExercises, accuracy, Map.of(), recent);
+        return new ProgressResponse(totalSessions, totalExercises, accuracy, byType, recent);
     }
 }
