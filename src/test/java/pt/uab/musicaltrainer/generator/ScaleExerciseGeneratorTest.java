@@ -14,7 +14,7 @@ class ScaleExerciseGeneratorTest {
 
     @Test
     void shouldReturnScaleAsExerciseType() {
-        assertThat(generator.getExerciseType()).isEqualTo("SCALE");
+        assertThat(generator.getExerciseType()).isEqualTo(pt.uab.musicaltrainer.generator.ExerciseType.SCALE);
     }
 
     @Test

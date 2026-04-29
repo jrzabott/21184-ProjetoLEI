@@ -13,7 +13,7 @@ class IntervalExerciseGeneratorTest {
 
     @Test
     void shouldReturnIntervalAsExerciseType() {
-        assertThat(generator.getExerciseType()).isEqualTo("INTERVAL");
+        assertThat(generator.getExerciseType()).isEqualTo(pt.uab.musicaltrainer.generator.ExerciseType.INTERVAL);
     }
 
     @Test
