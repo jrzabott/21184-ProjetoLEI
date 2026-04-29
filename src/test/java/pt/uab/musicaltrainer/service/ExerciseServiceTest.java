@@ -10,6 +10,9 @@ import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.generator.GeneratedExercise;
 import pt.uab.musicaltrainer.generator.GeneratorFactory;
+import pt.uab.musicaltrainer.service.SessionService;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -26,11 +29,14 @@ class ExerciseServiceTest {
     @Autowired
     private GeneratorFactory generatorFactory;
 
+    @Autowired
+    private SessionService sessionService;
+
     private ExerciseService service;
 
     @BeforeEach
     void setUp() {
-        service = new ExerciseService(daoFactory, objectMapper, generatorFactory);
+        service = new ExerciseService(daoFactory, objectMapper, generatorFactory, sessionService);
     }
 
     // --- Geração ---
@@ -85,7 +91,7 @@ class ExerciseServiceTest {
         ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
         int[] expectedNotes = service.getExpectedNotes(saved.id());
 
-        boolean result = service.evaluateAnswer(saved.id(), expectedNotes);
+        boolean result = service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, expectedNotes);
 
         assertThat(result).isTrue();
     }
@@ -95,7 +101,7 @@ class ExerciseServiceTest {
         ExerciseRecord saved = service.generateAndSave("SCALE", 1);
         int[] expectedNotes = service.getExpectedNotes(saved.id());
 
-        boolean result = service.evaluateAnswer(saved.id(), expectedNotes);
+        boolean result = service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, expectedNotes);
 
         assertThat(result).isTrue();
     }
@@ -105,7 +111,7 @@ class ExerciseServiceTest {
         ExerciseRecord saved = service.generateAndSave("CHORD", 1);
         int[] expectedNotes = service.getExpectedNotes(saved.id());
 
-        boolean result = service.evaluateAnswer(saved.id(), expectedNotes);
+        boolean result = service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, expectedNotes);
 
         assertThat(result).isTrue();
     }
@@ -114,7 +120,7 @@ class ExerciseServiceTest {
     void shouldEvaluateWrongNotesAsFalse() throws Exception {
         ExerciseRecord saved = service.generateAndSave("CHORD", 1);
 
-        boolean result = service.evaluateAnswer(saved.id(), new int[]{0, 1, 2});
+        boolean result = service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, new int[]{0, 1, 2});
 
         assertThat(result).isFalse();
     }
@@ -124,7 +130,7 @@ class ExerciseServiceTest {
         ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
 
         // intervalo requer exactamente 2 notas
-        boolean result = service.evaluateAnswer(saved.id(), new int[]{60, 64, 67});
+        boolean result = service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, new int[]{60, 64, 67});
 
         assertThat(result).isFalse();
     }
@@ -144,7 +150,7 @@ class ExerciseServiceTest {
             transposedNotes[i] = expectedNotes[i] + 12;
         }
 
-        boolean result = service.evaluateAnswer(saved.id(), transposedNotes);
+        boolean result = service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, transposedNotes);
 
         assertThat(result).isTrue();
     }
@@ -168,5 +174,53 @@ class ExerciseServiceTest {
         int[] notes = service.getExpectedNotes(saved.id());
 
         assertThat(notes).hasSize(8);
+    }
+
+    // --- Persistência de resultados e sessão ---
+
+    @Test
+    void shouldNotPersistResultWhenSessionNone() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("CHORD", 1);
+        int[] expected = service.getExpectedNotes(saved.id());
+        service.evaluateAnswer(saved.id(), pt.uab.musicaltrainer.MusicConstants.SESSION_NONE, expected);
+        List<pt.uab.musicaltrainer.dto.ResultRecord> results =
+            daoFactory.createResultDao().findAll().stream()
+                .filter(r -> r.exerciseId().equals(saved.id())).toList();
+        assertThat(results).isEmpty();
+    }
+
+    @Test
+    void shouldPersistResultWhenSessionProvided() throws Exception {
+        pt.uab.musicaltrainer.dto.SessionRecord session = sessionService.startSession();
+        ExerciseRecord saved = service.generateAndSave("CHORD", 1);
+        int[] expected = service.getExpectedNotes(saved.id());
+        service.evaluateAnswer(saved.id(), session.id(), expected);
+        List<pt.uab.musicaltrainer.dto.ResultRecord> results =
+            daoFactory.createResultDao().findBySessionId(session.id());
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).isCorrect()).isTrue();
+    }
+
+    @Test
+    void shouldUpdateSessionCountersOnCorrectAnswer() throws Exception {
+        pt.uab.musicaltrainer.dto.SessionRecord session = sessionService.startSession();
+        ExerciseRecord saved = service.generateAndSave("CHORD", 1);
+        int[] expected = service.getExpectedNotes(saved.id());
+        service.evaluateAnswer(saved.id(), session.id(), expected);
+        pt.uab.musicaltrainer.dto.SessionRecord updated =
+            daoFactory.createSessionDao().findById(session.id()).orElseThrow();
+        assertThat(updated.totalExercises()).isEqualTo(1);
+        assertThat(updated.correctAnswers()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldUpdateSessionCountersOnWrongAnswer() throws Exception {
+        pt.uab.musicaltrainer.dto.SessionRecord session = sessionService.startSession();
+        ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
+        service.evaluateAnswer(saved.id(), session.id(), new int[]{0, 0});
+        pt.uab.musicaltrainer.dto.SessionRecord updated =
+            daoFactory.createSessionDao().findById(session.id()).orElseThrow();
+        assertThat(updated.totalExercises()).isEqualTo(1);
+        assertThat(updated.incorrectAnswers()).isEqualTo(1);
     }
 }
