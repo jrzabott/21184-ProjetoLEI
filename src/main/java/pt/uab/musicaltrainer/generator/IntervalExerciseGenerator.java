@@ -3,7 +3,7 @@ package pt.uab.musicaltrainer.generator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.uab.musicaltrainer.domain.Interval;
+import pt.uab.musicaltrainer.domain.DifficultyLevel;
 import pt.uab.musicaltrainer.domain.IntervalType;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.dto.IntervalQuestion;
@@ -20,10 +20,8 @@ import java.util.stream.Collectors;
  * <p>
  * Schema de questionJson (ADR-013): {"notes":[midiA,midiB]}
  * <p>
- * Difficulty afecta o range e o tamanho máximo do intervalo:
- * - 1-3: intervalos até 7 semítons, range C3-C5
- * - 4-7: intervalos até 12 semítons, range C2-C6
- * - 8-10: qualquer intervalo, range completo do piano
+ * Difficulty afecta o range de raiz e os tipos disponíveis via IntervalType.availableFor().
+ * Iniciantes (BEGINNER/ELEMENTARY) ficam em C3-C5; níveis superiores em C2-C6.
  */
 public class IntervalExerciseGenerator implements ExerciseGenerator {
 
@@ -40,77 +38,71 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
     public GeneratedExercise generate(int difficulty) {
         logger.debug("Gerando intervalo: difficulty={}", difficulty);
 
-        int[] midiRange = midiRangeFor(difficulty);
-        int maxSemitones = maxSemitonesFor(difficulty);
+        DifficultyLevel band = DifficultyLevel.of(difficulty);
+        List<IntervalType> available = IntervalType.availableFor(band);
 
-        int noteA = midiRange[0] + random.nextInt(Math.max(1, midiRange[1] - midiRange[0] - maxSemitones));
-        int noteB = noteA + 1 + random.nextInt(maxSemitones);
-        noteB = Math.min(noteB, 127);
+        // Raiz mais central para iniciantes
+        int[] rootRange = band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()
+            ? new int[]{48, 72}   // C3-C5
+            : new int[]{36, 84};  // C2-C6
 
-        Note low = Note.fromMidi(noteA);
-        Note high = Note.fromMidi(noteB);
-        Interval interval = Interval.between(low, high);
+        // Exclui Unissono (0 semítons) — noteA == noteB viola o contrato notesToPlay()[1] > [0]
+        List<IntervalType> playable = available.stream()
+            .filter(t -> t.semitones() > 0)
+            .collect(Collectors.toCollection(ArrayList::new));
+        if (playable.isEmpty()) playable = available; // fallback de segurança
 
-        String correctAnswer = IntervalType.fromSemitones(interval.getSemitones()).displayName();
-        String questionJson = "{\"notes\":[" + noteA + "," + noteB + "]}";
-        String description = "Que intervalo existe entre " + low.getDisplayName()
-            + " e " + high.getDisplayName() + "?";
+        int noteA = rootRange[0] + random.nextInt(rootRange[1] - rootRange[0]);
+        IntervalType type = playable.get(random.nextInt(playable.size()));
+        int noteB = noteA + type.semitones();
+        noteB = Math.max(0, Math.min(127, noteB));
 
-        logger.info("Intervalo gerado: {}({}) -> {}({}) = {}, difficulty={}",
-            noteA, low.getDisplayName(), noteB, high.getDisplayName(), correctAnswer, difficulty);
+        int low  = Math.min(noteA, noteB);
+        int high = Math.max(noteA, noteB);
+
+        String correctAnswer = type.internalName();
+        String questionJson  = "{\"notes\":[" + low + "," + high + "]}";
+        String description   = "Que intervalo existe entre "
+            + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName() + "?";
+
+        logger.info("Intervalo gerado: type={}, low={}, high={}, difficulty={}",
+            type.internalName(), low, high, difficulty);
 
         return new GeneratedExercise(
             ExerciseType.INTERVAL.name(), difficulty, questionJson, correctAnswer,
-            description, new int[]{noteA, noteB}, buildOptions(correctAnswer)
+            description, new int[]{low, high}, buildOptions(correctAnswer, available)
         );
     }
 
     @Override
     public GeneratedExercise fromStored(String questionJson, String correctAnswer, int difficulty) {
         logger.debug("Reconstruindo intervalo de BD: questionJson={}", questionJson);
-
         try {
             IntervalQuestion q = mapper.readValue(questionJson, IntervalQuestion.class);
             int noteA = q.notes()[0];
             int noteB = q.notes()[1];
-            Note low = Note.fromMidi(noteA);
+            Note low  = Note.fromMidi(noteA);
             Note high = Note.fromMidi(noteB);
-            String description = "Que intervalo existe entre " + low.getDisplayName()
-                + " e " + high.getDisplayName() + "?";
-
-            return new GeneratedExercise(
-                ExerciseType.INTERVAL.name(), difficulty, questionJson, correctAnswer,
-                description, new int[]{noteA, noteB}, buildOptions(correctAnswer)
-            );
+            String description = "Que intervalo existe entre " + low.getDisplayName() + " e " + high.getDisplayName() + "?";
+            List<String> options = buildOptions(correctAnswer, Arrays.asList(IntervalType.values()));
+            return new GeneratedExercise(ExerciseType.INTERVAL.name(), difficulty, questionJson,
+                correctAnswer, description, new int[]{noteA, noteB}, options);
         } catch (Exception e) {
             logger.error("Erro a desserializar IntervalQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
     }
 
-    private List<String> buildOptions(String correct) {
-        List<String> pool = Arrays.stream(IntervalType.values())
-            .map(IntervalType::displayName)
-            .filter(name -> !name.equals(correct))
+    private List<String> buildOptions(String correct, List<IntervalType> available) {
+        List<String> pool = available.stream()
+            .map(IntervalType::internalName)
+            .filter(n -> !n.equals(correct))
             .collect(Collectors.toCollection(ArrayList::new));
         Collections.shuffle(pool);
-
         List<String> options = new ArrayList<>();
         options.add(correct);
         options.addAll(pool.subList(0, Math.min(3, pool.size())));
         Collections.shuffle(options);
         return options;
-    }
-
-    private int[] midiRangeFor(int difficulty) {
-        if (difficulty <= 3) return new int[]{48, 72};
-        if (difficulty <= 7) return new int[]{36, 84};
-        return new int[]{21, 108};
-    }
-
-    private int maxSemitonesFor(int difficulty) {
-        if (difficulty <= 3) return 7;
-        if (difficulty <= 7) return 12;
-        return 24;
     }
 }
