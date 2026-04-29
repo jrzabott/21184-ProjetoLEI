@@ -80,6 +80,23 @@ public class ResultDao extends AbstractDao<ResultRecord> {
     }
 
     /**
+     * Devolve os últimos N resultados para um tipo de exercício.
+     * Usado pelo DifficultyService para calcular taxa de acerto (RF09).
+     */
+    public List<ResultRecord> findLastNByExerciseType(String exerciseType, int n) throws SQLException {
+        String sql = "SELECT r.id, r.session_id, r.exercise_id, r.user_answer, r.is_correct, r.created_at " +
+            "FROM results r JOIN exercises e ON r.exercise_id = e.id " +
+            "WHERE e.type = ? ORDER BY r.created_at DESC LIMIT ?";
+        logger.debug("Procurando últimos {} resultados para tipo={}", n, exerciseType);
+        List<ResultRecord> result = queryForList(sql, ps -> {
+            ps.setString(1, exerciseType);
+            ps.setInt(2, n);
+        }, this::mapRow);
+        logger.info("Resultados encontrados: tipo={}, count={}", exerciseType, result.size());
+        return result;
+    }
+
+    /**
      * Agrega resultados por tipo de exercício.
      * Devolve mapa de tipo → [total, corrects].
      */
