@@ -31,7 +31,7 @@ class DtoSerializationTest {
     @Test
     void shouldSerializeGenerateResponse() throws Exception {
         GenerateResponse resp = new GenerateResponse(
-            1L, "INTERVAL", 2,
+            1L, "INTERVAL", 2, 2,
             new int[]{60, 67}, "Que intervalo e este?",
             List.of("5a Perfeita", "4a Perfeita", "3a Maior", "2a Maior")
         );

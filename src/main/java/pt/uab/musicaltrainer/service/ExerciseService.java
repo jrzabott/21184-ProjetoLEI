@@ -34,13 +34,16 @@ public class ExerciseService {
     private final ObjectMapper objectMapper;
     private final GeneratorFactory generatorFactory;
     private final SessionService sessionService;
+    private final DifficultyService difficultyService;
 
     public ExerciseService(DaoFactory daoFactory, ObjectMapper objectMapper,
-                           GeneratorFactory generatorFactory, SessionService sessionService) {
-        this.daoFactory = daoFactory;
-        this.objectMapper = objectMapper;
-        this.generatorFactory = generatorFactory;
-        this.sessionService = sessionService;
+                           GeneratorFactory generatorFactory, SessionService sessionService,
+                           DifficultyService difficultyService) {
+        this.daoFactory         = daoFactory;
+        this.objectMapper       = objectMapper;
+        this.generatorFactory   = generatorFactory;
+        this.sessionService     = sessionService;
+        this.difficultyService  = difficultyService;
         logger.info("ExerciseService inicializado: tipos={}", generatorFactory.types());
     }
 
@@ -51,20 +54,31 @@ public class ExerciseService {
     public ExerciseRecord generateAndSave(String type, int difficulty) throws Exception {
         logger.debug("Gerando exercício: type={}, difficulty={}", type, difficulty);
 
+        // RF09: verificar dificuldade sugerida e clamp ±2
+        int suggested       = difficultyService.suggestDifficulty(type, difficulty);
+        int effectiveDiff   = Math.max(suggested - 2, Math.min(suggested + 2, difficulty));
+        if (effectiveDiff != difficulty) {
+            logger.info("Dificuldade ajustada: pedida={}, sugerida={}, efectiva={}",
+                difficulty, suggested, effectiveDiff);
+        }
+
         ExerciseGenerator generator = getGenerator(type);
-        GeneratedExercise generated = generator.generate(difficulty);
+        GeneratedExercise generated = generator.generate(effectiveDiff);
 
         String expectedNotesJson = toNotesJson(generated.notesToPlay());
-
         ExerciseRecord toSave = new ExerciseRecord(
             null, generated.type(), generated.difficulty(),
             generated.questionJson(), expectedNotesJson, null
         );
 
         ExerciseRecord saved = daoFactory.createExerciseDao().save(toSave);
-        logger.info("Exercício guardado: id={}, type={}, expectedNotes={}",
-            saved.id(), saved.type(), expectedNotesJson);
+        logger.info("Exercício guardado: id={}, type={}, difficulty={}",
+            saved.id(), saved.type(), effectiveDiff);
         return saved;
+    }
+
+    public int getSuggestedDifficulty(String type, int currentDifficulty) throws Exception {
+        return difficultyService.suggestDifficulty(type, currentDifficulty);
     }
 
     /**
