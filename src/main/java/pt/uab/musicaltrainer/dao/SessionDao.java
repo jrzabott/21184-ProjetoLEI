@@ -75,6 +75,23 @@ public class SessionDao extends AbstractDao<SessionRecord> {
         return queryForList(sql, this::mapRow);
     }
 
+    public void incrementCounters(Long sessionId, boolean correct) throws SQLException {
+        logger.debug("Incrementando contadores: sessionId={}, correct={}", sessionId, correct);
+        String sql = "UPDATE sessions SET " +
+            "total_exercises   = total_exercises + 1, " +
+            "correct_answers   = correct_answers + ?, " +
+            "incorrect_answers = incorrect_answers + ? " +
+            "WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, correct ? 1 : 0);
+            ps.setInt(2, correct ? 0 : 1);
+            ps.setLong(3, sessionId);
+            int rows = ps.executeUpdate();
+            logger.info("Contadores actualizados: sessionId={}, correct={}, rows={}", sessionId, correct, rows);
+        }
+    }
+
     private SessionRecord mapRow(ResultSet rs) throws SQLException {
         return new SessionRecord(
             rs.getLong("id"),

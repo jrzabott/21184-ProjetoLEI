@@ -60,4 +60,9 @@ public class SessionService {
         if (session.endTime() == null) return 0L;
         return ChronoUnit.SECONDS.between(session.startTime(), session.endTime());
     }
+
+    public void incrementCounters(Long sessionId, boolean correct) throws Exception {
+        logger.debug("Incrementando contadores: sessionId={}, correct={}", sessionId, correct);
+        daoFactory.createSessionDao().incrementCounters(sessionId, correct);
+    }
 }
