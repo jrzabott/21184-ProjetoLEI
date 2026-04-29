@@ -6,6 +6,7 @@ public record GenerateResponse(
     Long exerciseId,
     String type,
     int difficulty,
+    int suggestedDifficulty,
     int[] notes,
     String description,
     List<String> options
