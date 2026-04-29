@@ -58,10 +58,10 @@ public class ExerciseController {
     @Operation(summary = "Avaliar resposta", description = "Recebe notas MIDI tocadas e avalia se correspondem ao exercício")
     @PostMapping("/answer")
     public ResponseEntity<?> answer(@RequestBody AnswerRequest request) {
-        logger.debug("POST /api/exercises/answer: exerciseId={}, notes={}",
-            request.exerciseId(), request.notes().length);
+        logger.debug("POST /api/exercises/answer: exerciseId={}, sessionId={}, notes={}",
+            request.exerciseId(), request.sessionId(), request.notes().length);
         try {
-            boolean correct = service.evaluateAnswer(request.exerciseId(), request.notes());
+            boolean correct = service.evaluateAnswer(request.exerciseId(), request.sessionId(), request.notes());
             int[] expectedNotes = service.getExpectedNotes(request.exerciseId());
             String explanation = service.buildExplanation(request.exerciseId(), request.notes(), correct);
 
