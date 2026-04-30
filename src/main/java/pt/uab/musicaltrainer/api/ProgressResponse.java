@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.api;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,12 @@ public record ProgressResponse(
 ) {
     public record TypeStats(double accuracy, long totalAnswers) {}
 
-    public record SessionSummary(Long sessionId, double accuracy, int totalExercises) {}
+    public record SessionSummary(
+        Long sessionId,
+        LocalDateTime startedAt,
+        double accuracy,
+        int totalExercises
+    ) {}
 
     /**
      * Padrão específico onde o utilizador tem pior desempenho.
