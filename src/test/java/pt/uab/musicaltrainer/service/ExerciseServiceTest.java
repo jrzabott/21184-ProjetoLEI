@@ -248,4 +248,19 @@ class ExerciseServiceTest {
         assertThat(ex).isNotNull();
         assertThat(ex.id()).isGreaterThan(0);
     }
+
+    @Test
+    void shouldEvaluateWithoutCrashWhenSessionIdDoesNotExist() throws Exception {
+        // Bug: sessionId válido mas sessão não existe na BD (ex: BD reiniciada)
+        ExerciseRecord saved = service.generateAndSave("CHORD", 1, null);
+        int[] expected = service.getExpectedNotes(saved.id());
+
+        assertThatCode(() -> service.evaluateAnswer(saved.id(), 99999L, expected))
+            .doesNotThrowAnyException();
+
+        // Nenhum resultado guardado — sessão inexistente = fallback para sandbox
+        assertThat(daoFactory.createResultDao().findAll().stream()
+            .filter(r -> r.exerciseId().equals(saved.id()))
+            .toList()).isEmpty();
+    }
 }
