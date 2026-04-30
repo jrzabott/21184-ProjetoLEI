@@ -55,4 +55,12 @@ class SessionControllerTest {
             .andExpect(jsonPath("$.accuracy").isNumber())
             .andExpect(jsonPath("$.durationSeconds").isNumber());
     }
+
+    @Test
+    void shouldReturn404ForEndingNonExistentSession() throws Exception {
+        mockMvc.perform(post("/api/sessions/99999/end")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andExpect(status().isNotFound());
+    }
 }

@@ -53,8 +53,8 @@ public class SandboxController {
             logger.info("Note info: notes={}", notes);
             return ResponseEntity.ok(new NoteInfoResponse(noteInfos, intervalInfo));
 
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body("Formato inválido. Usar: ?notes=60 ou ?notes=60,67");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Formato inválido ou nota MIDI fora do intervalo (0-127).");
         } catch (Exception e) {
             logger.error("Erro ao obter note info: notes={}", notes, e);
             return ResponseEntity.internalServerError().body("Erro");

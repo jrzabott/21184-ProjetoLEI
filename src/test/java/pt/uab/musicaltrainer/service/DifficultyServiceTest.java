@@ -34,4 +34,10 @@ class DifficultyServiceTest {
     void shouldClampToMaximumTen() throws Exception {
         assertThat(service.suggestDifficulty("CHORD", 10)).isLessThanOrEqualTo(10);
     }
+
+    @Test
+    void shouldReturnCurrentDifficultyWhenHistorySizeIsInsufficient() throws Exception {
+        // menos de 3 tentativas — sem histórico suficiente, mantém dificuldade actual
+        assertThat(service.suggestDifficulty("CHORD", 7)).isEqualTo(7);
+    }
 }
