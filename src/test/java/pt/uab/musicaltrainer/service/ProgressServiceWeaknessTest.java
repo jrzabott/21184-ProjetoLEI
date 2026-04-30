@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,12 @@ class ProgressServiceWeaknessTest {
     private DaoFactory daoFactory;
     @Autowired
     private WeaknessHintProvider hintProvider;
+    @Autowired
+    private ObjectMapper objectMapper;
     private ProgressService service;
 
     @BeforeEach
-    void setUp() { service = new ProgressService(daoFactory, hintProvider); }
+    void setUp() { service = new ProgressService(daoFactory, hintProvider, objectMapper); }
 
     @Test
     void shouldReturnWeakestAreasAsList() throws Exception {
