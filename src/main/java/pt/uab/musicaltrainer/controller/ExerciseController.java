@@ -36,11 +36,13 @@ public class ExerciseController {
         logger.debug("POST /api/exercises/generate: type={}, difficulty={}",
             request.type(), request.difficulty());
         try {
-            ExerciseRecord saved = service.generateAndSave(request.type(), request.difficulty());
+            ExerciseRecord saved    = service.generateAndSave(request.type(), request.difficulty());
+            int suggested           = service.getSuggestedDifficulty(saved.type(), saved.difficulty());
             GeneratedExercise display = service.getDisplayData(saved);
 
             GenerateResponse response = new GenerateResponse(
                 saved.id(), saved.type(), saved.difficulty(),
+                suggested,
                 display.notesToPlay(), display.description(), display.options()
             );
             logger.info("Exercício gerado: id={}, type={}", saved.id(), saved.type());

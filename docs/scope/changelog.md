@@ -64,9 +64,9 @@
 
 ## Sem. 8 · 5–6 mai · INTERCALAR
 
-**Feito:** feat/27 — RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente (UPDATE SQL, sem read-modify-write). RF08 parcial: GET /api/progress devolve byType com taxa de acerto real por tipo. SESSION_NONE=0L documentado em MusicConstants e Swagger.  
+**Feito:** feat/27 — RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente. RF08 parcial: byType com taxa de acerto real. SESSION_NONE=0L. feat/28 — RF09 implementado: DifficultyLevel enum (5 bandas BEGINNER→EXPERT). IntervalType, ScaleType (28 valores), ChordType classificados por dificuldade. Geradores usam availableFor() — zero magic numbers. DifficultyService com algoritmo 80/40%. Debug API: /api/debug/exercises/. ADR-015. OI01 fechado (SQLite3). OI07 fechado (ADR-013).  
 **Bloqueou:** -  
-**Próxima semana:** feat/28 — sistema de dificuldade DifficultyLevel enum, RF09.
+**Próxima semana:** Preparação relatório intercalar (deadline 6 Mai). Frontend Fase 5.
 
 ---
 

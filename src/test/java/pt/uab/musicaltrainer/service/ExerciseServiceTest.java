@@ -10,6 +10,7 @@ import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.generator.GeneratedExercise;
 import pt.uab.musicaltrainer.generator.GeneratorFactory;
+import pt.uab.musicaltrainer.service.DifficultyService;
 import pt.uab.musicaltrainer.service.SessionService;
 
 import java.util.List;
@@ -32,11 +33,14 @@ class ExerciseServiceTest {
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private DifficultyService difficultyService;
+
     private ExerciseService service;
 
     @BeforeEach
     void setUp() {
-        service = new ExerciseService(daoFactory, objectMapper, generatorFactory, sessionService);
+        service = new ExerciseService(daoFactory, objectMapper, generatorFactory, sessionService, difficultyService);
     }
 
     // --- Geração ---

@@ -23,30 +23,32 @@ public enum ChordType {
      * Acorde Maior: raiz, terça maior, quinta perfeita.
      * Intervalos: +0, +4, +7 semítons.
      */
-    MAJOR(new int[]{0, 4, 7}),
+    MAJOR(new int[]{0, 4, 7}, DifficultyLevel.BEGINNER),
 
     /**
      * Acorde Menor: raiz, terça menor, quinta perfeita.
      * Intervalos: +0, +3, +7 semítons.
      */
-    MINOR(new int[]{0, 3, 7}),
+    MINOR(new int[]{0, 3, 7}, DifficultyLevel.INTERMEDIATE),
 
     /**
      * Acorde Diminuto: raiz, terça menor, quinta diminuta.
      * Intervalos: +0, +3, +6 semítons.
      */
-    DIMINISHED(new int[]{0, 3, 6}),
+    DIMINISHED(new int[]{0, 3, 6}, DifficultyLevel.ADVANCED),
 
     /**
      * Acorde Aumentado: raiz, terça maior, quinta aumentada.
      * Intervalos: +0, +4, +8 semítons.
      */
-    AUGMENTED(new int[]{0, 4, 8});
+    AUGMENTED(new int[]{0, 4, 8}, DifficultyLevel.ADVANCED);
 
     private final int[] intervals;
+    private final DifficultyLevel difficulty;
 
-    ChordType(int[] intervals) {
-        this.intervals = intervals;
+    ChordType(int[] intervals, DifficultyLevel difficulty) {
+        this.intervals  = intervals;
+        this.difficulty = difficulty;
     }
 
     /**
@@ -54,6 +56,25 @@ public enum ChordType {
      */
     public int[] getIntervals() {
         return intervals;
+    }
+
+    /**
+     * Retorna o nível de dificuldade deste acorde.
+     */
+    public DifficultyLevel difficulty() {
+        return difficulty;
+    }
+
+    /**
+     * Retorna todos os acordes disponíveis até ao nível de dificuldade indicado (inclusive).
+     *
+     * @param band nivel de dificuldade máximo
+     * @return lista de tipos de acorde com dificuldade <= band
+     */
+    public static java.util.List<ChordType> availableFor(DifficultyLevel band) {
+        return java.util.Arrays.stream(values())
+            .filter(t -> t.difficulty.ordinal() <= band.ordinal())
+            .collect(java.util.stream.Collectors.toList());
     }
 
     /**
