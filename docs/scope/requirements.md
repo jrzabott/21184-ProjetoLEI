@@ -113,7 +113,7 @@
 | OI04 | Mocks e wireframes dos ecrãs | 🟡 Em aberto | Antes de Fase 5 (Sem. 9) |
 | OI05 | Modos musicais (dórico, frígio, etc.) | 🔵 Diferido | Após MVP completo |
 | OI06 | Progressões de acordes | 🔵 Diferido | Após MVP completo |
-| OI07 | Formato de serialização de `questionData` | 🟡 Em aberto | Início Fase 3 |
+| OI07 | Schema do campo question nos exercícios | ✅ Resolvido | Fase 3 - ADR-013 |
 | OI08 | Navegação entre ecrãs (SPA vs páginas separadas) | ✅ Resolvido | Sem. 3-4 |
 | OI09 | Inversões e acordes estendidos | 🔵 Diferido | Após MVP (tríades) completo |
 
@@ -163,19 +163,13 @@
 
 **Estado:** 🔵 Diferido - idem OI05 (CB10).
 
-### OI07 - Formato de serialização de `questionData`
+### OI07 - Schema do campo question
 
-**Questão:** O campo `questionData` da entidade `Exercise` armazena JSON como String. Qual o schema exacto para cada tipo de exercício?
+**Estado:** ✅ Resolvido (27 abr 2026)
 
-**Contexto:** Sem definição formal, geradores (Fase 3) e controllers (Fase 4) podem produzir formatos incompatíveis.
-
-**Exemplo:**
-```
-INTERVAL:  { "noteA": 60, "noteB": 67 }  vs  { "notes": [60, 67] }
-SCALE:     { "root": 60, "type": "MAJOR" }  vs  { "rootMidi": 60, "scaleType": "MAJOR" }
-```
-
-**Prazo:** Definir no início da Fase 3, antes de escrever qualquer gerador. Documentar como sub-decisão de ADR-003 ou num ADR próprio.
+**Decisão:** JSON plano com MIDI numbers. INTERVAL armazena `{"notes":[midiA,midiB]}`,
+SCALE e CHORD armazenam `{"root":int,"type":"..."}`. O campo `correct_answer` guarda
+a resposta como string legível. Ver ADR-013 para detalhes completos.
 
 ### OI08 - Navegação entre ecrãs
 
