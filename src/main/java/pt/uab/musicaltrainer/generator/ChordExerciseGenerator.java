@@ -41,15 +41,15 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         logger.debug("Gerando acorde: difficulty={}", difficulty);
 
         DifficultyLevel band = DifficultyLevel.of(difficulty);
-        // Todos os tipos disponíveis (availableFor determina pool; opções mostram sempre todos)
-        List<String> allTypes = Arrays.stream(ChordType.values())
+        // CORRECT — uses difficulty to filter available chord types
+        List<String> available = ChordType.availableFor(band).stream()
             .map(Enum::name)
             .collect(Collectors.toList());
 
         int rootMidi = 36 + random.nextInt(37);
-        String chordType = allTypes.get(random.nextInt(allTypes.size()));
+        String chordType = available.get(random.nextInt(available.size()));
         logger.debug("Band para difficulty {}: {}", difficulty, band);
-        return buildExercise(rootMidi, chordType, difficulty, allTypes);
+        return buildExercise(rootMidi, chordType, difficulty, available);
     }
 
     @Override
@@ -57,9 +57,9 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         logger.debug("Reconstruindo acorde de BD: questionJson={}", questionJson);
         try {
             ChordQuestion q = mapper.readValue(questionJson, ChordQuestion.class);
-            List<String> allTypes = Arrays.stream(ChordType.values())
+            List<String> available = ChordType.availableFor(DifficultyLevel.of(difficulty)).stream()
                 .map(Enum::name).collect(Collectors.toList());
-            return buildExercise(q.root(), q.type(), difficulty, allTypes);
+            return buildExercise(q.root(), q.type(), difficulty, available);
         } catch (Exception e) {
             logger.error("Erro a desserializar ChordQuestion: {}", questionJson, e);
             throw new RuntimeException(e);

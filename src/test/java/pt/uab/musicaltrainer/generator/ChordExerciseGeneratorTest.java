@@ -41,8 +41,8 @@ class ChordExerciseGeneratorTest {
 
     @Test
     void shouldGenerateFourOptions() {
-        // 4 tipos de acorde no MVP
-        GeneratedExercise ex = generator.generate(1);
+        // 4 tipos de acorde disponíveis a difficulty=8 (ADVANCED)
+        GeneratedExercise ex = generator.generate(8);
 
         assertThat(ex.options()).hasSize(4);
     }
@@ -65,7 +65,7 @@ class ChordExerciseGeneratorTest {
     void shouldGenerateAllFourChordTypesEventually() {
         Set<String> seen = new HashSet<>();
         for (int i = 0; i < 100; i++) {
-            seen.add(generator.generate(5).correctAnswer());
+            seen.add(generator.generate(8).correctAnswer());
         }
         assertThat(seen).containsExactlyInAnyOrder("MAJOR", "MINOR", "DIMINISHED", "AUGMENTED");
     }
@@ -73,9 +73,10 @@ class ChordExerciseGeneratorTest {
     @Test
     void shouldReconstructMajorChordFromStoredQuestion() {
         // C maior: C4(60) + E4(64) + G4(67)
+        // difficulty=8 (ADVANCED) para ter os 4 tipos disponíveis como opções
         String questionJson = "{\"root\":60,\"type\":\"MAJOR\"}";
 
-        GeneratedExercise ex = generator.fromStored(questionJson, "MAJOR", 1);
+        GeneratedExercise ex = generator.fromStored(questionJson, "MAJOR", 8);
 
         assertThat(ex.notesToPlay()).hasSize(3);
         assertThat(ex.notesToPlay()[0]).isEqualTo(60);
