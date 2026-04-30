@@ -36,18 +36,9 @@ public interface Scale {
         return ScaleImpl.get(scaleType, root);
     }
 
-    /**
-     * Retorna o tipo da escala.
-     */
     String getType();
 
-    /**
-     * Retorna a nota raiz da escala.
-     */
     Note getRoot();
 
-    /**
-     * Retorna a lista imutável de notas desta escala.
-     */
     List<Note> getNotes();
 }

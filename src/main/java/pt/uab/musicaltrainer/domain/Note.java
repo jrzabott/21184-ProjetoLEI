@@ -34,23 +34,11 @@ public interface Note {
         return NoteImpl.fromMidi(midiNumber);
     }
 
-    /**
-     * Retorna o nome da nota (ex: C, C#, D, etc.).
-     */
     String getName();
 
-    /**
-     * Retorna a oitava da nota (ex: 3, 4, 5).
-     */
     int getOctave();
 
-    /**
-     * Retorna o número MIDI original.
-     */
     int getMidiNumber();
 
-    /**
-     * Retorna a representação legível da nota (ex: C4, G#5).
-     */
     String getDisplayName();
 }

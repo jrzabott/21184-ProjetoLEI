@@ -31,13 +31,7 @@ public interface Interval {
         return IntervalImpl.between(low, high);
     }
 
-    /**
-     * Retorna o nome completo do intervalo (ex: "5ª Perfeita").
-     */
     String getName();
 
-    /**
-     * Retorna o número de semítons entre as notas.
-     */
     int getSemitones();
 }
