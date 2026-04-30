@@ -25,7 +25,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, g4);
 
-        assertThat(interval.getName()).isEqualTo("5ª Perfeita");
+        assertThat(interval.getName()).isEqualTo("5a Perfeita");
         assertThat(interval.getSemitones()).isEqualTo(7);
     }
 
@@ -39,7 +39,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, e4);
 
-        assertThat(interval.getName()).isEqualTo("3ª Maior");
+        assertThat(interval.getName()).isEqualTo("3a Maior");
         assertThat(interval.getSemitones()).isEqualTo(4);
     }
 
@@ -53,7 +53,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, d4);
 
-        assertThat(interval.getName()).isEqualTo("2ª Maior");
+        assertThat(interval.getName()).isEqualTo("2a Maior");
         assertThat(interval.getSemitones()).isEqualTo(2);
     }
 
@@ -67,7 +67,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, cs4);
 
-        assertThat(interval.getName()).isEqualTo("2ª Menor");
+        assertThat(interval.getName()).isEqualTo("2a Menor");
         assertThat(interval.getSemitones()).isEqualTo(1);
     }
 
@@ -81,7 +81,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, f4);
 
-        assertThat(interval.getName()).isEqualTo("4ª Perfeita");
+        assertThat(interval.getName()).isEqualTo("4a Perfeita");
         assertThat(interval.getSemitones()).isEqualTo(5);
     }
 
@@ -95,7 +95,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, a4);
 
-        assertThat(interval.getName()).isEqualTo("6ª Maior");
+        assertThat(interval.getName()).isEqualTo("6a Maior");
         assertThat(interval.getSemitones()).isEqualTo(9);
     }
 
@@ -109,7 +109,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, b4);
 
-        assertThat(interval.getName()).isEqualTo("7ª Maior");
+        assertThat(interval.getName()).isEqualTo("7a Maior");
         assertThat(interval.getSemitones()).isEqualTo(11);
     }
 
@@ -137,7 +137,7 @@ class IntervalTest {
 
         Interval interval = Interval.between(c4, c4Again);
 
-        assertThat(interval.getName()).isEqualTo("Uníssono");
+        assertThat(interval.getName()).isEqualTo("Unissono");
         assertThat(interval.getSemitones()).isEqualTo(0);
     }
 

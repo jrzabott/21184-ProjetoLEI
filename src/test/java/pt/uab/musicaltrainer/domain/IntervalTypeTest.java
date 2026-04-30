@@ -12,29 +12,31 @@ class IntervalTypeTest {
     }
 
     @Test
-    void shouldReturnPerfectFifthFor7Semitones() {
-        assertThat(IntervalType.fromSemitones(7).displayName()).isEqualTo("5ª Perfeita");
-        assertThat(IntervalType.fromSemitones(7).semitones()).isEqualTo(7);
+    void internalNameIsAsciiSafe() {
+        // Regra de projecto: internalName() nunca contém ª, º ou acentos
+        assertThat(IntervalType.fromSemitones(7).internalName()).isEqualTo("5a Perfeita");
+        assertThat(IntervalType.fromSemitones(0).internalName()).isEqualTo("Unissono");
+        assertThat(IntervalType.fromSemitones(6).internalName())
+            .isEqualTo("4a Aumentada / 5a Diminuta");
     }
 
     @Test
-    void shouldReturnUnissonoFor0Semitones() {
+    void displayNameHasFullPortuguese() {
+        // displayName() pode ter caracteres especiais — apenas para frontend
+        assertThat(IntervalType.fromSemitones(7).displayName()).isEqualTo("5ª Perfeita");
         assertThat(IntervalType.fromSemitones(0).displayName()).isEqualTo("Uníssono");
+        assertThat(IntervalType.fromSemitones(6).displayName())
+            .isEqualTo("4ª Aumentada / 5ª Diminuta");
     }
 
     @Test
     void shouldReturnOctaveFor12Semitones() {
-        assertThat(IntervalType.fromSemitones(12).displayName()).isEqualTo("Oitava Perfeita");
+        assertThat(IntervalType.fromSemitones(12).internalName()).isEqualTo("Oitava Perfeita");
+        assertThat(IntervalType.fromSemitones(12).semitones()).isEqualTo(12);
     }
 
     @Test
     void shouldWrapAroundFor13Semitones() {
-        assertThat(IntervalType.fromSemitones(13).displayName()).isEqualTo("Uníssono");
-    }
-
-    @Test
-    void shouldHaveCompoundNameForTritone() {
-        assertThat(IntervalType.fromSemitones(6).displayName())
-            .isEqualTo("4ª Aumentada / 5ª Diminuta");
+        assertThat(IntervalType.fromSemitones(13).internalName()).isEqualTo("Unissono");
     }
 }

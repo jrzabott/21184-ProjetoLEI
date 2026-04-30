@@ -21,7 +21,7 @@ final class IntervalImpl implements Interval {
     static Interval between(Note low, Note high) {
         int distance = Math.abs(high.getMidiNumber() - low.getMidiNumber());
         IntervalType type = IntervalType.fromSemitones(distance);
-        return new IntervalImpl(type.semitones(), type.displayName());
+        return new IntervalImpl(type.semitones(), type.internalName());
     }
 
     @Override

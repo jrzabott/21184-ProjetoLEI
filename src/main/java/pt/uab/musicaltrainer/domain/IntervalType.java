@@ -1,73 +1,50 @@
 package pt.uab.musicaltrainer.domain;
 
 /**
- * Tipos de intervalos musicais com nome e distância em semítons.
+ * Tipos de intervalos musicais.
  * <p>
- * Enum que define os 13 intervalos diatónicos (0-12 semítons).
- * Segue o padrão de ScaleType e ChordType — fonte única de verdade
- * para nomes de intervalos em todo o projecto.
+ * Cada valor tem dois nomes:
+ * - internalName(): ASCII seguro, usado em BD, logica backend, getName()
+ * - displayName(): PT-PT completo com caracteres especiais, apenas para frontend
  * <p>
- * Intervalos enarmónicos (TRITONO, QUINTA_AUM) usam nome composto.
- * Ver OI10 em docs/scope/requirements.md para separação futura.
+ * Regra de projecto: caracteres especiais (a com ordinal, acentos) apenas em displayName().
  *
  * @author Daniel Junior
  */
 public enum IntervalType {
 
-    /** 0 semítons — nota repetida. */
-    UNISSONO         ("Uníssono",                     0),
+    UNISSONO         ("Unissono",                          "Uníssono",                    0),
+    SEGUNDA_MENOR    ("2a Menor",                          "2ª Menor",                    1),
+    SEGUNDA_MAIOR    ("2a Maior",                          "2ª Maior",                    2),
+    TERCA_MENOR      ("3a Menor",                          "3ª Menor",                    3),
+    TERCA_MAIOR      ("3a Maior",                          "3ª Maior",                    4),
+    QUARTA_PERFEITA  ("4a Perfeita",                       "4ª Perfeita",                 5),
+    TRITONO          ("4a Aumentada / 5a Diminuta",        "4ª Aumentada / 5ª Diminuta",  6),
+    QUINTA_PERFEITA  ("5a Perfeita",                       "5ª Perfeita",                 7),
+    QUINTA_AUM       ("5a Aumentada / 6a Menor",           "5ª Aumentada / 6ª Menor",     8),
+    SEXTA_MAIOR      ("6a Maior",                          "6ª Maior",                    9),
+    SETIMA_MENOR     ("6a Aumentada / 7a Menor",           "6ª Aumentada / 7ª Menor",    10),
+    SETIMA_MAIOR     ("7a Maior",                          "7ª Maior",                   11),
+    OITAVA_PERFEITA  ("Oitava Perfeita",                   "Oitava Perfeita",            12);
 
-    /** 1 semítom — ex: C4 → C#4. */
-    SEGUNDA_MENOR    ("2ª Menor",                     1),
-
-    /** 2 semítons — ex: C4 → D4. */
-    SEGUNDA_MAIOR    ("2ª Maior",                     2),
-
-    /** 3 semítons — ex: C4 → Eb4. */
-    TERCA_MENOR      ("3ª Menor",                     3),
-
-    /** 4 semítons — ex: C4 → E4. */
-    TERCA_MAIOR      ("3ª Maior",                     4),
-
-    /** 5 semítons — ex: C4 → F4. */
-    QUARTA_PERFEITA  ("4ª Perfeita",                  5),
-
-    /** 6 semítons — tritono; enarmónico de 4ª Aumentada e 5ª Diminuta. Ver OI10. */
-    TRITONO          ("4ª Aumentada / 5ª Diminuta",   6),
-
-    /** 7 semítons — ex: C4 → G4. */
-    QUINTA_PERFEITA  ("5ª Perfeita",                  7),
-
-    /** 8 semítons — enarmónico de 5ª Aumentada e 6ª Menor. Ver OI10. */
-    QUINTA_AUM       ("5ª Aumentada / 6ª Menor",      8),
-
-    /** 9 semítons — ex: C4 → A4. */
-    SEXTA_MAIOR      ("6ª Maior",                     9),
-
-    /** 10 semítons — enarmónico de 6ª Aumentada e 7ª Menor. */
-    SETIMA_MENOR     ("6ª Aumentada / 7ª Menor",     10),
-
-    /** 11 semítons — ex: C4 → B4. */
-    SETIMA_MAIOR     ("7ª Maior",                    11),
-
-    /** 12 semítons — oitava. Ex: C4 → C5. */
-    OITAVA_PERFEITA  ("Oitava Perfeita",             12);
-
+    private final String internalName;
     private final String displayName;
     private final int semitones;
 
-    IntervalType(String displayName, int semitones) {
+    IntervalType(String internalName, String displayName, int semitones) {
+        this.internalName = internalName;
         this.displayName = displayName;
         this.semitones = semitones;
     }
 
-    public String displayName() { return displayName; }
-    public int semitones()      { return semitones; }
+    /** Nome ASCII seguro - para BD, logica backend, API de dados. */
+    public String internalName() { return internalName; }
 
-    /**
-     * Devolve o tipo de intervalo para a distância em semítons indicada.
-     * Para distâncias superiores a 12, aplica módulo 13 (wrap para simples).
-     */
+    /** Nome PT-PT com caracteres especiais - apenas para apresentacao frontend. */
+    public String displayName()  { return displayName; }
+
+    public int semitones()       { return semitones; }
+
     public static IntervalType fromSemitones(int semitones) {
         return values()[semitones % 13];
     }

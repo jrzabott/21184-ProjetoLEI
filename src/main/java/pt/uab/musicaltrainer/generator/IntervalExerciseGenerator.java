@@ -51,7 +51,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         Note high = Note.fromMidi(noteB);
         Interval interval = Interval.between(low, high);
 
-        String correctAnswer = interval.getName();
+        String correctAnswer = IntervalType.fromSemitones(interval.getSemitones()).displayName();
         String questionJson = "{\"notes\":[" + noteA + "," + noteB + "]}";
         String description = "Que intervalo existe entre " + low.getDisplayName()
             + " e " + high.getDisplayName() + "?";
