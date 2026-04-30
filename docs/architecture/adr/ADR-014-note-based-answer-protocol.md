@@ -74,12 +74,14 @@ do exercício a partir do questionJson + domínio.
 
 ### Dificuldade
 
-- Gerida pelo frontend (por tipo de exercício, independentemente)
-- Baseada nos últimos 100 exercícios por tipo: >=80% acerto → sobe, <40% → desce
-- Backend recebe `difficulty: int` como metadata em cada exercício gerado
-- Backend usa o nível de dificuldade para adaptar a geração (ex: escalas simples em
-  dificuldade 1, escalas mais raras em dificuldade alta) para evitar extremos desalinhados
-  com o nível actual do utilizador
+- Gerida pelo **backend** (DifficultyService) — por tipo de exercício, de forma independente
+- Baseada nos últimos 100 resultados por tipo: acerto >= 80% → sobe, < 40% → desce
+- Backend clamps a dificuldade pedida em ±2 relação ao nível sugerido
+- `GenerateResponse` inclui `suggestedDifficulty` como sugestão informativa para o frontend
+- Frontend é responsável por passar `difficulty` em cada pedido de geração
+
+> Nota: versão inicial previa gestão no frontend. Movido para backend em 28 abr 2026
+> para garantir consistência entre sessões e centralizar lógica de negócio (ADR-015).
 
 ## Consequências
 
