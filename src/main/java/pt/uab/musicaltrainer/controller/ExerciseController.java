@@ -1,6 +1,5 @@
 package pt.uab.musicaltrainer.controller;
 
-import java.util.Arrays;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -69,8 +68,8 @@ public class ExerciseController {
 
             AnswerResponse response = new AnswerResponse(
                 correct,
-                Arrays.toString(expectedNotes),
-                Arrays.toString(request.notes()),
+                toJsonArray(expectedNotes),
+                toJsonArray(request.notes()),
                 explanation
             );
             logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);
@@ -80,5 +79,15 @@ public class ExerciseController {
             logger.error("Erro ao avaliar resposta: exerciseId={}", request.exerciseId(), e);
             return ResponseEntity.internalServerError().body("Erro ao avaliar resposta");
         }
+    }
+
+    private static String toJsonArray(int[] notes) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < notes.length; i++) {
+            if (i > 0) sb.append(",");
+            sb.append(notes[i]);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }
