@@ -116,6 +116,7 @@
 | OI07 | Schema do campo question nos exercícios | ✅ Resolvido | Fase 3 - ADR-013 |
 | OI08 | Navegação entre ecrãs (SPA vs páginas separadas) | ✅ Resolvido | Sem. 3-4 |
 | OI09 | Inversões e acordes estendidos | 🔵 Diferido | Após MVP (tríades) completo |
+| OI10 | Intervalos enarmónicos — separar TRITONO e QUINTA_AUM | 🔵 Diferido | Após MVP |
 
 ### OI01 - Base de dados de produção
 
@@ -194,3 +195,18 @@ a resposta como string legível. Ver ADR-013 para detalhes completos.
 **Referências:** CB10, OI05, OI06
 
 **Prazo:** Decidir após MVP (tríades) entregue. Se implementar, requere ADR específico sobre representação de inversões e serialização.
+
+### OI10 - Intervalos enarmónicos
+
+**Estado:** 🔵 Diferido
+
+**Contexto:** `IntervalType.TRITONO` (6 semítons) combina "4a Aumentada" e
+"5a Diminuta" num único valor enum. `QUINTA_AUM` (8 semítons) combina
+"5a Aumentada" e "6a Menor". Em contexto harmónico real (análise de
+progressões, função tonal), estas distinções importam.
+
+**Decisão actual:** Manter nome composto. Suficiente para MVP de
+identificação de intervalos por ouvido.
+
+**Melhoria futura:** Separar em valores distintos quando o app suportar
+contexto harmónico. Ver também OI05 (modos) e OI06 (progressões).
