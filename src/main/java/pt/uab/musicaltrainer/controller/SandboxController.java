@@ -1,5 +1,7 @@
 package pt.uab.musicaltrainer.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * REST controller para modo sandbox — informação sobre notas e intervalos
+ * REST controller para modo sandbox - informação sobre notas e intervalos
  * sem estar num exercício activo.
  */
+@Tag(name = "Sandbox", description = "Exploração livre - informação sobre notas sem exercício activo")
 @RestController
 @RequestMapping("/api/sandbox")
 public class SandboxController {
 
     private static final Logger logger = LoggerFactory.getLogger(SandboxController.class);
 
+    @Operation(summary = "Informação de nota(s)", description = "Devolve nome e intervalo para os números MIDI indicados. Exemplo: ?notes=60,67")
     @GetMapping("/note-info")
     public ResponseEntity<?> getNoteInfo(@RequestParam String notes) {
         logger.debug("GET /api/sandbox/note-info: notes={}", notes);

@@ -1,5 +1,7 @@
 package pt.uab.musicaltrainer.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import pt.uab.musicaltrainer.service.SessionService;
 /**
  * REST controller para gestão de sessões de treino.
  */
+@Tag(name = "Sessões", description = "Gestão de sessões de treino")
 @RestController
 @RequestMapping("/api/sessions")
 public class SessionController {
@@ -23,6 +26,7 @@ public class SessionController {
         logger.info("SessionController inicializado");
     }
 
+    @Operation(summary = "Iniciar sessão")
     @PostMapping("/start")
     public ResponseEntity<?> start(@RequestBody SessionStartRequest request) {
         logger.debug("POST /api/sessions/start: exerciseType={}", request.exerciseType());
@@ -37,6 +41,7 @@ public class SessionController {
         }
     }
 
+    @Operation(summary = "Terminar sessão")
     @PostMapping("/{sessionId}/end")
     public ResponseEntity<?> end(@PathVariable Long sessionId) {
         logger.debug("POST /api/sessions/{}/end", sessionId);
