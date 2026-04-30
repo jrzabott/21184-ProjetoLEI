@@ -55,4 +55,14 @@ public enum ChordType {
     public int[] getIntervals() {
         return intervals;
     }
+
+    /**
+     * Retorna os intervalos entre notas consecutivas em voicing I-III-V.
+     * Usado para validar respostas independente de oitava (ADR-014).
+     * <p>
+     * Exemplo MAJOR [0,4,7]: diferenças = [4, 3] (terça maior + terça menor)
+     */
+    public int[] getVoicingIntervals() {
+        return new int[]{intervals[1] - intervals[0], intervals[2] - intervals[1]};
+    }
 }
