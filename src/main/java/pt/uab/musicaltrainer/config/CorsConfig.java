@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Configuração CORS para permitir chamadas do frontend ao backend.
- * O frontend abre como ficheiro local (file://) ou porta diferente —
+ * O frontend abre como ficheiro local (file://) ou porta diferente -
  * sem esta configuração o browser bloqueia todos os pedidos fetch().
  */
 @Configuration

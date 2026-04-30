@@ -7,7 +7,7 @@
 
 A primeira versão do protocolo de resposta usava um campo `answer: String` com o nome
 do intervalo, escala ou acorde (ex: "5a Perfeita", "MAJOR"). Este modelo obrigava o
-utilizador a escolher de uma lista — removendo a componente de performance e tornando
+utilizador a escolher de uma lista - removendo a componente de performance e tornando
 o exercício de escolha múltipla, não de prática musical.
 
 O propósito da aplicação é treinar ouvido, mão e mente em conjunto. Isso requer que
@@ -29,8 +29,8 @@ POST /api/exercises/answer
 }
 ```
 
-- `exerciseId` no corpo (nao no path) — é um detalhe interno, sem valor semântico para o utilizador
-- `notes` — array de números MIDI na ordem em que foram tocados
+- `exerciseId` no corpo (nao no path) - é um detalhe interno, sem valor semântico para o utilizador
+- `notes` - array de números MIDI na ordem em que foram tocados
 - Apenas escalas ascendentes suportadas; ordem de pressão = ordem de envio
 
 ### Regras de validação por tipo
@@ -38,7 +38,7 @@ POST /api/exercises/answer
 **INTERVAL:**
 - Exactamente 2 notas
 - Devem corresponder exactamente aos MIDI gerados (mesmo root, mesma oitava)
-- Racional: treino de ouvido enraizado — identificar o intervalo específico gerado, nao apenas qualquer intervalo com a mesma distância
+- Racional: treino de ouvido enraizado - identificar o intervalo específico gerado, nao apenas qualquer intervalo com a mesma distância
 
 **SCALE:**
 - Exactamente N notas, onde N = número de notas da escala + 1 (raiz → raiz uma oitava acima)
@@ -48,7 +48,7 @@ POST /api/exercises/answer
   - N é sempre determinado por `ScaleType.getSemitonePattern().length + 1`
 - Qualquer oitava de partida é válida: valida-se o padrão de intervalos, nao os MIDI absolutos
 - Padrão validado: diferenças entre notas consecutivas devem corresponder ao padrão da escala
-- Escala MAJOR: [2, 2, 1, 2, 2, 2, 1] (W W H W W W H) — exemplo
+- Escala MAJOR: [2, 2, 1, 2, 2, 2, 1] (W W H W W W H) - exemplo
 - Última nota = primeira nota + 12 (sempre, independente do tipo)
 
 **CHORD:**
@@ -74,7 +74,7 @@ do exercício a partir do questionJson + domínio.
 
 ### Dificuldade
 
-- Gerida pelo **backend** (DifficultyService) — por tipo de exercício, de forma independente
+- Gerida pelo **backend** (DifficultyService) - por tipo de exercício, de forma independente
 - Baseada nos últimos 100 resultados por tipo: acerto >= 80% → sobe, < 40% → desce
 - Backend clamps a dificuldade pedida em ±2 relação ao nível sugerido
 - `GenerateResponse` inclui `suggestedDifficulty` como sugestão informativa para o frontend
@@ -85,7 +85,7 @@ do exercício a partir do questionJson + domínio.
 
 ## Consequências
 
-- AnswerRequest DTO: `{ exerciseId, notes[], responseTimeMs }` — sem `answer: String`
+- AnswerRequest DTO: `{ exerciseId, notes[], responseTimeMs }` - sem `answer: String`
 - ExerciseService.evaluateAnswer() aceita `int[] notes` e aplica lógica por tipo
 - ScaleExerciseGenerator produz N notas (raiz → raiz oitava acima, N depende do tipo de escala)
 - Avaliação de escalas é independente de oitava (padrão de intervalos) e independente de N fixo
@@ -97,4 +97,4 @@ do exercício a partir do questionJson + domínio.
 - ADR-002 (backend agnóstico ao input)
 - ADR-003 (geração procedural)
 - ADR-013 (schema questionData)
-- Respostas a perguntas de requisitos — ficheiro de sessão 2026-04-27
+- Respostas a perguntas de requisitos - ficheiro de sessão 2026-04-27

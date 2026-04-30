@@ -103,7 +103,7 @@ class ChordExerciseGeneratorTest {
 
     @Test
     void shouldAcceptMajorChordInAnyOctave() {
-        // ADR-014: qualquer oitava é válida para acordes — validação por padrão de intervalos
+        // ADR-014: qualquer oitava é válida para acordes - validação por padrão de intervalos
         GeneratedExercise rootOctave = generator.fromStored("{\"root\":60,\"type\":\"MAJOR\"}", "MAJOR", 1);
         GeneratedExercise higherOctave = generator.fromStored("{\"root\":72,\"type\":\"MAJOR\"}", "MAJOR", 1);
 

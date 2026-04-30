@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 /**
  * Orquestra a geração e avaliação de exercícios.
- * Avaliação é baseada em notas MIDI tocadas pelo utilizador — sem múltipla escolha (ADR-014).
+ * Avaliação é baseada em notas MIDI tocadas pelo utilizador - sem múltipla escolha (ADR-014).
  */
 @Service
 public class ExerciseService {
@@ -47,7 +47,7 @@ public class ExerciseService {
         logger.info("ExerciseService inicializado: tipos={}", generatorFactory.types());
     }
 
-    /** Retrocompatibilidade — gera sem verificação de repetição. */
+    /** Retrocompatibilidade - gera sem verificação de repetição. */
     public ExerciseRecord generateAndSave(String type, int difficulty) throws Exception {
         return generateAndSave(type, difficulty, null);
     }
@@ -85,7 +85,7 @@ public class ExerciseService {
         }
 
         if (saved == null) {
-            logger.warn("Pool esgotado para type={} difficulty={} — a aceitar repetição", type, effectiveDiff);
+            logger.warn("Pool esgotado para type={} difficulty={} - a aceitar repetição", type, effectiveDiff);
             GeneratedExercise generated = generator.generate(effectiveDiff);
             saved = daoFactory.createExerciseDao().save(new ExerciseRecord(
                 null, generated.type(), generated.difficulty(),
@@ -124,7 +124,7 @@ public class ExerciseService {
 
         if (sessionId != MusicConstants.SESSION_NONE) {
             if (daoFactory.createSessionDao().findById(sessionId).isEmpty()) {
-                logger.warn("Sessão {} não encontrada — resultado não persistido (sessão expirada ou BD reiniciada)", sessionId);
+                logger.warn("Sessão {} não encontrada - resultado não persistido (sessão expirada ou BD reiniciada)", sessionId);
             } else {
                 String userNotesJson = toNotesJson(userNotes);
                 daoFactory.createResultDao().save(
@@ -134,7 +134,7 @@ public class ExerciseService {
                     exerciseId, sessionId, correct);
             }
         } else {
-            logger.debug("Sandbox mode (SESSION_NONE) — resultado não persistido");
+            logger.debug("Sandbox mode (SESSION_NONE) - resultado não persistido");
         }
 
         logger.info("Avaliação: exerciseId={}, type={}, correct={}", exerciseId, exercise.type(), correct);
@@ -190,14 +190,14 @@ public class ExerciseService {
         }
     }
 
-    /** INTERVAL: notas exactas (ADR-014 — treino enraizado). */
+    /** INTERVAL: notas exactas (ADR-014 - treino enraizado). */
     private boolean evaluateInterval(int[] expected, int[] user) {
         if (user.length != 2) return false;
         return Arrays.equals(expected, user);
     }
 
     /**
-     * SCALE: usa domínio directamente — Scale.get() reconstrói as notas esperadas.
+     * SCALE: usa domínio directamente - Scale.get() reconstrói as notas esperadas.
      * Qualquer oitava é válida; pitch class da raiz deve coincidir.
      */
     private boolean evaluateScale(String questionJson, int[] user) {

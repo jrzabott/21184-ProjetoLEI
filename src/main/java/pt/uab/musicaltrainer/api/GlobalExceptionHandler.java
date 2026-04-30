@@ -68,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ProblemDetail> handleGeneric(Exception ex) {
         log.error("Erro inesperado", ex);
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-            HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno — contacte o administrador");
+            HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno - contacte o administrador");
         pd.setTitle("Erro Interno");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(pd);
     }

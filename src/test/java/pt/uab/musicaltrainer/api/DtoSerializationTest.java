@@ -33,7 +33,7 @@ class DtoSerializationTest {
         GenerateResponse resp = new GenerateResponse(
             1L, "INTERVAL", 2, 2,
             new int[]{60, 67}, "Reproduz o intervalo entre C4 e G4",
-            "5a Perfeita — 7 semítons",
+            "5a Perfeita - 7 semítons",
             List.of("5a Perfeita", "4a Perfeita", "3a Maior", "2a Maior")
         );
         String json = mapper.writeValueAsString(resp);

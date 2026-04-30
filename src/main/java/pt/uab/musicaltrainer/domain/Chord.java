@@ -36,18 +36,9 @@ public interface Chord {
         return ChordImpl.get(chordType, root);
     }
 
-    /**
-     * Retorna o tipo do acorde.
-     */
     String getType();
 
-    /**
-     * Retorna a nota raiz do acorde.
-     */
     Note getRoot();
 
-    /**
-     * Retorna a lista imutável de notas deste acorde.
-     */
     List<Note> getNotes();
 }

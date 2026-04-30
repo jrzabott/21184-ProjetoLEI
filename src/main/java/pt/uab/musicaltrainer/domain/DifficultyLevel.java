@@ -5,7 +5,7 @@ package pt.uab.musicaltrainer.domain;
  * <p>
  * Encapsula os valores numéricos 1-10 em bandas com significado pedagógico.
  * Elimina magic numbers nos geradores de exercícios. Cada nível diz não só
- * "é difícil" mas "é difícil PORQUE..." — as notas, intervalos e conceitos
+ * "é difícil" mas "é difícil PORQUE..." - as notas, intervalos e conceitos
  * aumentam de complexidade musical à medida que o estudante aprende.
  * <p>
  * Classificação:

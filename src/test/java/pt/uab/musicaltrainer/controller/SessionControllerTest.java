@@ -25,7 +25,7 @@ class SessionControllerTest {
 
     @Test
     void shouldStartSessionWithoutBody() throws Exception {
-        // start não precisa de body — antes dava 400 se omitido
+        // start não precisa de body - antes dava 400 se omitido
         mockMvc.perform(post("/api/sessions/start")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -68,7 +68,7 @@ class SessionControllerTest {
 
     @Test
     void shouldReturn200WhenEndCalledTwice() throws Exception {
-        // terminar duas vezes é idempotente — sem erro, sem corromper dados
+        // terminar duas vezes é idempotente - sem erro, sem corromper dados
         String resp = mockMvc.perform(post("/api/sessions/start")
                 .contentType(MediaType.APPLICATION_JSON))
             .andReturn().getResponse().getContentAsString();
@@ -87,7 +87,7 @@ class SessionControllerTest {
 
     @Test
     void shouldReturn404WithBodyForNonExistentSession() throws Exception {
-        // 404 agora tem body ProblemDetail — antes era vazio
+        // 404 agora tem body ProblemDetail - antes era vazio
         mockMvc.perform(post("/api/sessions/99999/end")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())

@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 class IntervalTest {
 
     /**
-     * Testa intervalo C4 para G4 — deve ser 5ª Perfeita (7 semítons).
+     * Testa intervalo C4 para G4 - deve ser 5ª Perfeita (7 semítons).
      * Este é o exemplo do critério de aceitação F01.
      */
     @Test
@@ -30,7 +30,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para E4 — deve ser 3ª Maior (4 semítons).
+     * Testa intervalo C4 para E4 - deve ser 3ª Maior (4 semítons).
      */
     @Test
     void shouldIdentifyMajorThirdFromC4ToE4() {
@@ -44,7 +44,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para D4 — deve ser 2ª Maior (2 semítons).
+     * Testa intervalo C4 para D4 - deve ser 2ª Maior (2 semítons).
      */
     @Test
     void shouldIdentifyMajorSecondFromC4ToD4() {
@@ -58,7 +58,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para C#4 — deve ser 2ª Menor (1 semítom).
+     * Testa intervalo C4 para C#4 - deve ser 2ª Menor (1 semítom).
      */
     @Test
     void shouldIdentifyMinorSecondFromC4ToCs4() {
@@ -72,7 +72,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para F4 — deve ser 4ª Perfeita (5 semítons).
+     * Testa intervalo C4 para F4 - deve ser 4ª Perfeita (5 semítons).
      */
     @Test
     void shouldIdentifyPerfectFourthFromC4ToF4() {
@@ -86,7 +86,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para A4 — deve ser 6ª Maior (9 semítons).
+     * Testa intervalo C4 para A4 - deve ser 6ª Maior (9 semítons).
      */
     @Test
     void shouldIdentifyMajorSixthFromC4ToA4() {
@@ -100,7 +100,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para B4 — deve ser 7ª Maior (11 semítons).
+     * Testa intervalo C4 para B4 - deve ser 7ª Maior (11 semítons).
      */
     @Test
     void shouldIdentifyMajorSeventhFromC4ToB4() {
@@ -114,7 +114,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo C4 para C5 — deve ser Oitava Perfeita (12 semítons).
+     * Testa intervalo C4 para C5 - deve ser Oitava Perfeita (12 semítons).
      */
     @Test
     void shouldIdentifyPerfectOctaveFromC4ToC5() {
@@ -128,7 +128,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo uníssono (mesma nota) — deve ser Uníssono (0 semítons).
+     * Testa intervalo uníssono (mesma nota) - deve ser Uníssono (0 semítons).
      */
     @Test
     void shouldIdentifyUnissonFromC4ToC4() {
@@ -142,7 +142,7 @@ class IntervalTest {
     }
 
     /**
-     * Testa intervalo descendente — G4 para C4 (descendente).
+     * Testa intervalo descendente - G4 para C4 (descendente).
      * Deve retornar a mesma distância em semítons (7).
      */
     @Test

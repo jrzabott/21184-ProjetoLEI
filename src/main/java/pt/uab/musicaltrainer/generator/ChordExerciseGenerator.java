@@ -49,7 +49,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         logger.debug("Gerando acorde: difficulty={}", difficulty);
 
         DifficultyLevel band = DifficultyLevel.of(difficulty);
-        // CORRECT — uses difficulty to filter available chord types
+        // CORRECT - uses difficulty to filter available chord types
         List<String> available = ChordType.availableFor(band).stream()
             .map(Enum::name)
             .collect(Collectors.toList());

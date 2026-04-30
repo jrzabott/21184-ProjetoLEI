@@ -1,4 +1,4 @@
-# ADR-016 — Contrato de Erros: RFC 7807 Problem Details
+# ADR-016 - Contrato de Erros: RFC 7807 Problem Details
 
 **Data:** 2026-04-30
 **Estado:** Aceite
@@ -42,7 +42,7 @@ Mapeamento de excepções:
 ## Razão
 
 RFC 7807 é o standard da industria para erros REST. Spring Boot 3 suporta
-ProblemDetail nativamente — zero dependências extra. Qualquer cliente HTTP
+ProblemDetail nativamente - zero dependências extra. Qualquer cliente HTTP
 (frontend proprio, Swagger, Postman, integradores externos) consegue parsear
 erros de forma uniforme sem lógica ad-hoc.
 

@@ -34,7 +34,7 @@ class QuestionDeserializationTest {
 
     @Test
     void shouldDeserializeExpectedNotesArray() throws Exception {
-        // correct_answer column stores "[60,62,64]" — Jackson desserializa directamente
+        // correct_answer column stores "[60,62,64]" - Jackson desserializa directamente
         int[] notes = mapper.readValue("[60,62,64]", int[].class);
         assertThat(notes).containsExactly(60, 62, 64);
     }

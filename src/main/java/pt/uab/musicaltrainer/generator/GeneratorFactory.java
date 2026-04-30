@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Factory para geradores de exercícios.
- * Recebe ObjectMapper via Spring DI e passa-o a cada gerador — sem instâncias static.
+ * Recebe ObjectMapper via Spring DI e passa-o a cada gerador - sem instâncias static.
  */
 @Component
 public class GeneratorFactory {

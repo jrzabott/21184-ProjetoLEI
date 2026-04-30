@@ -32,7 +32,7 @@ Dado um número MIDI qualquer entre 0 e 127, `Note.fromMidi(n)` devolve o nome c
 
 > **Revisão 28 abr 2026 · Natural evolução do código:**  
 > Os tipos `SCALE_IDENTIFICATION` e `CHORD_IDENTIFICATION` foram simplificados para `SCALE` e `CHORD`
-> durante a implementação do modelo de domínio. O sufixo `_IDENTIFICATION` era redundante — todos os
+> durante a implementação do modelo de domínio. O sufixo `_IDENTIFICATION` era redundante - todos os
 > exercícios são de identificação. A API aceita `"type": "SCALE"` e `"type": "CHORD"`.
 > O critério de aceitação permanece o mesmo; apenas o valor do campo `type` mudou.
 

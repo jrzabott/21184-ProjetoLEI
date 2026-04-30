@@ -1,4 +1,4 @@
-# OI01 — Suporte Multi-BD (Strategy + Factory Patterns)
+# OI01 - Suporte Multi-BD (Strategy + Factory Patterns)
 
 ## Visão geral
 

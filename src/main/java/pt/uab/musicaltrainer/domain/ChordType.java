@@ -57,23 +57,14 @@ public enum ChordType {
         this.displayName = displayName;
     }
 
-    /**
-     * Retorna o padrão de semítons para este tipo de acorde.
-     */
     public int[] getIntervals() {
         return intervals;
     }
 
-    /**
-     * Retorna o nível de dificuldade deste acorde.
-     */
     public DifficultyLevel difficulty() {
         return difficulty;
     }
 
-    /**
-     * Retorna o nome legível em português para este tipo de acorde.
-     */
     public String displayName() { return displayName; }
 
     /**
