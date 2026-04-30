@@ -123,6 +123,47 @@ public class ResultDao extends AbstractDao<ResultRecord> {
         return result;
     }
 
+    /** Record para agregação de fraquezas por padrão de exercício. */
+    public record WeaknessAggregate(
+        String exerciseType,
+        String questionJson,
+        long total,
+        long correct
+    ) {}
+
+    /**
+     * Agrega resultados por (tipo, questionJson) ordenado por pior taxa de acerto.
+     * minAttempts: mínimo de tentativas para considerar (evita 0% com 1 erro).
+     */
+    public List<WeaknessAggregate> findWeaknessAggregates(int minAttempts, int limit) throws SQLException {
+        String sql = "SELECT e.type, e.question, COUNT(*) as total, " +
+            "SUM(CASE WHEN r.is_correct THEN 1 ELSE 0 END) as correct_count " +
+            "FROM results r JOIN exercises e ON r.exercise_id = e.id " +
+            "GROUP BY e.type, e.question " +
+            "HAVING COUNT(*) >= ? " +
+            "ORDER BY (SUM(CASE WHEN r.is_correct THEN 1 ELSE 0 END) * 1.0 / COUNT(*)) ASC " +
+            "LIMIT ?";
+        logger.debug("Calculando fraquezas: minAttempts={}, limit={}", minAttempts, limit);
+        List<WeaknessAggregate> result = new java.util.ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, minAttempts);
+            ps.setInt(2, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(new WeaknessAggregate(
+                        rs.getString("type"),
+                        rs.getString("question"),
+                        rs.getLong("total"),
+                        rs.getLong("correct_count")
+                    ));
+                }
+            }
+        }
+        logger.info("Fraquezas encontradas: {}", result.size());
+        return result;
+    }
+
     /**
      * Devolve o último exercício gerado para esta sessão, ou empty se não há histórico.
      * Usado pelo no-consecutive-repeat check em ExerciseService.

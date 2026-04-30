@@ -7,6 +7,7 @@ import pt.uab.musicaltrainer.api.ProgressResponse;
 import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.dto.SessionRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,9 +20,11 @@ public class ProgressService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProgressService.class);
     private final DaoFactory daoFactory;
+    private final WeaknessHintProvider hintProvider;
 
-    public ProgressService(DaoFactory daoFactory) {
-        this.daoFactory = daoFactory;
+    public ProgressService(DaoFactory daoFactory, WeaknessHintProvider hintProvider) {
+        this.daoFactory   = daoFactory;
+        this.hintProvider = hintProvider;
     }
 
     public ProgressResponse buildProgress() throws Exception {
@@ -54,9 +57,61 @@ public class ProgressService {
             ))
             .collect(Collectors.toList());
 
-        logger.info("Progresso: sessions={}, exercises={}, accuracy={}, tipos={}",
-            totalSessions, totalExercises, accuracy, byType.keySet());
+        // RF08 — padrões mais fracos com dicas pedagógicas
+        List<ProgressResponse.WeakArea> weakestAreas = new ArrayList<>();
+        List<pt.uab.musicaltrainer.dao.ResultDao.WeaknessAggregate> aggregates =
+            daoFactory.createResultDao().findWeaknessAggregates(3, 10);
+        for (pt.uab.musicaltrainer.dao.ResultDao.WeaknessAggregate agg : aggregates) {
+            String pattern     = extractPattern(agg.exerciseType(), agg.questionJson());
+            String displayName = getDisplayName(agg.exerciseType(), pattern);
+            double acc         = agg.total() == 0 ? 0.0 : (double) agg.correct() / agg.total();
+            String hint        = hintProvider.getHint(agg.exerciseType(), pattern);
+            weakestAreas.add(new ProgressResponse.WeakArea(
+                agg.exerciseType(), pattern, displayName, acc, agg.total(), hint));
+        }
 
-        return new ProgressResponse(totalSessions, totalExercises, accuracy, byType, recent);
+        logger.info("Progresso: sessions={}, exercises={}, accuracy={}, tipos={}, fraquezas={}",
+            totalSessions, totalExercises, accuracy, byType.keySet(), weakestAreas.size());
+
+        return new ProgressResponse(totalSessions, totalExercises, accuracy, byType, recent, weakestAreas);
+    }
+
+    private String extractPattern(String exerciseType, String questionJson) {
+        try {
+            if ("INTERVAL".equals(exerciseType)) {
+                int start = questionJson.indexOf('[') + 1;
+                int comma = questionJson.indexOf(',', start);
+                int end   = questionJson.indexOf(']', comma);
+                int noteA = Integer.parseInt(questionJson.substring(start, comma).trim());
+                int noteB = Integer.parseInt(questionJson.substring(comma + 1, end).trim());
+                return pt.uab.musicaltrainer.domain.IntervalType
+                    .fromSemitones(Math.abs(noteB - noteA)).internalName();
+            } else {
+                int typeStart = questionJson.indexOf("\"type\":\"") + 8;
+                int typeEnd   = questionJson.indexOf('"', typeStart);
+                return questionJson.substring(typeStart, typeEnd);
+            }
+        } catch (Exception e) {
+            logger.warn("Erro a extrair padrão de: {}", questionJson);
+            return "UNKNOWN";
+        }
+    }
+
+    private String getDisplayName(String exerciseType, String pattern) {
+        if ("INTERVAL".equals(exerciseType)) {
+            return java.util.Arrays.stream(pt.uab.musicaltrainer.domain.IntervalType.values())
+                .filter(t -> t.internalName().equals(pattern))
+                .map(pt.uab.musicaltrainer.domain.IntervalType::displayName)
+                .findFirst().orElse(pattern);
+        }
+        // SCALE/CHORD: formatar nome enum para legível
+        return pattern.replace("_", " ")
+            .toLowerCase()
+            .replace("harmonic", "Harmónica")
+            .replace("natural", "Natural")
+            .replace("major", "Maior")
+            .replace("minor", "Menor")
+            .replace("diminished", "Diminuto")
+            .replace("augmented", "Aumentado");
     }
 }
