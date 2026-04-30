@@ -41,4 +41,20 @@ class SandboxControllerTest {
         mockMvc.perform(get("/api/sandbox/note-info").param("notes", "abc"))
             .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldReturn400ForMidiOutOfRange() throws Exception {
+        // valores MIDI têm de estar entre 0 e 127
+        mockMvc.perform(get("/api/sandbox/note-info").param("notes", "60,200"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnNullIntervalForSingleNote() throws Exception {
+        // nota única — sem intervalo a calcular, campo interval é null no JSON
+        mockMvc.perform(get("/api/sandbox/note-info").param("notes", "60"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.notes[0].midiNumber").value(60))
+            .andExpect(jsonPath("$.interval").value(org.hamcrest.Matchers.nullValue()));
+    }
 }

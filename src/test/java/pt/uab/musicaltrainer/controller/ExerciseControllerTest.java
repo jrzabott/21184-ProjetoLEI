@@ -10,6 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import pt.uab.musicaltrainer.api.GenerateRequest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -90,5 +91,73 @@ class ExerciseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn400ForInvalidDifficulty() throws Exception {
+        // difficulty=0 está abaixo do mínimo (1-10 obrigatório)
+        mockMvc.perform(post("/api/exercises/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"type\":\"INTERVAL\",\"difficulty\":0}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400ForDifficultyAboveMax() throws Exception {
+        mockMvc.perform(post("/api/exercises/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"type\":\"INTERVAL\",\"difficulty\":11}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400ForUnknownExerciseType() throws Exception {
+        mockMvc.perform(post("/api/exercises/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"type\":\"HARMONICA\",\"difficulty\":3}"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn200ForAnswerInSandboxMode() throws Exception {
+        // Gerar exercício primeiro
+        String genResp = mockMvc.perform(post("/api/exercises/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"type\":\"CHORD\",\"difficulty\":1}"))
+            .andReturn().getResponse().getContentAsString();
+        Long exerciseId = new com.fasterxml.jackson.databind.ObjectMapper()
+            .readTree(genResp).get("exerciseId").asLong();
+
+        // Responder com SESSION_NONE (0) — sandbox, sem persistência
+        mockMvc.perform(post("/api/exercises/answer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.correct").isBoolean())
+            .andExpect(jsonPath("$.correctAnswer").isString());
+    }
+
+    @Test
+    void shouldReturnAnswerWithJsonArrayFormat() throws Exception {
+        // correctAnswer e userAnswer devem ser JSON arrays sem espaços: [60,67]
+        String genResp = mockMvc.perform(post("/api/exercises/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"type\":\"INTERVAL\",\"difficulty\":1}"))
+            .andReturn().getResponse().getContentAsString();
+        Long exerciseId = new com.fasterxml.jackson.databind.ObjectMapper()
+            .readTree(genResp).get("exerciseId").asLong();
+
+        String answerResp = mockMvc.perform(post("/api/exercises/answer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,67],\"responseTimeMs\":500}"))
+            .andReturn().getResponse().getContentAsString();
+
+        // correctAnswer deve ter formato [60,67] — sem espaços
+        com.fasterxml.jackson.databind.JsonNode node =
+            new com.fasterxml.jackson.databind.ObjectMapper().readTree(answerResp);
+        String correctAnswer = node.get("correctAnswer").asText();
+        assertThat(correctAnswer).doesNotContain(" ");
+        assertThat(correctAnswer).startsWith("[");
+        assertThat(correctAnswer).endsWith("]");
     }
 }
