@@ -15,14 +15,14 @@ class DtoSerializationTest {
 
     @Test
     void shouldSerializeGenerateRequest() throws Exception {
-        GenerateRequest req = new GenerateRequest("INTERVAL", 3);
+        GenerateRequest req = new GenerateRequest("INTERVAL", 3, null);
         String json = mapper.writeValueAsString(req);
         assertThat(json).contains("INTERVAL").contains("3");
     }
 
     @Test
     void shouldDeserializeGenerateRequest() throws Exception {
-        String json = "{\"type\":\"SCALE\",\"difficulty\":2}";
+        String json = "{\"type\":\"SCALE\",\"difficulty\":2,\"sessionId\":null}";
         GenerateRequest req = mapper.readValue(json, GenerateRequest.class);
         assertThat(req.type()).isEqualTo("SCALE");
         assertThat(req.difficulty()).isEqualTo(2);
@@ -60,9 +60,9 @@ class DtoSerializationTest {
 
     @Test
     void shouldRejectGenerateRequestWithInvalidDifficulty() {
-        assertThatThrownBy(() -> new GenerateRequest("INTERVAL", 0))
+        assertThatThrownBy(() -> new GenerateRequest("INTERVAL", 0, null))
             .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new GenerateRequest("INTERVAL", 11))
+        assertThatThrownBy(() -> new GenerateRequest("INTERVAL", 11, null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }
