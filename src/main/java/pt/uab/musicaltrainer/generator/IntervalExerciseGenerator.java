@@ -65,7 +65,13 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         int high = Math.max(noteA, noteB);
 
         String correctAnswer = type.internalName();
-        String questionJson  = "{\"notes\":[" + low + "," + high + "]}";
+        String questionJson;
+        try {
+            questionJson = mapper.writeValueAsString(new IntervalQuestion(new int[]{low, high}));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            logger.error("Erro a serializar IntervalQuestion", e);
+            throw new RuntimeException(e);
+        }
         String description   = "Que intervalo existe entre "
             + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName() + "?";
 

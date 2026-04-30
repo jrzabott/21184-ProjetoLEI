@@ -113,7 +113,13 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         }
         notes[scaleNotes.size()] = rootMidi + 12;
 
-        String questionJson = "{\"root\":" + rootMidi + ",\"type\":\"" + scaleType + "\"}";
+        String questionJson;
+        try {
+            questionJson = mapper.writeValueAsString(new ScaleQuestion(rootMidi, scaleType));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            logger.error("Erro a serializar ScaleQuestion", e);
+            throw new RuntimeException(e);
+        }
         String description  = "Que tipo de escala começa em " + root.getDisplayName() + "?";
 
         List<String> shuffled = new ArrayList<>(options);

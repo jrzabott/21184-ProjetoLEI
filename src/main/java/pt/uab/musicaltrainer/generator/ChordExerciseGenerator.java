@@ -78,7 +78,13 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
 
         int[] notes = chord.getNotes().stream().mapToInt(Note::getMidiNumber).toArray();
 
-        String questionJson = "{\"root\":" + rootMidi + ",\"type\":\"" + chordType + "\"}";
+        String questionJson;
+        try {
+            questionJson = mapper.writeValueAsString(new ChordQuestion(rootMidi, chordType));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            logger.error("Erro a serializar ChordQuestion", e);
+            throw new RuntimeException(e);
+        }
         String description  = "Que tipo de acorde tem raiz em " + root.getDisplayName() + "?";
 
         List<String> shuffled = new ArrayList<>(options);
