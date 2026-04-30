@@ -13,6 +13,7 @@ import pt.uab.musicaltrainer.dto.ChordQuestion;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.dto.ResultRecord;
 import pt.uab.musicaltrainer.dto.ScaleQuestion;
+import pt.uab.musicaltrainer.api.ResourceNotFoundException;
 import pt.uab.musicaltrainer.generator.*;
 import pt.uab.musicaltrainer.generator.ExerciseType;
 import pt.uab.musicaltrainer.generator.GeneratorFactory;
@@ -116,7 +117,7 @@ public class ExerciseService {
             exerciseId, sessionId, Arrays.toString(userNotes));
 
         ExerciseRecord exercise = daoFactory.createExerciseDao().findById(exerciseId)
-            .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado: " + exerciseId));
+            .orElseThrow(() -> new ResourceNotFoundException("Exercício não encontrado: " + exerciseId));
 
         int[] expectedNotes = objectMapper.readValue(exercise.correctAnswer(), int[].class);
         boolean correct = evaluate(exercise.type(), exercise.question(), expectedNotes, userNotes);
@@ -145,7 +146,7 @@ public class ExerciseService {
      */
     public int[] getExpectedNotes(Long exerciseId) throws Exception {
         ExerciseRecord exercise = daoFactory.createExerciseDao().findById(exerciseId)
-            .orElseThrow(() -> new IllegalArgumentException("Exercício nao encontrado: " + exerciseId));
+            .orElseThrow(() -> new ResourceNotFoundException("Exercício não encontrado: " + exerciseId));
         return objectMapper.readValue(exercise.correctAnswer(), int[].class);
     }
 

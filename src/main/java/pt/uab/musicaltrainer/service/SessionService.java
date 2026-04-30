@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pt.uab.musicaltrainer.api.ResourceNotFoundException;
 import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.dto.SessionRecord;
 
@@ -37,7 +38,7 @@ public class SessionService {
 
         Optional<SessionRecord> opt = daoFactory.createSessionDao().findById(sessionId);
         if (opt.isEmpty()) {
-            throw new IllegalArgumentException("Sessão não encontrada: " + sessionId);
+            throw new ResourceNotFoundException("Sessão não encontrada: " + sessionId);
         }
 
         SessionRecord session = opt.get();

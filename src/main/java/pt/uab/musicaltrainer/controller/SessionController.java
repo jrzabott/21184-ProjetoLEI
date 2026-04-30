@@ -43,21 +43,14 @@ public class SessionController {
 
     @Operation(summary = "Terminar sessão")
     @PostMapping("/{sessionId}/end")
-    public ResponseEntity<?> end(@PathVariable Long sessionId) {
+    public ResponseEntity<?> end(@PathVariable Long sessionId) throws Exception {
         logger.debug("POST /api/sessions/{}/end", sessionId);
-        try {
-            SessionRecord ended = service.endSession(sessionId);
-            double accuracy = service.calculateAccuracy(ended);
-            long duration = service.calculateDurationSeconds(ended);
+        SessionRecord ended = service.endSession(sessionId);
+        double accuracy = service.calculateAccuracy(ended);
+        long duration = service.calculateDurationSeconds(ended);
 
-            return ResponseEntity.ok(new SessionEndResponse(
-                ended.id(), ended.totalExercises(), ended.correctAnswers(), accuracy, duration
-            ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            logger.error("Erro ao terminar sessão: id={}", sessionId, e);
-            return ResponseEntity.internalServerError().body("Erro ao terminar sessão");
-        }
+        return ResponseEntity.ok(new SessionEndResponse(
+            ended.id(), ended.totalExercises(), ended.correctAnswers(), accuracy, duration
+        ));
     }
 }
