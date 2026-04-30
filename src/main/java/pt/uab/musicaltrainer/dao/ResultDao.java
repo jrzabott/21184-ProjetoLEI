@@ -3,6 +3,8 @@ package pt.uab.musicaltrainer.dao;
 import pt.uab.musicaltrainer.dto.ResultRecord;
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -106,7 +108,7 @@ public class ResultDao extends AbstractDao<ResultRecord> {
             "FROM results r JOIN exercises e ON r.exercise_id = e.id " +
             "GROUP BY e.type";
 
-        Map<String, long[]> result = new java.util.LinkedHashMap<>();
+        Map<String, long[]> result = new LinkedHashMap<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -144,7 +146,7 @@ public class ResultDao extends AbstractDao<ResultRecord> {
             "ORDER BY (SUM(CASE WHEN r.is_correct THEN 1 ELSE 0 END) * 1.0 / COUNT(*)) ASC " +
             "LIMIT ?";
         logger.debug("Calculando fraquezas: minAttempts={}, limit={}", minAttempts, limit);
-        List<WeaknessAggregate> result = new java.util.ArrayList<>();
+        List<WeaknessAggregate> result = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, minAttempts);

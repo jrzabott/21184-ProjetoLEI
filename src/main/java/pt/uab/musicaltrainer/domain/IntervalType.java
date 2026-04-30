@@ -1,5 +1,9 @@
 package pt.uab.musicaltrainer.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Tipos de intervalos musicais.
  * <p>
@@ -50,10 +54,10 @@ public enum IntervalType {
      * Devolve todos os intervalos disponíveis até ao nível indicado (inclusive).
      * Usado pelos geradores para seleccionar dentro da dificuldade pedida.
      */
-    public static java.util.List<IntervalType> availableFor(DifficultyLevel band) {
-        return java.util.Arrays.stream(values())
+    public static List<IntervalType> availableFor(DifficultyLevel band) {
+        return Arrays.stream(values())
             .filter(t -> t.difficulty.ordinal() <= band.ordinal())
-            .collect(java.util.stream.Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /** Devolve o tipo de intervalo para a distância em semítons (wrap com % 13). */

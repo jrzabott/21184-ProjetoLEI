@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -23,9 +24,11 @@ public class ExerciseController {
     private static final Logger logger = LoggerFactory.getLogger(ExerciseController.class);
 
     private final ExerciseService service;
+    private final ObjectMapper objectMapper;
 
-    public ExerciseController(ExerciseService service) {
+    public ExerciseController(ExerciseService service, ObjectMapper objectMapper) {
         this.service = service;
+        this.objectMapper = objectMapper;
         logger.info("ExerciseController inicializado");
     }
 
@@ -67,8 +70,15 @@ public class ExerciseController {
             String explanation = service.buildExplanation(request.exerciseId(), request.notes(), correct);
 
             // ADR-014: formato compacto sem espaços, ex: [60,64,67]
-            String correctAnswerJson = toCompactJsonArray(expectedNotes);
-            String userAnswerJson    = toCompactJsonArray(request.notes());
+            String correctAnswerJson;
+            String userAnswerJson;
+            try {
+                correctAnswerJson = objectMapper.writeValueAsString(expectedNotes);
+                userAnswerJson    = objectMapper.writeValueAsString(request.notes());
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                logger.error("Erro a serializar notas em resposta", e);
+                return ResponseEntity.internalServerError().body("Erro interno");
+            }
             AnswerResponse response = new AnswerResponse(
                 correct,
                 correctAnswerJson,
@@ -84,15 +94,4 @@ public class ExerciseController {
         }
     }
 
-    /** Serializa array de inteiros como JSON compacto, sem espaços: [60,64,67] */
-    private static String toCompactJsonArray(int[] notes) {
-        if (notes == null || notes.length == 0) return "[]";
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < notes.length; i++) {
-            if (i > 0) sb.append(',');
-            sb.append(notes[i]);
-        }
-        sb.append(']');
-        return sb.toString();
-    }
 }

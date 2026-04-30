@@ -1,8 +1,10 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
 import pt.uab.musicaltrainer.domain.IntervalType;
 import pt.uab.musicaltrainer.domain.Note;
@@ -26,8 +28,13 @@ import java.util.stream.Collectors;
 public class IntervalExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(IntervalExerciseGenerator.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
     private static final Random random = new Random();
+
+    private final ObjectMapper mapper;
+
+    public IntervalExerciseGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public ExerciseType getExerciseType() {
@@ -42,9 +49,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         List<IntervalType> available = IntervalType.availableFor(band);
 
         // Raiz mais central para iniciantes
-        int[] rootRange = band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()
-            ? new int[]{48, 72}   // C3-C5
-            : new int[]{36, 84};  // C2-C6
+        int[] rootRange = midiRangeFor(difficulty);
 
         // Exclui Unissono (0 semítons) — noteA == noteB viola o contrato notesToPlay()[1] > [0]
         List<IntervalType> playable = available.stream()
@@ -61,7 +66,13 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         int high = Math.max(noteA, noteB);
 
         String correctAnswer = type.internalName();
-        String questionJson  = "{\"notes\":[" + low + "," + high + "]}";
+        String questionJson;
+        try {
+            questionJson = mapper.writeValueAsString(new IntervalQuestion(new int[]{low, high}));
+        } catch (JsonProcessingException e) {
+            logger.error("Erro a serializar IntervalQuestion", e);
+            throw new RuntimeException(e);
+        }
         String description   = "Que intervalo existe entre "
             + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName() + "?";
 
@@ -87,10 +98,20 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             List<String> options = buildOptions(correctAnswer, Arrays.asList(IntervalType.values()));
             return new GeneratedExercise(ExerciseType.INTERVAL.name(), difficulty, questionJson,
                 correctAnswer, description, new int[]{noteA, noteB}, options);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar IntervalQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
+    }
+
+    private int[] midiRangeFor(int difficulty) {
+        if (difficulty <= DifficultyLevel.ELEMENTARY.upperBound()) {
+            return new int[]{MusicConstants.MIDI_EASY_LOW, MusicConstants.MIDI_EASY_HIGH};
+        }
+        if (difficulty <= DifficultyLevel.ADVANCED.upperBound()) {
+            return new int[]{MusicConstants.MIDI_MEDIUM_LOW, MusicConstants.MIDI_MEDIUM_HIGH};
+        }
+        return new int[]{21, 108};
     }
 
     private List<String> buildOptions(String correct, List<IntervalType> available) {

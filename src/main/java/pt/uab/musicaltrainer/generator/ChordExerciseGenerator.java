@@ -1,8 +1,10 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.Chord;
 import pt.uab.musicaltrainer.domain.ChordType;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
@@ -29,7 +31,12 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ChordExerciseGenerator.class);
     private static final Random random = new Random();
-    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private final ObjectMapper mapper;
+
+    public ChordExerciseGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public ExerciseType getExerciseType() {
@@ -46,7 +53,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             .map(Enum::name)
             .collect(Collectors.toList());
 
-        int rootMidi = 36 + random.nextInt(37);
+        int rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
         String chordType = available.get(random.nextInt(available.size()));
         logger.debug("Band para difficulty {}: {}", difficulty, band);
         return buildExercise(rootMidi, chordType, difficulty, available);
@@ -60,7 +67,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             List<String> available = ChordType.availableFor(DifficultyLevel.of(difficulty)).stream()
                 .map(Enum::name).collect(Collectors.toList());
             return buildExercise(q.root(), q.type(), difficulty, available);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ChordQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
@@ -72,7 +79,13 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
 
         int[] notes = chord.getNotes().stream().mapToInt(Note::getMidiNumber).toArray();
 
-        String questionJson = "{\"root\":" + rootMidi + ",\"type\":\"" + chordType + "\"}";
+        String questionJson;
+        try {
+            questionJson = mapper.writeValueAsString(new ChordQuestion(rootMidi, chordType));
+        } catch (JsonProcessingException e) {
+            logger.error("Erro a serializar ChordQuestion", e);
+            throw new RuntimeException(e);
+        }
         String description  = "Que tipo de acorde tem raiz em " + root.getDisplayName() + "?";
 
         List<String> shuffled = new ArrayList<>(options);

@@ -1,10 +1,16 @@
 package pt.uab.musicaltrainer.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pt.uab.musicaltrainer.api.ProgressResponse;
 import pt.uab.musicaltrainer.dao.DaoFactory;
+import pt.uab.musicaltrainer.domain.IntervalType;
+import pt.uab.musicaltrainer.dto.ChordQuestion;
+import pt.uab.musicaltrainer.dto.IntervalQuestion;
+import pt.uab.musicaltrainer.dto.ScaleQuestion;
 import pt.uab.musicaltrainer.dto.SessionRecord;
 
 import java.util.ArrayList;
@@ -21,10 +27,13 @@ public class ProgressService {
     private static final Logger logger = LoggerFactory.getLogger(ProgressService.class);
     private final DaoFactory daoFactory;
     private final WeaknessHintProvider hintProvider;
+    private final ObjectMapper objectMapper;
 
-    public ProgressService(DaoFactory daoFactory, WeaknessHintProvider hintProvider) {
+    public ProgressService(DaoFactory daoFactory, WeaknessHintProvider hintProvider,
+                           ObjectMapper objectMapper) {
         this.daoFactory   = daoFactory;
         this.hintProvider = hintProvider;
+        this.objectMapper = objectMapper;
     }
 
     public ProgressResponse buildProgress() throws Exception {
@@ -79,29 +88,26 @@ public class ProgressService {
     private String extractPattern(String exerciseType, String questionJson) {
         try {
             if ("INTERVAL".equals(exerciseType)) {
-                int start = questionJson.indexOf('[') + 1;
-                int comma = questionJson.indexOf(',', start);
-                int end   = questionJson.indexOf(']', comma);
-                int noteA = Integer.parseInt(questionJson.substring(start, comma).trim());
-                int noteB = Integer.parseInt(questionJson.substring(comma + 1, end).trim());
-                return pt.uab.musicaltrainer.domain.IntervalType
-                    .fromSemitones(Math.abs(noteB - noteA)).internalName();
+                IntervalQuestion q = objectMapper.readValue(questionJson, IntervalQuestion.class);
+                return IntervalType.fromSemitones(Math.abs(q.notes()[1] - q.notes()[0])).internalName();
+            } else if ("SCALE".equals(exerciseType)) {
+                ScaleQuestion q = objectMapper.readValue(questionJson, ScaleQuestion.class);
+                return q.type();
             } else {
-                int typeStart = questionJson.indexOf("\"type\":\"") + 8;
-                int typeEnd   = questionJson.indexOf('"', typeStart);
-                return questionJson.substring(typeStart, typeEnd);
+                ChordQuestion q = objectMapper.readValue(questionJson, ChordQuestion.class);
+                return q.type();
             }
-        } catch (Exception e) {
-            logger.warn("Erro a extrair padrão de: {}", questionJson);
+        } catch (JsonProcessingException e) {
+            logger.warn("Erro a parsear questionJson em extractPattern: {}", questionJson);
             return "UNKNOWN";
         }
     }
 
     private String getDisplayName(String exerciseType, String pattern) {
         if ("INTERVAL".equals(exerciseType)) {
-            return java.util.Arrays.stream(pt.uab.musicaltrainer.domain.IntervalType.values())
+            return java.util.Arrays.stream(IntervalType.values())
                 .filter(t -> t.internalName().equals(pattern))
-                .map(pt.uab.musicaltrainer.domain.IntervalType::displayName)
+                .map(IntervalType::displayName)
                 .findFirst().orElse(pattern);
         }
         // SCALE/CHORD: formatar nome enum para legível

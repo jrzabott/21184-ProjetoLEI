@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class IntervalExerciseGeneratorTest {
 
-    private final IntervalExerciseGenerator generator = new IntervalExerciseGenerator();
+    private final IntervalExerciseGenerator generator = new IntervalExerciseGenerator(new ObjectMapper());
 
     @Test
     void shouldReturnIntervalAsExerciseType() {

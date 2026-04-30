@@ -1,8 +1,10 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.domain.Scale;
@@ -32,7 +34,14 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ScaleExerciseGenerator.class);
     private static final Random random = new Random();
-    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private final ObjectMapper mapper;
+
+    public ScaleExerciseGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    private static final int[] WHITE_KEY_ROOTS = {48,50,52,53,55,57,59,60,62,64,65,67,69,71};
 
     /**
      * Tipos canónicos do MVP (sem aliases).
@@ -69,10 +78,9 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         // Raízes brancas (MIDI % 12 in {0,2,4,5,7,9,11}) para iniciantes
         int rootMidi;
         if (band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()) {
-            int[] whiteRoots = {48,50,52,53,55,57,59,60,62,64,65,67,69,71};
-            rootMidi = whiteRoots[random.nextInt(whiteRoots.length)];
+            rootMidi = WHITE_KEY_ROOTS[random.nextInt(WHITE_KEY_ROOTS.length)];
         } else {
-            rootMidi = 36 + random.nextInt(37);
+            rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
         }
 
         String scaleType = available.get(random.nextInt(available.size()));
@@ -88,7 +96,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             ScaleQuestion q = mapper.readValue(questionJson, ScaleQuestion.class);
             List<String> allMvp = MVP_TYPES.stream().map(Enum::name).collect(Collectors.toList());
             return buildExercise(q.root(), q.type(), difficulty, allMvp);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ScaleQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
@@ -106,7 +114,13 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         }
         notes[scaleNotes.size()] = rootMidi + 12;
 
-        String questionJson = "{\"root\":" + rootMidi + ",\"type\":\"" + scaleType + "\"}";
+        String questionJson;
+        try {
+            questionJson = mapper.writeValueAsString(new ScaleQuestion(rootMidi, scaleType));
+        } catch (JsonProcessingException e) {
+            logger.error("Erro a serializar ScaleQuestion", e);
+            throw new RuntimeException(e);
+        }
         String description  = "Que tipo de escala começa em " + root.getDisplayName() + "?";
 
         List<String> shuffled = new ArrayList<>(options);
