@@ -18,5 +18,8 @@ public record AnswerRequest(
     long sessionId,
 
     int[] notes,
+
+    @Schema(description = "Tempo de resposta em milissegundos. Aceite mas ainda não persistido — reservado para métricas futuras.",
+            example = "3200")
     long responseTimeMs
 ) {}
