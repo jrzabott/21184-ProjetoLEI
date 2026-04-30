@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -9,7 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class ChordExerciseGeneratorTest {
 
-    private final ChordExerciseGenerator generator = new ChordExerciseGenerator();
+    private final ChordExerciseGenerator generator = new ChordExerciseGenerator(new ObjectMapper());
 
     @Test
     void shouldReturnChordAsExerciseType() {

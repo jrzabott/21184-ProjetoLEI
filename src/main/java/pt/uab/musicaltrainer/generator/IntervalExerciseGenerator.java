@@ -27,8 +27,13 @@ import java.util.stream.Collectors;
 public class IntervalExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(IntervalExerciseGenerator.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
     private static final Random random = new Random();
+
+    private final ObjectMapper mapper;
+
+    public IntervalExerciseGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public ExerciseType getExerciseType() {

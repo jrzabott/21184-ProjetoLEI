@@ -33,7 +33,12 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ScaleExerciseGenerator.class);
     private static final Random random = new Random();
-    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private final ObjectMapper mapper;
+
+    public ScaleExerciseGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     private static final int[] WHITE_KEY_ROOTS = {48,50,52,53,55,57,59,60,62,64,65,67,69,71};
 

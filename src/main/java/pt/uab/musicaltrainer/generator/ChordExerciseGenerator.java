@@ -30,7 +30,12 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ChordExerciseGenerator.class);
     private static final Random random = new Random();
-    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private final ObjectMapper mapper;
+
+    public ChordExerciseGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public ExerciseType getExerciseType() {

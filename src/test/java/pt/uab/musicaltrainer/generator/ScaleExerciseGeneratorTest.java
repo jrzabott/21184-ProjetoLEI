@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import pt.uab.musicaltrainer.domain.ScaleType;
 
@@ -10,7 +11,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class ScaleExerciseGeneratorTest {
 
-    private final ScaleExerciseGenerator generator = new ScaleExerciseGenerator();
+    private final ScaleExerciseGenerator generator = new ScaleExerciseGenerator(new ObjectMapper());
 
     @Test
     void shouldReturnScaleAsExerciseType() {
