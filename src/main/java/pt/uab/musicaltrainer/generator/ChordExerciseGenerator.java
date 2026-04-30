@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.generator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.Chord;
 import pt.uab.musicaltrainer.domain.ChordType;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
@@ -46,7 +47,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             .map(Enum::name)
             .collect(Collectors.toList());
 
-        int rootMidi = 36 + random.nextInt(37);
+        int rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
         String chordType = available.get(random.nextInt(available.size()));
         logger.debug("Band para difficulty {}: {}", difficulty, band);
         return buildExercise(rootMidi, chordType, difficulty, available);

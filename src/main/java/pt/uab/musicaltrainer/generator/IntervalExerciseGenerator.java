@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.generator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
 import pt.uab.musicaltrainer.domain.IntervalType;
 import pt.uab.musicaltrainer.domain.Note;
@@ -42,9 +43,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         List<IntervalType> available = IntervalType.availableFor(band);
 
         // Raiz mais central para iniciantes
-        int[] rootRange = band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()
-            ? new int[]{48, 72}   // C3-C5
-            : new int[]{36, 84};  // C2-C6
+        int[] rootRange = midiRangeFor(difficulty);
 
         // Exclui Unissono (0 semítons) — noteA == noteB viola o contrato notesToPlay()[1] > [0]
         List<IntervalType> playable = available.stream()
@@ -91,6 +90,16 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             logger.error("Erro a desserializar IntervalQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
+    }
+
+    private int[] midiRangeFor(int difficulty) {
+        if (difficulty <= DifficultyLevel.ELEMENTARY.upperBound()) {
+            return new int[]{MusicConstants.MIDI_EASY_LOW, MusicConstants.MIDI_EASY_HIGH};
+        }
+        if (difficulty <= DifficultyLevel.ADVANCED.upperBound()) {
+            return new int[]{MusicConstants.MIDI_MEDIUM_LOW, MusicConstants.MIDI_MEDIUM_HIGH};
+        }
+        return new int[]{21, 108};
     }
 
     private List<String> buildOptions(String correct, List<IntervalType> available) {

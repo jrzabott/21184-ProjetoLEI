@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.generator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.domain.Scale;
@@ -33,6 +34,8 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
     private static final Logger logger = LoggerFactory.getLogger(ScaleExerciseGenerator.class);
     private static final Random random = new Random();
     private static final ObjectMapper mapper = new ObjectMapper();
+
+    private static final int[] WHITE_KEY_ROOTS = {48,50,52,53,55,57,59,60,62,64,65,67,69,71};
 
     /**
      * Tipos canónicos do MVP (sem aliases).
@@ -69,10 +72,9 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         // Raízes brancas (MIDI % 12 in {0,2,4,5,7,9,11}) para iniciantes
         int rootMidi;
         if (band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()) {
-            int[] whiteRoots = {48,50,52,53,55,57,59,60,62,64,65,67,69,71};
-            rootMidi = whiteRoots[random.nextInt(whiteRoots.length)];
+            rootMidi = WHITE_KEY_ROOTS[random.nextInt(WHITE_KEY_ROOTS.length)];
         } else {
-            rootMidi = 36 + random.nextInt(37);
+            rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
         }
 
         String scaleType = available.get(random.nextInt(available.size()));
