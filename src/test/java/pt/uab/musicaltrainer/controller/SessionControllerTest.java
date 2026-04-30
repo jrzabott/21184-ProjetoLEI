@@ -24,43 +24,74 @@ class SessionControllerTest {
     private ObjectMapper mapper;
 
     @Test
-    void shouldStartSession() throws Exception {
-        String body = "{\"exerciseType\":\"INTERVAL\",\"difficulty\":1}";
-
+    void shouldStartSessionWithoutBody() throws Exception {
+        // start não precisa de body — antes dava 400 se omitido
         mockMvc.perform(post("/api/sessions/start")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andExpect(status().isCreated())
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
             .andExpect(jsonPath("$.sessionId").isNumber())
-            .andExpect(jsonPath("$.startedAt").isString());
+            .andExpect(jsonPath("$.startedAt").isString())
+            .andExpect(jsonPath("$.totalExercises").value(0))
+            .andExpect(jsonPath("$.correctAnswers").value(0))
+            .andExpect(jsonPath("$.incorrectAnswers").value(0));
     }
 
     @Test
-    void shouldEndSession() throws Exception {
-        // Criar sessão
-        String startBody = "{\"exerciseType\":\"SCALE\",\"difficulty\":2}";
-        String resp = mockMvc.perform(post("/api/sessions/start")
+    void shouldStartSessionWithEmptyBody() throws Exception {
+        // body vazio também deve funcionar
+        mockMvc.perform(post("/api/sessions/start")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(startBody))
+                .content("{}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.sessionId").isNumber())
+            .andExpect(jsonPath("$.totalExercises").value(0));
+    }
+
+    @Test
+    void shouldEndSessionWithFullShape() throws Exception {
+        // end devolve shape completo incluindo startedAt e endedAt
+        String resp = mockMvc.perform(post("/api/sessions/start")
+                .contentType(MediaType.APPLICATION_JSON))
             .andReturn().getResponse().getContentAsString();
 
         Long sessionId = mapper.readTree(resp).get("sessionId").asLong();
 
-        // Terminar sessão
         mockMvc.perform(post("/api/sessions/" + sessionId + "/end")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.sessionId").value(sessionId))
+            .andExpect(jsonPath("$.startedAt").isString())
+            .andExpect(jsonPath("$.endedAt").isString())
             .andExpect(jsonPath("$.accuracy").isNumber())
             .andExpect(jsonPath("$.durationSeconds").isNumber());
     }
 
     @Test
-    void shouldReturn404ForEndingNonExistentSession() throws Exception {
+    void shouldReturn200WhenEndCalledTwice() throws Exception {
+        // terminar duas vezes é idempotente — sem erro, sem corromper dados
+        String resp = mockMvc.perform(post("/api/sessions/start")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andReturn().getResponse().getContentAsString();
+
+        Long sessionId = mapper.readTree(resp).get("sessionId").asLong();
+
+        mockMvc.perform(post("/api/sessions/" + sessionId + "/end")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/sessions/" + sessionId + "/end")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.endedAt").isString());
+    }
+
+    @Test
+    void shouldReturn404WithBodyForNonExistentSession() throws Exception {
+        // 404 agora tem body ProblemDetail — antes era vazio
         mockMvc.perform(post("/api/sessions/99999/end")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
-            .andExpect(status().isNotFound());
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.detail").isString());
     }
 }
