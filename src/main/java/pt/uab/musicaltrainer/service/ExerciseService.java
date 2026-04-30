@@ -122,12 +122,16 @@ public class ExerciseService {
         boolean correct = evaluate(exercise.type(), exercise.question(), expectedNotes, userNotes);
 
         if (sessionId != MusicConstants.SESSION_NONE) {
-            String userNotesJson = toNotesJson(userNotes);
-            daoFactory.createResultDao().save(
-                new ResultRecord(null, sessionId, exerciseId, userNotesJson, correct, null));
-            sessionService.incrementCounters(sessionId, correct);
-            logger.info("Resultado persistido: exerciseId={}, sessionId={}, correct={}",
-                exerciseId, sessionId, correct);
+            if (daoFactory.createSessionDao().findById(sessionId).isEmpty()) {
+                logger.warn("Sessão {} não encontrada — resultado não persistido (sessão expirada ou BD reiniciada)", sessionId);
+            } else {
+                String userNotesJson = toNotesJson(userNotes);
+                daoFactory.createResultDao().save(
+                    new ResultRecord(null, sessionId, exerciseId, userNotesJson, correct, null));
+                sessionService.incrementCounters(sessionId, correct);
+                logger.info("Resultado persistido: exerciseId={}, sessionId={}, correct={}",
+                    exerciseId, sessionId, correct);
+            }
         } else {
             logger.debug("Sandbox mode (SESSION_NONE) — resultado não persistido");
         }
