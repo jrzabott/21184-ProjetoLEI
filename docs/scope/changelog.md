@@ -64,7 +64,7 @@
 
 ## Sem. 8 · 5–6 mai · INTERCALAR
 
-**Feito:** feat/27 — RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente. RF08 parcial: byType com taxa de acerto real. SESSION_NONE=0L. feat/28 — RF09 implementado: DifficultyLevel enum (5 bandas BEGINNER→EXPERT). IntervalType, ScaleType (28 valores), ChordType classificados por dificuldade. Geradores usam availableFor() — zero magic numbers. DifficultyService com algoritmo 80/40%. Debug API: /api/debug/exercises/. ADR-015. OI01 fechado (SQLite3). OI07 fechado (ADR-013).  
+**Feito:** feat/27 — RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente. RF08 parcial: byType com taxa de acerto real. SESSION_NONE=0L. feat/28 — RF09 implementado: DifficultyLevel enum (5 bandas BEGINNER→EXPERT). IntervalType, ScaleType (28 valores), ChordType classificados por dificuldade. Geradores usam availableFor() — zero magic numbers. DifficultyService com algoritmo 80/40%. Debug API: /api/debug/exercises/. ADR-015. OI01 fechado (SQLite3). OI07 fechado (ADR-013). feat/29 — F02 implementado: no-consecutive-repeat via sessionId em GenerateRequest.  
 **Bloqueou:** -  
 **Próxima semana:** Preparação relatório intercalar (deadline 6 Mai). Frontend Fase 5.
 
