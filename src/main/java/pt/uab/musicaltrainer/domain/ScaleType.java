@@ -77,4 +77,5 @@ public enum ScaleType {
     public int[] getIntervals() {
         return intervals;
     }
+
 }
