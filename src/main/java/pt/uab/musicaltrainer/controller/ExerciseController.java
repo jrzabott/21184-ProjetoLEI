@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.controller;
 
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -61,8 +62,8 @@ public class ExerciseController {
 
             AnswerResponse response = new AnswerResponse(
                 correct,
-                java.util.Arrays.toString(expectedNotes),
-                java.util.Arrays.toString(request.notes()),
+                Arrays.toString(expectedNotes),
+                Arrays.toString(request.notes()),
                 explanation
             );
             logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);

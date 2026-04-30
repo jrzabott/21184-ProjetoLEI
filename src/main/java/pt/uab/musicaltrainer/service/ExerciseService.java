@@ -12,9 +12,10 @@ import pt.uab.musicaltrainer.dto.ChordQuestion;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.dto.ScaleQuestion;
 import pt.uab.musicaltrainer.generator.*;
+import pt.uab.musicaltrainer.generator.ExerciseType;
+import pt.uab.musicaltrainer.generator.GeneratorFactory;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,17 +31,13 @@ public class ExerciseService {
 
     private final DaoFactory daoFactory;
     private final ObjectMapper objectMapper;
-    private final Map<String, ExerciseGenerator> generators;
+    private final GeneratorFactory generatorFactory;
 
-    public ExerciseService(DaoFactory daoFactory, ObjectMapper objectMapper) {
+    public ExerciseService(DaoFactory daoFactory, ObjectMapper objectMapper, GeneratorFactory generatorFactory) {
         this.daoFactory = daoFactory;
         this.objectMapper = objectMapper;
-        this.generators = Map.of(
-            "INTERVAL", new IntervalExerciseGenerator(),
-            "SCALE",    new ScaleExerciseGenerator(),
-            "CHORD",    new ChordExerciseGenerator()
-        );
-        logger.info("ExerciseService inicializado: generators={}", generators.keySet());
+        this.generatorFactory = generatorFactory;
+        logger.info("ExerciseService inicializado: tipos={}", generatorFactory.types());
     }
 
     /**
@@ -125,15 +122,16 @@ public class ExerciseService {
     // --- Lógica de validação por tipo (ADR-014) ---
 
     private boolean evaluate(String type, String questionJson, int[] expected, int[] user) {
-        return switch (type) {
-            case "INTERVAL" -> evaluateInterval(expected, user);
-            case "SCALE"    -> evaluateScale(questionJson, user);
-            case "CHORD"    -> evaluateChord(questionJson, expected, user);
-            default -> {
-                logger.error("Tipo desconhecido na avaliação: {}", type);
-                yield false;
-            }
-        };
+        try {
+            return switch (ExerciseType.valueOf(type)) {
+                case INTERVAL -> evaluateInterval(expected, user);
+                case SCALE    -> evaluateScale(questionJson, user);
+                case CHORD    -> evaluateChord(questionJson, expected, user);
+            };
+        } catch (IllegalArgumentException e) {
+            logger.error("Tipo desconhecido na avaliação: {}", type);
+            return false;
+        }
     }
 
     /** INTERVAL: notas exactas (ADR-014 — treino enraizado). */
@@ -198,12 +196,8 @@ public class ExerciseService {
     // --- Utilitários ---
 
     private ExerciseGenerator getGenerator(String type) {
-        ExerciseGenerator gen = generators.get(type);
-        if (gen == null) {
-            logger.error("Tipo de exercício desconhecido: {}", type);
-            throw new IllegalArgumentException("Tipo de exercício desconhecido: " + type);
-        }
-        return gen;
+        logger.debug("Obtendo gerador para tipo: {}", type);
+        return generatorFactory.get(type);
     }
 
     static String toNotesJson(int[] notes) {

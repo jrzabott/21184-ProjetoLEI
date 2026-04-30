@@ -1,5 +1,7 @@
 package pt.uab.musicaltrainer.domain;
 
+import java.util.Objects;
+
 /**
  * Implementação de uma nota musical através do seu número MIDI.
  * <p>
@@ -96,7 +98,7 @@ final class NoteImpl implements Note {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(midiNumber);
+        return Objects.hash(midiNumber);
     }
 
     @Override

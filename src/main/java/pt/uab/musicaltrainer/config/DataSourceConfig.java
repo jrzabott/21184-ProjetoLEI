@@ -2,10 +2,12 @@ package pt.uab.musicaltrainer.config;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -72,8 +74,8 @@ public class DataSourceConfig {
 
             @Override public int getLoginTimeout() { return 0; }
             @Override public void setLoginTimeout(int s) { }
-            @Override public java.io.PrintWriter getLogWriter() { return null; }
-            @Override public void setLogWriter(java.io.PrintWriter o) { }
+            @Override public PrintWriter getLogWriter() { return null; }
+            @Override public void setLogWriter(PrintWriter o) { }
             @Override public boolean isWrapperFor(Class<?> i) { return false; }
             @Override public <T> T unwrap(Class<T> i) { return null; }
             @Override public java.util.logging.Logger getParentLogger() { return null; }
@@ -98,7 +100,7 @@ public class DataSourceConfig {
                 // Executar cada statement separadamente (H2 não aceita múltiplos por execute())
                 for (String statement : sql.split(";")) {
                     // Remover apenas linhas de comentário, não o statement inteiro
-                    String cleaned = java.util.Arrays.stream(statement.split("\n"))
+                    String cleaned = Arrays.stream(statement.split("\n"))
                         .filter(line -> !line.trim().startsWith("--"))
                         .collect(Collectors.joining("\n"))
                         .trim();

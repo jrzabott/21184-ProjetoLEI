@@ -1,15 +1,18 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.domain.Scale;
+import pt.uab.musicaltrainer.domain.ScaleType;
+import pt.uab.musicaltrainer.dto.ScaleQuestion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Gera exercícios de identificação de escalas musicais.
@@ -25,13 +28,18 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ScaleExerciseGenerator.class);
     private static final Random random = new Random();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    // Tipos suportados no MVP — correspondentes ao ScaleType enum
-    static final List<String> SCALE_TYPES = Arrays.asList("MAJOR", "MINOR_NATURAL", "HARMONIC_MINOR");
+    // Tipos suportados no MVP — correspondentes ao ScaleType enum (subset intencional)
+    private static final List<String> SCALE_TYPES = List.of(
+        ScaleType.MAJOR.name(),
+        ScaleType.MINOR_NATURAL.name(),
+        ScaleType.HARMONIC_MINOR.name()
+    );
 
     @Override
-    public String getExerciseType() {
-        return "SCALE";
+    public ExerciseType getExerciseType() {
+        return ExerciseType.SCALE;
     }
 
     @Override
@@ -48,11 +56,13 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
     @Override
     public GeneratedExercise fromStored(String questionJson, String correctAnswer, int difficulty) {
         logger.debug("Reconstruindo escala de BD: questionJson={}", questionJson);
-
-        int root = parseIntField(questionJson, "root");
-        String type = parseStringField(questionJson, "type");
-
-        return buildExercise(root, type, difficulty);
+        try {
+            ScaleQuestion q = mapper.readValue(questionJson, ScaleQuestion.class);
+            return buildExercise(q.root(), q.type(), difficulty);
+        } catch (Exception e) {
+            logger.error("Erro a desserializar ScaleQuestion: {}", questionJson, e);
+            throw new RuntimeException(e);
+        }
     }
 
     private GeneratedExercise buildExercise(int rootMidi, String scaleType, int difficulty) {
@@ -60,7 +70,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         Scale scale = Scale.get(scaleType, root);
 
         // ADR-014: 8 notas — raiz até raiz uma oitava acima (ex: C4 D E F G A B C5)
-        java.util.List<Note> scaleNotes = scale.getNotes();
+        List<Note> scaleNotes = scale.getNotes();
         int[] notes = new int[scaleNotes.size() + 1];
         for (int i = 0; i < scaleNotes.size(); i++) {
             notes[i] = scaleNotes.get(i).getMidiNumber();
@@ -78,23 +88,8 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             rootMidi, root.getDisplayName(), scaleType, difficulty);
 
         return new GeneratedExercise(
-            "SCALE", difficulty, questionJson, scaleType,
+            ExerciseType.SCALE.name(), difficulty, questionJson, scaleType,
             description, notes, options
         );
-    }
-
-    private int parseIntField(String json, String field) {
-        // Parsear {"root":60,"type":"MAJOR"} sem Jackson
-        String pattern = "\"" + field + "\":(\\d+)";
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile(pattern).matcher(json);
-        if (m.find()) return Integer.parseInt(m.group(1));
-        throw new IllegalArgumentException("Campo '" + field + "' não encontrado em: " + json);
-    }
-
-    private String parseStringField(String json, String field) {
-        String pattern = "\"" + field + "\":\"([^\"]+)\"";
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile(pattern).matcher(json);
-        if (m.find()) return m.group(1);
-        throw new IllegalArgumentException("Campo '" + field + "' não encontrado em: " + json);
     }
 }

@@ -1,15 +1,18 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.uab.musicaltrainer.domain.Chord;
+import pt.uab.musicaltrainer.domain.ChordType;
 import pt.uab.musicaltrainer.domain.Note;
+import pt.uab.musicaltrainer.dto.ChordQuestion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Gera exercícios de identificação de acordes (tríades).
@@ -25,13 +28,15 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ChordExerciseGenerator.class);
     private static final Random random = new Random();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     // Tipos suportados no MVP — correspondentes ao ChordType enum
-    static final List<String> CHORD_TYPES = Arrays.asList("MAJOR", "MINOR", "DIMINISHED", "AUGMENTED");
+    private static final List<String> CHORD_TYPES =
+        java.util.Arrays.stream(ChordType.values()).map(Enum::name).collect(Collectors.toList());
 
     @Override
-    public String getExerciseType() {
-        return "CHORD";
+    public ExerciseType getExerciseType() {
+        return ExerciseType.CHORD;
     }
 
     @Override
@@ -48,11 +53,13 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
     @Override
     public GeneratedExercise fromStored(String questionJson, String correctAnswer, int difficulty) {
         logger.debug("Reconstruindo acorde de BD: questionJson={}", questionJson);
-
-        int root = parseIntField(questionJson, "root");
-        String type = parseStringField(questionJson, "type");
-
-        return buildExercise(root, type, difficulty);
+        try {
+            ChordQuestion q = mapper.readValue(questionJson, ChordQuestion.class);
+            return buildExercise(q.root(), q.type(), difficulty);
+        } catch (Exception e) {
+            logger.error("Erro a desserializar ChordQuestion: {}", questionJson, e);
+            throw new RuntimeException(e);
+        }
     }
 
     private GeneratedExercise buildExercise(int rootMidi, String chordType, int difficulty) {
@@ -74,24 +81,8 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             rootMidi, root.getDisplayName(), chordType, difficulty);
 
         return new GeneratedExercise(
-            "CHORD", difficulty, questionJson, chordType,
+            ExerciseType.CHORD.name(), difficulty, questionJson, chordType,
             description, notes, options
         );
-    }
-
-    private int parseIntField(String json, String field) {
-        java.util.regex.Matcher m = java.util.regex.Pattern
-            .compile("\"" + field + "\":(\\d+)")
-            .matcher(json);
-        if (m.find()) return Integer.parseInt(m.group(1));
-        throw new IllegalArgumentException("Campo '" + field + "' não encontrado em: " + json);
-    }
-
-    private String parseStringField(String json, String field) {
-        java.util.regex.Matcher m = java.util.regex.Pattern
-            .compile("\"" + field + "\":\"([^\"]+)\"")
-            .matcher(json);
-        if (m.find()) return m.group(1);
-        throw new IllegalArgumentException("Campo '" + field + "' não encontrado em: " + json);
     }
 }

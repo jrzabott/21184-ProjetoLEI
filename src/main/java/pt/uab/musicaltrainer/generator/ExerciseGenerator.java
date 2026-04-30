@@ -29,5 +29,5 @@ public interface ExerciseGenerator {
     /**
      * Tipo de exercício que este gerador produz.
      */
-    String getExerciseType();
+    ExerciseType getExerciseType();
 }
