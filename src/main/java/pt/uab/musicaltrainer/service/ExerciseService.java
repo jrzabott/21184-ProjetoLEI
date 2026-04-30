@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -7,7 +8,9 @@ import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.domain.ChordType;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.domain.Scale;
+import pt.uab.musicaltrainer.dto.ChordQuestion;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
+import pt.uab.musicaltrainer.dto.ScaleQuestion;
 import pt.uab.musicaltrainer.generator.*;
 
 import java.util.Arrays;
@@ -26,10 +29,12 @@ public class ExerciseService {
     private static final Logger logger = LoggerFactory.getLogger(ExerciseService.class);
 
     private final DaoFactory daoFactory;
+    private final ObjectMapper objectMapper;
     private final Map<String, ExerciseGenerator> generators;
 
-    public ExerciseService(DaoFactory daoFactory) {
+    public ExerciseService(DaoFactory daoFactory, ObjectMapper objectMapper) {
         this.daoFactory = daoFactory;
+        this.objectMapper = objectMapper;
         this.generators = Map.of(
             "INTERVAL", new IntervalExerciseGenerator(),
             "SCALE",    new ScaleExerciseGenerator(),
@@ -40,7 +45,7 @@ public class ExerciseService {
 
     /**
      * Gera um exercício e guarda em BD.
-     * correct_answer guarda as notas esperadas como JSON para feedback ao utilizador.
+     * correct_answer guarda as notas esperadas como JSON array para feedback.
      */
     public ExerciseRecord generateAndSave(String type, int difficulty) throws Exception {
         logger.debug("Gerando exercício: type={}, difficulty={}", type, difficulty);
@@ -48,7 +53,6 @@ public class ExerciseService {
         ExerciseGenerator generator = getGenerator(type);
         GeneratedExercise generated = generator.generate(difficulty);
 
-        // ADR-014: correct_answer armazena notas esperadas como "[60,62,64]"
         String expectedNotesJson = toNotesJson(generated.notesToPlay());
 
         ExerciseRecord toSave = new ExerciseRecord(
@@ -64,11 +68,6 @@ public class ExerciseService {
 
     /**
      * Avalia a resposta do utilizador baseada nas notas MIDI tocadas.
-     *
-     * Regras por tipo (ADR-014):
-     * - INTERVAL: notas exactas obrigatórias (mesmo MIDI, mesma oitava)
-     * - SCALE:    padrão de semítons, qualquer oitava de partida, 8 notas (raiz→raiz)
-     * - CHORD:    voicing I-III-V ascendente, qualquer oitava, mesmo pitch class na raiz
      */
     public boolean evaluateAnswer(Long exerciseId, int[] userNotes) throws Exception {
         logger.debug("Avaliando: exerciseId={}, notas={}", exerciseId, Arrays.toString(userNotes));
@@ -80,7 +79,7 @@ public class ExerciseService {
         }
 
         ExerciseRecord exercise = opt.get();
-        int[] expectedNotes = parseNotesJson(exercise.correctAnswer());
+        int[] expectedNotes = objectMapper.readValue(exercise.correctAnswer(), int[].class);
         boolean correct = evaluate(exercise.type(), exercise.question(), expectedNotes, userNotes);
 
         logger.info("Avaliação: exerciseId={}, type={}, expected={}, got={}, correct={}",
@@ -93,9 +92,9 @@ public class ExerciseService {
      * Retorna as notas esperadas para um exercício (para display/feedback).
      */
     public int[] getExpectedNotes(Long exerciseId) throws Exception {
-        return daoFactory.createExerciseDao().findById(exerciseId)
-            .map(e -> parseNotesJson(e.correctAnswer()))
+        ExerciseRecord exercise = daoFactory.createExerciseDao().findById(exerciseId)
             .orElseThrow(() -> new IllegalArgumentException("Exercício nao encontrado: " + exerciseId));
+        return objectMapper.readValue(exercise.correctAnswer(), int[].class);
     }
 
     /**
@@ -144,27 +143,29 @@ public class ExerciseService {
     }
 
     /**
-     * SCALE: validação usando o domínio directamente — Scale.get() reconstrói as notas esperadas.
-     * Qualquer oitava de partida é válida desde que o pitch class coincida com a raiz esperada.
-     * N notas = scale.getNotes().size() + 1 (raiz→raiz). Funciona para qualquer tipo de escala.
+     * SCALE: usa domínio directamente — Scale.get() reconstrói as notas esperadas.
+     * Qualquer oitava é válida; pitch class da raiz deve coincidir.
      */
     private boolean evaluateScale(String questionJson, int[] user) {
-        String scaleType = extractStringField(questionJson, "type");
-        int expectedRootMidi = extractIntField(questionJson, "root");
+        ScaleQuestion q;
+        try {
+            q = objectMapper.readValue(questionJson, ScaleQuestion.class);
+        } catch (Exception e) {
+            logger.error("Erro a desserializar ScaleQuestion: {}", questionJson, e);
+            return false;
+        }
 
-        // o utilizador deve começar no mesmo pitch class que a raiz esperada
-        if (user[0] % 12 != expectedRootMidi % 12) return false;
-        // notas devem ser ascendentes
+        if (user[0] % 12 != q.root() % 12) return false;
         for (int i = 1; i < user.length; i++) {
             if (user[i] <= user[i - 1]) return false;
         }
-        // reconstruir escala esperada a partir da raiz do utilizador (para suportar qualquer oitava)
-        Scale expectedScale = Scale.get(scaleType, Note.fromMidi(user[0]));
+
+        Scale expectedScale = Scale.get(q.type(), Note.fromMidi(user[0]));
         int[] expectedNotes = expectedScale.getNotes().stream()
             .mapToInt(Note::getMidiNumber)
             .toArray();
 
-        int expectedCount = expectedNotes.length + 1; // escala + regresso à raiz
+        int expectedCount = expectedNotes.length + 1;
         if (user.length != expectedCount) return false;
         if (user[user.length - 1] != user[0] + 12) return false;
 
@@ -174,26 +175,23 @@ public class ExerciseService {
         return true;
     }
 
-    private static int extractIntField(String json, String field) {
-        java.util.regex.Matcher m = java.util.regex.Pattern
-            .compile("\"" + field + "\":(\\d+)")
-            .matcher(json);
-        if (m.find()) return Integer.parseInt(m.group(1));
-        throw new IllegalArgumentException("Campo '" + field + "' nao encontrado em: " + json);
-    }
-
     /**
      * CHORD: voicing I-III-V ascendente, qualquer oitava, mesmo pitch class na raiz (ADR-014).
      */
     private boolean evaluateChord(String questionJson, int[] expected, int[] user) {
         if (user.length != 3) return false;
         if (user[0] >= user[1] || user[1] >= user[2]) return false;
-
-        // mesmo pitch class na raiz (% 12)
         if (expected[0] % 12 != user[0] % 12) return false;
 
-        String chordType = extractStringField(questionJson, "type");
-        int[] voicing = ChordType.valueOf(chordType).getVoicingIntervals();
+        ChordQuestion q;
+        try {
+            q = objectMapper.readValue(questionJson, ChordQuestion.class);
+        } catch (Exception e) {
+            logger.error("Erro a desserializar ChordQuestion: {}", questionJson, e);
+            return false;
+        }
+
+        int[] voicing = ChordType.valueOf(q.type()).getVoicingIntervals();
         return user[1] - user[0] == voicing[0] && user[2] - user[1] == voicing[1];
     }
 
@@ -211,21 +209,5 @@ public class ExerciseService {
     static String toNotesJson(int[] notes) {
         return "[" + IntStream.of(notes).mapToObj(String::valueOf)
             .collect(Collectors.joining(",")) + "]";
-    }
-
-    static int[] parseNotesJson(String json) {
-        String inner = json.trim().replaceAll("^\\[|\\]$", "");
-        if (inner.isEmpty()) return new int[0];
-        return Arrays.stream(inner.split(","))
-            .mapToInt(s -> Integer.parseInt(s.trim()))
-            .toArray();
-    }
-
-    private static String extractStringField(String json, String field) {
-        java.util.regex.Matcher m = java.util.regex.Pattern
-            .compile("\"" + field + "\":\"([^\"]+)\"")
-            .matcher(json);
-        if (m.find()) return m.group(1);
-        throw new IllegalArgumentException("Campo '" + field + "' nao encontrado em: " + json);
     }
 }
