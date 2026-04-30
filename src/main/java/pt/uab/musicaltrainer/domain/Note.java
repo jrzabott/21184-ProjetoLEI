@@ -3,8 +3,14 @@ package pt.uab.musicaltrainer.domain;
 /**
  * Contrato para uma nota musical representada pelo seu número MIDI.
  * <p>
+ * Uma nota musical é definida por altura (pitch) — a sua posição numa escala,
+ * e é representada internamente por um número MIDI (0-127), onde cada número
+ * corresponde a um semitom. Exemplo: C4 (Dó na 4ª oitava) = 60 MIDI,
+ * G4 (Sol na 4ª oitava) = 67 MIDI. A cada semitom aumentado, o número MIDI
+ * aumenta em 1, subindo um semitom na escala cromática.
+ * <p>
  * Suporta conversão bidirecional entre números MIDI (0-127) e
- * representações legíveis (nome + oitava, ex: C4, G4).
+ * representações legíveis (nome + oitava, ex: C4, G4, D#5).
  * <p>
  * Value object imutável: duas notas com o mesmo número MIDI
  * são semanticamente equivalentes.
