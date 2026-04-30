@@ -1,5 +1,9 @@
 package pt.uab.musicaltrainer.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Tipos de acordes musicais com padrões de semítons.
  * <p>
@@ -71,10 +75,10 @@ public enum ChordType {
      * @param band nivel de dificuldade máximo
      * @return lista de tipos de acorde com dificuldade <= band
      */
-    public static java.util.List<ChordType> availableFor(DifficultyLevel band) {
-        return java.util.Arrays.stream(values())
+    public static List<ChordType> availableFor(DifficultyLevel band) {
+        return Arrays.stream(values())
             .filter(t -> t.difficulty.ordinal() <= band.ordinal())
-            .collect(java.util.stream.Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /**

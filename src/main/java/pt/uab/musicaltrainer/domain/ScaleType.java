@@ -1,5 +1,9 @@
 package pt.uab.musicaltrainer.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Tipos de escalas musicais com padrões de semítons.
  * <p>
@@ -94,10 +98,10 @@ public enum ScaleType {
      * @param band nivel de dificuldade máximo
      * @return lista de tipos de escala com dificuldade <= band
      */
-    public static java.util.List<ScaleType> availableFor(DifficultyLevel band) {
-        return java.util.Arrays.stream(values())
+    public static List<ScaleType> availableFor(DifficultyLevel band) {
+        return Arrays.stream(values())
             .filter(t -> t.difficulty.ordinal() <= band.ordinal())
-            .collect(java.util.stream.Collectors.toList());
+            .collect(Collectors.toList());
     }
 
 }
