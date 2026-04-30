@@ -11,50 +11,38 @@
 
 ## Estado actual
 
-🟡 **Amarelo** - Documentação inicial completa. Implementação não iniciada (Sem. 4 - a aguardar setup Spring Boot).
+🟢 **Verde** - Backend completo (Fases 0-4). 160 testes a passar. API REST funcional.
+
+**Última actualização:** Sem. 7 (27 Abr 2026)
 
 ---
 
 ## O que está implementado
 
-- [ ] Modelo de domínio Java (Note, Interval, Scale, Chord)
-- [ ] Geração procedural de exercícios (intervalos, escalas, acordes)
-- [ ] API REST (generate, answer, sessions, progress, sandbox)
-- [ ] Teclado virtual com som (Web Audio API)
-- [ ] Input MIDI físico (Web MIDI API)
-- [ ] Persistência de sessões e resultados (H2 / PostgreSQL)
-- [ ] Dashboard de progresso
-- [ ] Modo sandbox
-- [ ] Dificuldade adaptativa
+- [x] Modelo de domínio Java (Note, Interval, Scale, Chord) ✅
+- [x] Persistência JDBC pura - SessionDao, ExerciseDao, ResultDao ✅
+- [x] Suporte multi-BD - H2 (dev), SQLite e PostgreSQL (produção) ✅
+- [x] Geração procedural de exercícios (intervalos, escalas, tríades) ✅
+- [x] API REST completa (generate, answer, sessions, progress, sandbox) ✅
+- [x] 160 testes de integração a passar ✅
+- [ ] Teclado virtual com som (Web Audio API) - Fase 5
+- [ ] Input MIDI físico (Web MIDI API) - Fase 5
+- [ ] Dashboard de progresso - Frontend Fase 7
+- [ ] Dificuldade adaptativa - a implementar
 
 ---
 
 ## O que está pendente
 
-### Fase 1: Modelo de Domínio (Domain Models)
-- [x] Task 1.1 - Setup Spring Boot + estrutura
-- [x] Task 1.2 - Modelo de Domínio (Note)
-- [x] Task 1.3 - Modelo de Domínio (Interval)
-- [x] Task 1.4 - Modelo de Domínio (Scale)
-- [x] Task 1.5 - Modelo de Domínio (Chord)
-- [ ] **Task 1.6 - Refactor domínio para interfaces** ⚠️ **CRÍTICO antes Fase 2**
-  - Extrair Note, Interval, Scale, Chord para interfaces
-  - Mover enums para implementações (ou interfaces com enum implementations)
-  - Preparar para mocking em testes
-  - Aplicar SOLID principles em toda a base de código
-  - Documentação em interfaces, não em implementações
+### Fase 5: Frontend - Teclado Virtual
+- [ ] index.html + piano.js + audio.js
+- [ ] Web Audio API (síntese sonora)
+- [ ] Ligação ao backend via fetch
 
-### Fase 2: Persistência (Persistence Layer)
-- [ ] Schema SQL + DAO classes com JDBC (refatorar DAOs para usar interfaces de domínio)
-
-### Fase 3+
-- [ ] Geradores de exercícios (Fase 3)
-- [ ] REST Controllers (Fase 4)
-- [ ] Frontend: teclado virtual (Fase 5)
-- [ ] Frontend: ecrã de exercício (Fase 6)
-- [ ] Frontend: dashboard (Fase 7)
-- [ ] Ecrã de fim de sessão (Fase 8)
-- [ ] Ecrã de selecção de exercício (Fase 9)
+### Fase 6-9: Frontend - Ecrãs
+- [ ] exercise.html - ecrã de exercício activo
+- [ ] progress.html - dashboard de progresso
+- [ ] Ecrã de fim de sessão, selecção de exercício
 
 ---
 

@@ -56,9 +56,9 @@
 
 ## Sem. 7 · 28 abr–2 mai · DEMO INTERNA
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** (27 abr) Fase 3 concluída — geradores (IntervalExerciseGenerator, ScaleExerciseGenerator 8 notas raiz-a-raiz, ChordExerciseGenerator) com Strategy pattern, TDD, logging. ExerciseService com Factory pattern e avaliação baseada em notas MIDI por tipo (ADR-014). Fase 4 concluída — REST API: POST /api/exercises/generate, POST /api/exercises/answer (flat, exerciseId no corpo), POST /api/sessions/start e /end, GET /api/progress, GET /api/sandbox/note-info. ADR-013 (schema questionData) e ADR-014 (protocolo notas MIDI). ScaleType.getSemitonePattern(), ChordType.getVoicingIntervals(). 171 testes a passar. Validação por padrão de semítons (escalas qualquer oitava, acordes I-III-V qualquer oitava, intervalos notas exactas).  
+**Bloqueou:** -  
+**Próxima semana:** Demo interna com Pestana (28 abr–2 mai). Decisão biblioteca GUI para teste API. Relatório Intercalar (deadline 6 Mai).
 
 ---
 
