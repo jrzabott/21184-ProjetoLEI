@@ -3,12 +3,12 @@ package pt.uab.musicaltrainer.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pt.uab.musicaltrainer.api.ResourceNotFoundException;
 import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.dto.SessionRecord;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 /**
  * Gere o ciclo de vida das sessões de treino.
@@ -35,12 +35,14 @@ public class SessionService {
     public SessionRecord endSession(Long sessionId) throws Exception {
         logger.debug("Terminando sessão: id={}", sessionId);
 
-        Optional<SessionRecord> opt = daoFactory.createSessionDao().findById(sessionId);
-        if (opt.isEmpty()) {
-            throw new IllegalArgumentException("Sessão não encontrada: " + sessionId);
+        SessionRecord session = daoFactory.createSessionDao().findById(sessionId)
+            .orElseThrow(() -> new ResourceNotFoundException("Sessão não encontrada: " + sessionId));
+
+        if (session.endTime() != null) {
+            logger.info("Sessão {} já estava terminada — a devolver estado existente sem escrever", sessionId);
+            return session;
         }
 
-        SessionRecord session = opt.get();
         SessionRecord ended = new SessionRecord(
             session.id(), session.startTime(), LocalDateTime.now(),
             session.totalExercises(), session.correctAnswers(),

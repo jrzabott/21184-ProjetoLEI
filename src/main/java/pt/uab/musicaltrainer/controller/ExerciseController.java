@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,6 @@ import pt.uab.musicaltrainer.dto.ExerciseRecord;
 import pt.uab.musicaltrainer.generator.GeneratedExercise;
 import pt.uab.musicaltrainer.service.ExerciseService;
 
-/**
- * REST controller para operações de exercícios.
- * O utilizador responde tocando notas MIDI - sem múltipla escolha (ADR-014).
- */
 @Tag(name = "Exercícios", description = "Geração e avaliação de exercícios de teoria musical")
 @RestController
 @RequestMapping("/api/exercises")
@@ -34,64 +31,36 @@ public class ExerciseController {
 
     @Operation(summary = "Gerar exercício", description = "Gera um exercício aleatório do tipo e dificuldade indicados")
     @PostMapping("/generate")
-    public ResponseEntity<?> generate(@RequestBody GenerateRequest request) {
-        logger.debug("POST /api/exercises/generate: type={}, difficulty={}",
-            request.type(), request.difficulty());
-        try {
-            ExerciseRecord saved    = service.generateAndSave(request.type(), request.difficulty(), request.sessionId());
-            int suggested           = service.getSuggestedDifficulty(saved.type(), saved.difficulty());
-            GeneratedExercise display = service.getDisplayData(saved);
+    public ResponseEntity<GenerateResponse> generate(@RequestBody GenerateRequest request) throws Exception {
+        logger.debug("POST /api/exercises/generate: type={}, difficulty={}", request.type(), request.difficulty());
 
-            GenerateResponse response = new GenerateResponse(
-                saved.id(), saved.type(), saved.difficulty(),
-                suggested,
-                display.notesToPlay(), display.description(), display.hint(), display.options()
-            );
-            logger.info("Exercício gerado: id={}, type={}", saved.id(), saved.type());
-            return ResponseEntity.ok(response);
+        ExerciseRecord saved      = service.generateAndSave(request.type(), request.difficulty(), request.sessionId());
+        int suggested             = service.getSuggestedDifficulty(saved.type(), saved.difficulty());
+        GeneratedExercise display = service.getDisplayData(saved);
 
-        } catch (IllegalArgumentException e) {
-            logger.warn("Tipo inválido: {}", request.type());
-            return ResponseEntity.badRequest().body("Tipo de exercício inválido: " + request.type());
-        } catch (Exception e) {
-            logger.error("Erro ao gerar exercício", e);
-            return ResponseEntity.internalServerError().body("Erro interno");
-        }
+        GenerateResponse response = new GenerateResponse(
+            saved.id(), saved.type(), saved.difficulty(),
+            suggested,
+            display.notesToPlay(), display.description(), display.hint(), display.options()
+        );
+        logger.info("Exercício gerado: id={}, type={}", saved.id(), saved.type());
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Avaliar resposta", description = "Recebe notas MIDI tocadas e avalia se correspondem ao exercício")
     @PostMapping("/answer")
-    public ResponseEntity<?> answer(@RequestBody AnswerRequest request) {
-        logger.debug("POST /api/exercises/answer: exerciseId={}, sessionId={}, notes={}",
-            request.exerciseId(), request.sessionId(), request.notes().length);
-        try {
-            boolean correct = service.evaluateAnswer(request.exerciseId(), request.sessionId(), request.notes());
-            int[] expectedNotes = service.getExpectedNotes(request.exerciseId());
-            String explanation = service.buildExplanation(request.exerciseId(), request.notes(), correct);
+    public ResponseEntity<AnswerResponse> answer(@Valid @RequestBody AnswerRequest request) throws Exception {
+        logger.debug("POST /api/exercises/answer: exerciseId={}, sessionId={}", request.exerciseId(), request.sessionId());
 
-            // ADR-014: formato compacto sem espaços, ex: [60,64,67]
-            String correctAnswerJson;
-            String userAnswerJson;
-            try {
-                correctAnswerJson = objectMapper.writeValueAsString(expectedNotes);
-                userAnswerJson    = objectMapper.writeValueAsString(request.notes());
-            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-                logger.error("Erro a serializar notas em resposta", e);
-                return ResponseEntity.internalServerError().body("Erro interno");
-            }
-            AnswerResponse response = new AnswerResponse(
-                correct,
-                correctAnswerJson,
-                userAnswerJson,
-                explanation
-            );
-            logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);
-            return ResponseEntity.ok(response);
+        boolean correct     = service.evaluateAnswer(request.exerciseId(), request.sessionId(), request.notes());
+        int[] expectedNotes = service.getExpectedNotes(request.exerciseId());
+        String explanation  = service.buildExplanation(request.exerciseId(), request.notes(), correct);
 
-        } catch (Exception e) {
-            logger.error("Erro ao avaliar resposta: exerciseId={}", request.exerciseId(), e);
-            return ResponseEntity.internalServerError().body("Erro ao avaliar resposta");
-        }
+        String correctAnswerJson = objectMapper.writeValueAsString(expectedNotes);
+        String userAnswerJson    = objectMapper.writeValueAsString(request.notes());
+
+        AnswerResponse response = new AnswerResponse(correct, correctAnswerJson, userAnswerJson, explanation);
+        logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);
+        return ResponseEntity.ok(response);
     }
-
 }

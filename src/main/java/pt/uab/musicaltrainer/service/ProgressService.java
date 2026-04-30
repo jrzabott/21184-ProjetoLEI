@@ -12,8 +12,11 @@ import pt.uab.musicaltrainer.dto.ChordQuestion;
 import pt.uab.musicaltrainer.dto.IntervalQuestion;
 import pt.uab.musicaltrainer.dto.ScaleQuestion;
 import pt.uab.musicaltrainer.dto.SessionRecord;
+import pt.uab.musicaltrainer.generator.ExerciseType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,21 +49,24 @@ public class ProgressService {
         long totalCorrect   = sessions.stream().mapToLong(SessionRecord::correctAnswers).sum();
         double accuracy     = totalExercises == 0 ? 0.0 : (double) totalCorrect / totalExercises;
 
-        // Agregação por tipo — dados reais da tabela results
+        // Zero-fill para todos os tipos — frontend não fica sem chave
         Map<String, long[]> typeCounts = daoFactory.createResultDao().countByExerciseType();
-        Map<String, ProgressResponse.TypeStats> byType = typeCounts.entrySet().stream()
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> new ProgressResponse.TypeStats(
-                    e.getValue()[0] == 0 ? 0.0 : (double) e.getValue()[1] / e.getValue()[0],
-                    e.getValue()[0]
-                )
+        Map<String, ProgressResponse.TypeStats> byType = new HashMap<>();
+        for (ExerciseType type : ExerciseType.values()) {
+            long[] counts = typeCounts.getOrDefault(type.name(), new long[]{0L, 0L});
+            byType.put(type.name(), new ProgressResponse.TypeStats(
+                counts[0] == 0 ? 0.0 : (double) counts[1] / counts[0],
+                counts[0]
             ));
+        }
 
+        // Mais recentes primeiro, cap 100
         List<ProgressResponse.SessionSummary> recent = sessions.stream()
-            .limit(10)
+            .sorted(Comparator.comparing(SessionRecord::startTime).reversed())
+            .limit(100)
             .map(s -> new ProgressResponse.SessionSummary(
                 s.id(),
+                s.startTime(),
                 s.totalExercises() == 0 ? 0.0 : (double) s.correctAnswers() / s.totalExercises(),
                 s.totalExercises()
             ))
