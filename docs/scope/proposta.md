@@ -30,6 +30,12 @@ Dado um número MIDI qualquer entre 0 e 127, `Note.fromMidi(n)` devolve o nome c
 **Critério de aceitação:**  
 `POST /api/exercises/generate` com `{"type": "INTERVAL", "difficulty": 1}` devolve resposta 200 com `exerciseId`, notas em MIDI, descrição textual da pergunta, e exactamente 4 opções de resposta incluindo a correcta. O mesmo para `SCALE_IDENTIFICATION` e `CHORD_IDENTIFICATION`. Nenhum exercício repetido consecutivamente na mesma sessão.
 
+> **Revisão 28 abr 2026 · Natural evolução do código:**  
+> Os tipos `SCALE_IDENTIFICATION` e `CHORD_IDENTIFICATION` foram simplificados para `SCALE` e `CHORD`
+> durante a implementação do modelo de domínio. O sufixo `_IDENTIFICATION` era redundante — todos os
+> exercícios são de identificação. A API aceita `"type": "SCALE"` e `"type": "CHORD"`.
+> O critério de aceitação permanece o mesmo; apenas o valor do campo `type` mudou.
+
 ### F03 - Teclado virtual com reprodução de som
 
 **Critério de aceitação:**  
@@ -64,6 +70,26 @@ Na página principal, em modo sandbox, ao pressionar qualquer tecla (virtual ou 
 
 **Critério de aceitação:**  
 Se o utilizador acertar mais de 80% dos últimos 10 exercícios do mesmo tipo, o próximo exercício gerado tem `difficulty` incrementada em 1 (máx. 5). Se acertar menos de 40%, `difficulty` decrementada em 1 (mín. 1). Lógica implementada no frontend com estado local dos últimos 10 resultados.
+
+> **Revisão 28 abr 2026 · ADR-015:**  
+> Três parâmetros deste critério foram revistos durante o planeamento de implementação:
+>
+> **Janela de 10 → 100 exercícios:** Com apenas 10 amostras, uma sequência de 3 acertos consecutivos
+> poderia inflar artificialmente a dificuldade, provocando oscilações não representativas do nível real
+> do utilizador. 100 exercícios por tipo fornecem uma taxa de acerto estatisticamente significativa
+> e reduzem a variância aleatória de amostras pequenas. O requisito RF09 em `requirements.md`
+> reflecte esta decisão.
+>
+> **Escala 1-5 → 1-10:** A granularidade mais fina permite progressão mais gradual (+1/-1 num
+> espaço de 10 é menos abrupto que num espaço de 5), acomoda a biblioteca alargada de tipos de
+> escala (20+ tipos requerem mais bandas que o MVP original com 3 tipos previa), e permite
+> classificação semântica em 5 bandas (BEGINNER, ELEMENTARY, INTERMEDIATE, ADVANCED, EXPERT).
+> Ver ADR-015 para a taxonomia completa de dificuldade por tipo de exercício.
+>
+> **Frontend → Backend:** A adaptação foi movida para o backend para garantir consistência entre
+> sessões, evitar manipulação client-side, e centralizar a lógica de negócio onde pertence.
+> O `DifficultyService` implementa o algoritmo; o frontend recebe `suggestedDifficulty` na
+> resposta de `generate` como sugestão informativa.
 
 ---
 
