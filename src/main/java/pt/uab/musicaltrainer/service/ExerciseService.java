@@ -18,8 +18,6 @@ import pt.uab.musicaltrainer.generator.ExerciseType;
 import pt.uab.musicaltrainer.generator.GeneratorFactory;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Orquestra a geração e avaliação de exercícios.
@@ -253,8 +251,12 @@ public class ExerciseService {
         return generatorFactory.get(type);
     }
 
-    static String toNotesJson(int[] notes) {
-        return "[" + IntStream.of(notes).mapToObj(String::valueOf)
-            .collect(Collectors.joining(",")) + "]";
+    String toNotesJson(int[] notes) {
+        try {
+            return objectMapper.writeValueAsString(notes);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            logger.error("Erro a serializar array de notas", e);
+            throw new RuntimeException(e);
+        }
     }
 }
