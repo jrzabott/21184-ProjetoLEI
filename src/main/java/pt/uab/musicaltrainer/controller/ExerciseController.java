@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class ExerciseController {
 
     @Operation(summary = "Avaliar resposta", description = "Recebe notas MIDI tocadas e avalia se correspondem ao exercício")
     @PostMapping("/answer")
-    public ResponseEntity<AnswerResponse> answer(@RequestBody AnswerRequest request) throws Exception {
+    public ResponseEntity<AnswerResponse> answer(@Valid @RequestBody AnswerRequest request) throws Exception {
         logger.debug("POST /api/exercises/answer: exerciseId={}, sessionId={}", request.exerciseId(), request.sessionId());
 
         boolean correct     = service.evaluateAnswer(request.exerciseId(), request.sessionId(), request.notes());
