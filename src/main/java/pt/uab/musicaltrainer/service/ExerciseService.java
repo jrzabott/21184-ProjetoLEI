@@ -29,6 +29,7 @@ import java.util.stream.IntStream;
 public class ExerciseService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExerciseService.class);
+    private static final int MAX_REPEAT_ATTEMPTS = 5;
 
     private final DaoFactory daoFactory;
     private final ObjectMapper objectMapper;
@@ -47,34 +48,61 @@ public class ExerciseService {
         logger.info("ExerciseService inicializado: tipos={}", generatorFactory.types());
     }
 
+    /** Retrocompatibilidade — gera sem verificação de repetição. */
+    public ExerciseRecord generateAndSave(String type, int difficulty) throws Exception {
+        return generateAndSave(type, difficulty, null);
+    }
+
     /**
      * Gera um exercício e guarda em BD.
-     * correct_answer guarda as notas esperadas como JSON array para feedback.
+     * Se sessionId fornecido e != SESSION_NONE, verifica o último exercício da sessão
+     * e tenta gerar um diferente (max 5 tentativas). Se pool esgotado, aceita o repetido.
      */
-    public ExerciseRecord generateAndSave(String type, int difficulty) throws Exception {
-        logger.debug("Gerando exercício: type={}, difficulty={}", type, difficulty);
+    public ExerciseRecord generateAndSave(String type, int difficulty, Long sessionId) throws Exception {
+        logger.debug("Gerando exercício: type={}, difficulty={}, sessionId={}", type, difficulty, sessionId);
 
-        // RF09: verificar dificuldade sugerida e clamp ±2
-        int suggested       = difficultyService.suggestDifficulty(type, difficulty);
-        int effectiveDiff   = Math.max(suggested - 2, Math.min(suggested + 2, difficulty));
+        int suggested     = difficultyService.suggestDifficulty(type, difficulty);
+        int effectiveDiff = Math.max(suggested - 2, Math.min(suggested + 2, difficulty));
         if (effectiveDiff != difficulty) {
             logger.info("Dificuldade ajustada: pedida={}, sugerida={}, efectiva={}",
                 difficulty, suggested, effectiveDiff);
         }
 
+        String lastQuestionJson = getLastQuestionJson(type, sessionId);
         ExerciseGenerator generator = getGenerator(type);
-        GeneratedExercise generated = generator.generate(effectiveDiff);
+        ExerciseRecord saved = null;
 
-        String expectedNotesJson = toNotesJson(generated.notesToPlay());
-        ExerciseRecord toSave = new ExerciseRecord(
-            null, generated.type(), generated.difficulty(),
-            generated.questionJson(), expectedNotesJson, null
-        );
+        for (int attempt = 1; attempt <= MAX_REPEAT_ATTEMPTS; attempt++) {
+            GeneratedExercise generated = generator.generate(effectiveDiff);
+            if (lastQuestionJson == null || !generated.questionJson().equals(lastQuestionJson)) {
+                String expectedNotesJson = toNotesJson(generated.notesToPlay());
+                saved = daoFactory.createExerciseDao().save(new ExerciseRecord(
+                    null, generated.type(), generated.difficulty(),
+                    generated.questionJson(), expectedNotesJson, null));
+                logger.info("Exercício guardado: id={}, type={}, attempt={}", saved.id(), saved.type(), attempt);
+                break;
+            }
+            logger.debug("Exercício repetido detectado, tentativa {}/{}", attempt, MAX_REPEAT_ATTEMPTS);
+        }
 
-        ExerciseRecord saved = daoFactory.createExerciseDao().save(toSave);
-        logger.info("Exercício guardado: id={}, type={}, difficulty={}",
-            saved.id(), saved.type(), effectiveDiff);
+        if (saved == null) {
+            logger.warn("Pool esgotado para type={} difficulty={} — a aceitar repetição", type, effectiveDiff);
+            GeneratedExercise generated = generator.generate(effectiveDiff);
+            saved = daoFactory.createExerciseDao().save(new ExerciseRecord(
+                null, generated.type(), generated.difficulty(),
+                generated.questionJson(), toNotesJson(generated.notesToPlay()), null));
+        }
+
         return saved;
+    }
+
+    private String getLastQuestionJson(String type, Long sessionId) throws Exception {
+        if (sessionId == null || sessionId == MusicConstants.SESSION_NONE) return null;
+        return daoFactory.createResultDao()
+            .findLastExerciseBySessionId(sessionId)
+            .filter(ex -> ex.type().equals(type))
+            .map(ExerciseRecord::question)
+            .orElse(null);
     }
 
     public int getSuggestedDifficulty(String type, int currentDifficulty) throws Exception {
