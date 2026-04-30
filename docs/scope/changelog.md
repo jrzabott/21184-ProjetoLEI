@@ -64,9 +64,9 @@
 
 ## Sem. 8 · 5–6 mai · INTERCALAR
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** feat/27 — RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente (UPDATE SQL, sem read-modify-write). RF08 parcial: GET /api/progress devolve byType com taxa de acerto real por tipo. SESSION_NONE=0L documentado em MusicConstants e Swagger.  
+**Bloqueou:** -  
+**Próxima semana:** feat/28 — sistema de dificuldade DifficultyLevel enum, RF09.
 
 ---
 

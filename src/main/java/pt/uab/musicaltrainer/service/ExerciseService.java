@@ -4,19 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.dao.DaoFactory;
 import pt.uab.musicaltrainer.domain.ChordType;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.domain.Scale;
 import pt.uab.musicaltrainer.dto.ChordQuestion;
 import pt.uab.musicaltrainer.dto.ExerciseRecord;
+import pt.uab.musicaltrainer.dto.ResultRecord;
 import pt.uab.musicaltrainer.dto.ScaleQuestion;
 import pt.uab.musicaltrainer.generator.*;
 import pt.uab.musicaltrainer.generator.ExerciseType;
 import pt.uab.musicaltrainer.generator.GeneratorFactory;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,11 +33,14 @@ public class ExerciseService {
     private final DaoFactory daoFactory;
     private final ObjectMapper objectMapper;
     private final GeneratorFactory generatorFactory;
+    private final SessionService sessionService;
 
-    public ExerciseService(DaoFactory daoFactory, ObjectMapper objectMapper, GeneratorFactory generatorFactory) {
+    public ExerciseService(DaoFactory daoFactory, ObjectMapper objectMapper,
+                           GeneratorFactory generatorFactory, SessionService sessionService) {
         this.daoFactory = daoFactory;
         this.objectMapper = objectMapper;
         this.generatorFactory = generatorFactory;
+        this.sessionService = sessionService;
         logger.info("ExerciseService inicializado: tipos={}", generatorFactory.types());
     }
 
@@ -65,23 +69,30 @@ public class ExerciseService {
 
     /**
      * Avalia a resposta do utilizador baseada nas notas MIDI tocadas.
+     * Se sessionId != SESSION_NONE, persiste o resultado e actualiza os contadores da sessão.
      */
-    public boolean evaluateAnswer(Long exerciseId, int[] userNotes) throws Exception {
-        logger.debug("Avaliando: exerciseId={}, notas={}", exerciseId, Arrays.toString(userNotes));
+    public boolean evaluateAnswer(Long exerciseId, long sessionId, int[] userNotes) throws Exception {
+        logger.debug("Avaliando: exerciseId={}, sessionId={}, notas={}",
+            exerciseId, sessionId, Arrays.toString(userNotes));
 
-        Optional<ExerciseRecord> opt = daoFactory.createExerciseDao().findById(exerciseId);
-        if (opt.isEmpty()) {
-            logger.error("Exercício não encontrado: id={}", exerciseId);
-            return false;
-        }
+        ExerciseRecord exercise = daoFactory.createExerciseDao().findById(exerciseId)
+            .orElseThrow(() -> new IllegalArgumentException("Exercício não encontrado: " + exerciseId));
 
-        ExerciseRecord exercise = opt.get();
         int[] expectedNotes = objectMapper.readValue(exercise.correctAnswer(), int[].class);
         boolean correct = evaluate(exercise.type(), exercise.question(), expectedNotes, userNotes);
 
-        logger.info("Avaliação: exerciseId={}, type={}, expected={}, got={}, correct={}",
-            exerciseId, exercise.type(),
-            Arrays.toString(expectedNotes), Arrays.toString(userNotes), correct);
+        if (sessionId != MusicConstants.SESSION_NONE) {
+            String userNotesJson = toNotesJson(userNotes);
+            daoFactory.createResultDao().save(
+                new ResultRecord(null, sessionId, exerciseId, userNotesJson, correct, null));
+            sessionService.incrementCounters(sessionId, correct);
+            logger.info("Resultado persistido: exerciseId={}, sessionId={}, correct={}",
+                exerciseId, sessionId, correct);
+        } else {
+            logger.debug("Sandbox mode (SESSION_NONE) — resultado não persistido");
+        }
+
+        logger.info("Avaliação: exerciseId={}, type={}, correct={}", exerciseId, exercise.type(), correct);
         return correct;
     }
 

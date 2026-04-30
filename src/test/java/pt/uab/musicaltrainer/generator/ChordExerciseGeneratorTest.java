@@ -13,7 +13,7 @@ class ChordExerciseGeneratorTest {
 
     @Test
     void shouldReturnChordAsExerciseType() {
-        assertThat(generator.getExerciseType()).isEqualTo("CHORD");
+        assertThat(generator.getExerciseType()).isEqualTo(pt.uab.musicaltrainer.generator.ExerciseType.CHORD);
     }
 
     @Test
