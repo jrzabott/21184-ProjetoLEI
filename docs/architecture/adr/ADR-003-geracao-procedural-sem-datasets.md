@@ -38,3 +38,18 @@ Os exercícios são gerados **algoritmicamente** a partir do modelo de domínio 
 **Negativas / trade-offs:**
 - A qualidade dos exercícios depende da correcta implementação do modelo de domínio - erros no modelo propagam para todos os exercícios
 - Requer testes unitários rigorosos do modelo de domínio antes de usar os geradores
+
+## Addendum - 30 abr 2026: No-Consecutive-Repeat
+
+**Constraint adicionado (F02):** O gerador não devolve o mesmo exercício consecutivamente
+na mesma sessão activa.
+
+Quando `sessionId` é fornecido no `GenerateRequest`, o sistema consulta o último exercício
+gerado para essa sessão via `ResultDao.findLastExerciseBySessionId()`, compara o `questionJson`,
+e regenera até 5 vezes se for igual ao anterior.
+
+Após 5 tentativas sem encontrar um exercício diferente (pool esgotado a esta dificuldade),
+o sistema aceita a repetição com log WARN. Este caso é normal após 20-25 exercícios na mesma
+dificuldade com tipos de exercício limitados.
+
+Sandbox (`sessionId` null ou `SESSION_NONE`): sem verificação, comportamento original.

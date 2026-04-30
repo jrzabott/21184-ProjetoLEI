@@ -122,4 +122,38 @@ public class ResultDao extends AbstractDao<ResultRecord> {
         logger.info("Agregação por tipo: {} tipos encontrados", result.size());
         return result;
     }
+
+    /**
+     * Devolve o último exercício gerado para esta sessão, ou empty se não há histórico.
+     * Usado pelo no-consecutive-repeat check em ExerciseService.
+     */
+    public Optional<pt.uab.musicaltrainer.dto.ExerciseRecord> findLastExerciseBySessionId(Long sessionId) throws SQLException {
+        String sql = "SELECT e.id, e.type, e.difficulty, e.question, e.correct_answer, e.created_at " +
+            "FROM exercises e " +
+            "JOIN results r ON e.id = r.exercise_id " +
+            "WHERE r.session_id = ? " +
+            "ORDER BY r.created_at DESC " +
+            "LIMIT 1";
+        logger.debug("Procurando último exercício para sessionId={}", sessionId);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, sessionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    logger.debug("Último exercício encontrado para sessionId={}", sessionId);
+                    return Optional.of(new pt.uab.musicaltrainer.dto.ExerciseRecord(
+                        rs.getLong("id"),
+                        rs.getString("type"),
+                        rs.getInt("difficulty"),
+                        rs.getString("question"),
+                        rs.getString("correct_answer"),
+                        rs.getTimestamp("created_at").toLocalDateTime()
+                    ));
+                }
+                logger.debug("Nenhum exercício encontrado para sessionId={}", sessionId);
+            }
+        }
+        return Optional.empty();
+    }
 }

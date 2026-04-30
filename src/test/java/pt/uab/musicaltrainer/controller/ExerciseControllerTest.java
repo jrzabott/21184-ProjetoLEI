@@ -26,7 +26,7 @@ class ExerciseControllerTest {
 
     @Test
     void shouldGenerateIntervalExercise() throws Exception {
-        GenerateRequest req = new GenerateRequest("INTERVAL", 1);
+        GenerateRequest req = new GenerateRequest("INTERVAL", 1, null);
 
         mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -40,7 +40,7 @@ class ExerciseControllerTest {
 
     @Test
     void shouldGenerateScaleExercise() throws Exception {
-        GenerateRequest req = new GenerateRequest("SCALE", 1);
+        GenerateRequest req = new GenerateRequest("SCALE", 1, null);
 
         mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +61,7 @@ class ExerciseControllerTest {
     @Test
     void shouldAnswerWithNotesAtFlatEndpoint() throws Exception {
         // ADR-014: POST /api/exercises/answer — exerciseId no corpo, notes[] em vez de string
-        GenerateRequest req = new GenerateRequest("CHORD", 1);
+        GenerateRequest req = new GenerateRequest("CHORD", 1, null);
         String resp = mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(req)))

@@ -227,4 +227,25 @@ class ExerciseServiceTest {
         assertThat(updated.totalExercises()).isEqualTo(1);
         assertThat(updated.incorrectAnswers()).isEqualTo(1);
     }
+
+    @Test
+    void shouldSkipNoRepeatCheckWhenSessionNone() throws Exception {
+        ExerciseRecord ex = service.generateAndSave("INTERVAL", 1, pt.uab.musicaltrainer.MusicConstants.SESSION_NONE);
+        assertThat(ex).isNotNull();
+        assertThat(ex.id()).isGreaterThan(0);
+    }
+
+    @Test
+    void shouldSkipNoRepeatCheckWhenSessionIdNull() throws Exception {
+        ExerciseRecord ex = service.generateAndSave("SCALE", 1, null);
+        assertThat(ex).isNotNull();
+    }
+
+    @Test
+    void shouldAcceptFirstExerciseWithNoHistory() throws Exception {
+        pt.uab.musicaltrainer.dto.SessionRecord session = sessionService.startSession();
+        ExerciseRecord ex = service.generateAndSave("CHORD", 1, session.id());
+        assertThat(ex).isNotNull();
+        assertThat(ex.id()).isGreaterThan(0);
+    }
 }
