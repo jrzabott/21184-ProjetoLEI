@@ -39,7 +39,7 @@ public class SessionController {
     }
 
     @Operation(summary = "Terminar sessão",
-               description = "Marca a sessão como terminada. Idempotente — chamar duas vezes devolve o mesmo estado.")
+               description = "Marca a sessão como terminada. Idempotente - chamar duas vezes devolve o mesmo estado.")
     @PostMapping("/{sessionId}/end")
     public ResponseEntity<SessionResponse> end(@PathVariable Long sessionId) throws Exception {
         logger.debug("POST /api/sessions/{}/end", sessionId);

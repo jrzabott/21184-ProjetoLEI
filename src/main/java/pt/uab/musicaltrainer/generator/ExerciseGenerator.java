@@ -3,7 +3,7 @@ package pt.uab.musicaltrainer.generator;
 /**
  * Contrato para geradores de exercícios de teoria musical.
  * Cada implementação gera um tipo específico de exercício.
- * Geradores são stateless — cada chamada é independente.
+ * Geradores são stateless - cada chamada é independente.
  */
 public interface ExerciseGenerator {
 

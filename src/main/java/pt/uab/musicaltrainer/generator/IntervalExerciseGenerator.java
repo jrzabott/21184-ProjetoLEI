@@ -51,7 +51,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         // Raiz mais central para iniciantes
         int[] rootRange = midiRangeFor(difficulty);
 
-        // Exclui Unissono (0 semítons) — noteA == noteB viola o contrato notesToPlay()[1] > [0]
+        // Exclui Unissono (0 semítons) - noteA == noteB viola o contrato notesToPlay()[1] > [0]
         List<IntervalType> playable = available.stream()
             .filter(t -> t.semitones() > 0)
             .collect(Collectors.toCollection(ArrayList::new));
@@ -74,7 +74,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             throw new RuntimeException(e);
         }
         String description   = "Reproduz o intervalo entre " + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName();
-        String hint = type.displayName() + " — " + type.semitones()
+        String hint = type.displayName() + " - " + type.semitones()
             + " semítom" + (type.semitones() == 1 ? "" : "s");
         String correctDisplay = type.displayName();
 
@@ -99,7 +99,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             int semitones = Math.abs(noteB - noteA);
             pt.uab.musicaltrainer.domain.IntervalType intervalType =
                 pt.uab.musicaltrainer.domain.IntervalType.fromSemitones(semitones);
-            String hint = intervalType.displayName() + " — " + semitones
+            String hint = intervalType.displayName() + " - " + semitones
                 + " semítom" + (semitones == 1 ? "" : "s");
             List<String> options = buildOptions(intervalType.displayName(),
                 java.util.Arrays.asList(pt.uab.musicaltrainer.domain.IntervalType.values()));

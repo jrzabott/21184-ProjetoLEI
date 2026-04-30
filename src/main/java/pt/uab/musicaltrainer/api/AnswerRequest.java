@@ -13,7 +13,7 @@ public record AnswerRequest(
     @NotNull(message = "é obrigatório")
     Long exerciseId,
 
-    @Schema(description = "ID da sessão activa. Omitir ou usar 0 para sandbox — resposta avaliada sem persistir resultado.",
+    @Schema(description = "ID da sessão activa. Omitir ou usar 0 para sandbox - resposta avaliada sem persistir resultado.",
             example = "1", defaultValue = "0")
     long sessionId,
 

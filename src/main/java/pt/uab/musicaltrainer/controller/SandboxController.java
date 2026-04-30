@@ -36,7 +36,7 @@ public class SandboxController {
             for (String part : parts) {
                 int midi = Integer.parseInt(part.trim());
                 Note note = Note.fromMidi(midi);
-                // getDisplayName() retorna "C4" — nome + oitava
+                // getDisplayName() retorna "C4" - nome + oitava
                 noteInfos.add(new NoteInfoResponse.NoteInfo(midi, note.getDisplayName()));
             }
 

@@ -22,7 +22,7 @@ class IntervalTypeTest {
 
     @Test
     void displayNameHasFullPortuguese() {
-        // displayName() pode ter caracteres especiais — apenas para frontend
+        // displayName() pode ter caracteres especiais - apenas para frontend
         assertThat(IntervalType.fromSemitones(7).displayName()).isEqualTo("5ª Perfeita");
         assertThat(IntervalType.fromSemitones(0).displayName()).isEqualTo("Uníssono");
         assertThat(IntervalType.fromSemitones(6).displayName())

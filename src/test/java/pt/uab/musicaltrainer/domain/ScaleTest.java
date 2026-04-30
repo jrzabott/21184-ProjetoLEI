@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 class ScaleTest {
 
     /**
-     * Testa escala Maior (C Major) — C D E F G A B.
+     * Testa escala Maior (C Major) - C D E F G A B.
      * C=60, D=62, E=64, F=65, G=67, A=69, B=71
      */
     @Test
@@ -36,7 +36,7 @@ class ScaleTest {
     }
 
     /**
-     * Testa escala Menor Natural (A Natural Minor) — A B C D E F G.
+     * Testa escala Menor Natural (A Natural Minor) - A B C D E F G.
      * A=57, B=59, C=60, D=62, E=64, F=65, G=67
      */
     @Test
@@ -57,7 +57,7 @@ class ScaleTest {
     }
 
     /**
-     * Testa escala Menor Harmónica (A Harmonic Minor) — A B C D E F G#.
+     * Testa escala Menor Harmónica (A Harmonic Minor) - A B C D E F G#.
      * A=57, B=59, C=60, D=62, E=64, F=65, G#=68
      */
     @Test
@@ -78,7 +78,7 @@ class ScaleTest {
     }
 
     /**
-     * Testa escala Dorian (C Dorian) — C D Eb F G A Bb.
+     * Testa escala Dorian (C Dorian) - C D Eb F G A Bb.
      * C=60, D=62, Eb=63, F=65, G=67, A=69, Bb=70
      */
     @Test
@@ -99,7 +99,7 @@ class ScaleTest {
     }
 
     /**
-     * Testa escala Pentatónica Menor (A Pentatonic Minor) — A C D E G.
+     * Testa escala Pentatónica Menor (A Pentatonic Minor) - A C D E G.
      * A=57, C=60, D=62, E=64, G=67
      */
     @Test
@@ -118,7 +118,7 @@ class ScaleTest {
     }
 
     /**
-     * Testa escala Blues (C Blues) — C Eb F Gb G Bb.
+     * Testa escala Blues (C Blues) - C Eb F Gb G Bb.
      * C=60, Eb=63, F=65, Gb=66, G=67, Bb=70
      */
     @Test

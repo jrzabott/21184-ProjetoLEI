@@ -43,7 +43,7 @@ public class DifficultyService {
             .findLastNByExerciseType(exerciseType, HISTORY_SIZE);
 
         if (recent.isEmpty()) {
-            logger.debug("Sem histórico para type={} — manter {}", exerciseType, currentDifficulty);
+            logger.debug("Sem histórico para type={} - manter {}", exerciseType, currentDifficulty);
             return currentDifficulty;
         }
 
@@ -53,13 +53,13 @@ public class DifficultyService {
         int suggested;
         if (accuracy >= THRESHOLD_UP) {
             suggested = currentDifficulty + 1;
-            logger.info("Acerto {}% >= 80% — aumentar: {} -> {}", (int)(accuracy*100), currentDifficulty, suggested);
+            logger.info("Acerto {}% >= 80% - aumentar: {} -> {}", (int)(accuracy*100), currentDifficulty, suggested);
         } else if (accuracy < THRESHOLD_DOWN) {
             suggested = currentDifficulty - 1;
-            logger.info("Acerto {}% < 40% — diminuir: {} -> {}", (int)(accuracy*100), currentDifficulty, suggested);
+            logger.info("Acerto {}% < 40% - diminuir: {} -> {}", (int)(accuracy*100), currentDifficulty, suggested);
         } else {
             suggested = currentDifficulty;
-            logger.debug("Acerto {}% — manter {}", (int)(accuracy*100), currentDifficulty);
+            logger.debug("Acerto {}% - manter {}", (int)(accuracy*100), currentDifficulty);
         }
 
         int clamped = Math.max(1, Math.min(10, suggested));

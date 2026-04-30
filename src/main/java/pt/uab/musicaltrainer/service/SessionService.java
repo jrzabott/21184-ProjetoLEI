@@ -39,7 +39,7 @@ public class SessionService {
             .orElseThrow(() -> new ResourceNotFoundException("Sessão não encontrada: " + sessionId));
 
         if (session.endTime() != null) {
-            logger.info("Sessão {} já estava terminada — a devolver estado existente sem escrever", sessionId);
+            logger.info("Sessão {} já estava terminada - a devolver estado existente sem escrever", sessionId);
             return session;
         }
 

@@ -51,7 +51,7 @@ class SandboxControllerTest {
 
     @Test
     void shouldReturnNullIntervalForSingleNote() throws Exception {
-        // nota única — sem intervalo a calcular, campo interval é null no JSON
+        // nota única - sem intervalo a calcular, campo interval é null no JSON
         mockMvc.perform(get("/api/sandbox/note-info").param("notes", "60"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.notes[0].midiNumber").value(60))

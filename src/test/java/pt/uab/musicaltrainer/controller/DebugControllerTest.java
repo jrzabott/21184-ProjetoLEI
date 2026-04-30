@@ -21,7 +21,7 @@ class DebugControllerTest {
 
     @Test
     void shouldGenerateOnlyRequestedTypesFromBody() throws Exception {
-        // o corpo era ignorado — agora o filtro de tipos deve funcionar
+        // o corpo era ignorado - agora o filtro de tipos deve funcionar
         mockMvc.perform(post("/api/debug/exercises/generate-all")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"types\":[\"INTERVAL\"],\"minDifficulty\":1,\"maxDifficulty\":4}"))

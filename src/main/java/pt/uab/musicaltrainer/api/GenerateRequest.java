@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Pedido de geração de exercício.
- * sessionId opcional — quando fornecido, evita repetir o último exercício da sessão.
+ * sessionId opcional - quando fornecido, evita repetir o último exercício da sessão.
  */
 public record GenerateRequest(
     String type,

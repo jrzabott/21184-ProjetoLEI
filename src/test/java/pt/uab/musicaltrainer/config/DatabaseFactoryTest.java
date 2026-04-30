@@ -73,7 +73,7 @@ class DatabaseFactoryTest {
 
     @Nested
     class InvalidTypeTests {
-        // Teste unitário directo — não precisa de contexto Spring
+        // Teste unitário directo - não precisa de contexto Spring
         @Test
         void testInvalidDatabaseTypeThrowsException() {
             DatabaseFactory factory = new DatabaseFactory(

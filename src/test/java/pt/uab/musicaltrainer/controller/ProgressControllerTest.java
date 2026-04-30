@@ -31,7 +31,7 @@ class ProgressControllerTest {
 
     @Test
     void shouldAlwaysIncludeAllThreeTypesInByType() throws Exception {
-        // byType deve ter INTERVAL, SCALE e CHORD mesmo com BD vazia — antes faltavam tipos sem histórico
+        // byType deve ter INTERVAL, SCALE e CHORD mesmo com BD vazia - antes faltavam tipos sem histórico
         mockMvc.perform(get("/api/progress"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.byType.INTERVAL").exists())

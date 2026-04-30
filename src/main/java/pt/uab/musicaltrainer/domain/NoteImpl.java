@@ -35,7 +35,7 @@ final class NoteImpl implements Note {
     /**
      * Retorna a instância em cache da nota correspondente ao número MIDI.
      * <p>
-     * Este método é muito eficiente — não cria novas instâncias.
+     * Este método é muito eficiente - não cria novas instâncias.
      * Duas chamadas com o mesmo número MIDI retornam exactamente
      * a mesma instância (igualdade de referência).
      *

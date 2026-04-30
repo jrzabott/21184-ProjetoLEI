@@ -56,7 +56,7 @@
 
 ## Sem. 7 · 28 abr–2 mai · DEMO INTERNA
 
-**Feito:** (27 abr) Fase 3 concluída — geradores (IntervalExerciseGenerator, ScaleExerciseGenerator 8 notas raiz-a-raiz, ChordExerciseGenerator) com Strategy pattern, TDD, logging. ExerciseService com Factory pattern e avaliação baseada em notas MIDI por tipo (ADR-014). Fase 4 concluída — REST API: POST /api/exercises/generate, POST /api/exercises/answer (flat, exerciseId no corpo), POST /api/sessions/start e /end, GET /api/progress, GET /api/sandbox/note-info. ADR-013 (schema questionData) e ADR-014 (protocolo notas MIDI). ScaleType.getSemitonePattern(), ChordType.getVoicingIntervals(). 171 testes a passar. Validação por padrão de semítons (escalas qualquer oitava, acordes I-III-V qualquer oitava, intervalos notas exactas).  
+**Feito:** (27 abr) Fase 3 concluída - geradores (IntervalExerciseGenerator, ScaleExerciseGenerator 8 notas raiz-a-raiz, ChordExerciseGenerator) com Strategy pattern, TDD, logging. ExerciseService com Factory pattern e avaliação baseada em notas MIDI por tipo (ADR-014). Fase 4 concluída - REST API: POST /api/exercises/generate, POST /api/exercises/answer (flat, exerciseId no corpo), POST /api/sessions/start e /end, GET /api/progress, GET /api/sandbox/note-info. ADR-013 (schema questionData) e ADR-014 (protocolo notas MIDI). ScaleType.getSemitonePattern(), ChordType.getVoicingIntervals(). 171 testes a passar. Validação por padrão de semítons (escalas qualquer oitava, acordes I-III-V qualquer oitava, intervalos notas exactas).  
 **Bloqueou:** -  
 **Próxima semana:** Demo interna com Pestana (28 abr–2 mai). Decisão biblioteca GUI para teste API. Relatório Intercalar (deadline 6 Mai).
 
@@ -64,7 +64,7 @@
 
 ## Sem. 8 · 5–6 mai · INTERCALAR
 
-**Feito:** feat/27 — RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente. RF08 parcial: byType com taxa de acerto real. SESSION_NONE=0L. feat/28 — RF09 implementado: DifficultyLevel enum (5 bandas BEGINNER→EXPERT). IntervalType, ScaleType (28 valores), ChordType classificados por dificuldade. Geradores usam availableFor() — zero magic numbers. DifficultyService com algoritmo 80/40%. Debug API: /api/debug/exercises/. ADR-015. OI01 fechado (SQLite3). OI07 fechado (ADR-013). feat/29 — F02 implementado: no-consecutive-repeat via sessionId em GenerateRequest. feat/30 — RF08 completo: weakestAreas com padrões específicos e dicas PT-PT. Backend completo.  
+**Feito:** feat/27 - RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente. RF08 parcial: byType com taxa de acerto real. SESSION_NONE=0L. feat/28 - RF09 implementado: DifficultyLevel enum (5 bandas BEGINNER→EXPERT). IntervalType, ScaleType (28 valores), ChordType classificados por dificuldade. Geradores usam availableFor() - zero magic numbers. DifficultyService com algoritmo 80/40%. Debug API: /api/debug/exercises/. ADR-015. OI01 fechado (SQLite3). OI07 fechado (ADR-013). feat/29 - F02 implementado: no-consecutive-repeat via sessionId em GenerateRequest. feat/30 - RF08 completo: weakestAreas com padrões específicos e dicas PT-PT. Backend completo.  
 **Bloqueou:** -  
 **Próxima semana:** Preparação relatório intercalar (deadline 6 Mai). Frontend Fase 5.
 

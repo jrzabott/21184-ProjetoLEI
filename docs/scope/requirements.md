@@ -98,8 +98,8 @@
 | 1.0 | 2026-04-12 | Versão inicial | Setup do repositório; consolidação dos requisitos definidos na proposta |
 | 1.1 | 2026-04-12 | RNF09 adicionado (TDD Must have) | TDD adoptado como metodologia de desenvolvimento; ADR-011 documenta decisão |
 | 1.2 | 2026-04-12 | Secção de Open Items adicionada | OI01-OI08 recuperados e documentados formalmente; OI03, OI04, OI07 estavam em falta desde a criação do repositório |
-| 1.3 | 2026-04-28 | ADR-015 adicionado; OI01 e OI07 fechados; RF09 implementado | feat/28 — sistema de dificuldade |
-| 1.4 | 2026-04-30 | RF08 completo — weakestAreas com dicas pedagógicas | feat/30 |
+| 1.3 | 2026-04-28 | ADR-015 adicionado; OI01 e OI07 fechados; RF09 implementado | feat/28 - sistema de dificuldade |
+| 1.4 | 2026-04-30 | RF08 completo - weakestAreas com dicas pedagógicas | feat/30 |
 
 ---
 
@@ -109,7 +109,7 @@
 
 | ID | Título | Estado | Prazo orientativo |
 |----|--------|--------|------------------|
-| OI01 | Base de dados de produção (PostgreSQL vs SQLite3) | ✅ Resolvido | SQLite3 — CB02 single-user, zero config |
+| OI01 | Base de dados de produção (PostgreSQL vs SQLite3) | ✅ Resolvido | SQLite3 - CB02 single-user, zero config |
 | OI02 | Mnemónicos e direitos de autor | 🟡 Em aberto | Antes de implementar RF14 |
 | OI03 | Número de oitavas do teclado virtual | ✅ Resolvido | Sem. 1-2 |
 | OI04 | Mocks e wireframes dos ecrãs | 🟡 Em aberto | Antes de Fase 5 (Sem. 9) |
@@ -118,7 +118,7 @@
 | OI07 | Schema do campo question nos exercícios | ✅ Resolvido | ADR-013 + ADR-014 |
 | OI08 | Navegação entre ecrãs (SPA vs páginas separadas) | ✅ Resolvido | Sem. 3-4 |
 | OI09 | Inversões e acordes estendidos | 🔵 Diferido | Após MVP (tríades) completo |
-| OI10 | Intervalos enarmónicos — separar TRITONO e QUINTA_AUM | 🔵 Diferido | Após MVP |
+| OI10 | Intervalos enarmónicos - separar TRITONO e QUINTA_AUM | 🔵 Diferido | Após MVP |
 
 ### OI01 - Base de dados de produção
 
@@ -128,7 +128,7 @@
 
 **Referências:** ADR-007, risks.md R05, RNF05
 
-**Decisão final (28 abr 2026):** SQLite3. CB02 define aplicação single-user — PostgreSQL seria over-engineering. SQLite3: zero configuração, ficheiro local, suficiente para o scope.
+**Decisão final (28 abr 2026):** SQLite3. CB02 define aplicação single-user - PostgreSQL seria over-engineering. SQLite3: zero configuração, ficheiro local, suficiente para o scope.
 
 ### OI02 - Mnemónicos e direitos de autor
 
@@ -168,7 +168,7 @@
 
 ### OI07 - Schema do campo question
 
-**Estado:** ✅ Resolvido (26 abr 2026) — ADR-013 define schema. ADR-014 define protocolo de resposta por notas MIDI.
+**Estado:** ✅ Resolvido (26 abr 2026) - ADR-013 define schema. ADR-014 define protocolo de resposta por notas MIDI.
 
 ### OI08 - Navegação entre ecrãs
 

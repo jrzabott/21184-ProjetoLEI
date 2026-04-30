@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 class ChordTest {
 
     /**
-     * Testa acorde Maior (C Major) — C E G.
+     * Testa acorde Maior (C Major) - C E G.
      * C=60, E=64 (major 3rd = +4), G=67 (perfect 5th = +7)
      */
     @Test
@@ -32,7 +32,7 @@ class ChordTest {
     }
 
     /**
-     * Testa acorde Menor (A Minor) — A C E.
+     * Testa acorde Menor (A Minor) - A C E.
      * A=57, C=60 (minor 3rd = +3), E=64 (perfect 5th = +7)
      */
     @Test
@@ -49,7 +49,7 @@ class ChordTest {
     }
 
     /**
-     * Testa acorde Diminuto (B Diminished) — B D F.
+     * Testa acorde Diminuto (B Diminished) - B D F.
      * B=71, D=74 (minor 3rd = +3), F=77 (diminished 5th = +6)
      */
     @Test
@@ -66,7 +66,7 @@ class ChordTest {
     }
 
     /**
-     * Testa acorde Aumentado (C Augmented) — C E G#.
+     * Testa acorde Aumentado (C Augmented) - C E G#.
      * C=60, E=64 (major 3rd = +4), G#=68 (augmented 5th = +8)
      */
     @Test

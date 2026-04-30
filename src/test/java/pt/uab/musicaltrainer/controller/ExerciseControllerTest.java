@@ -61,7 +61,7 @@ class ExerciseControllerTest {
 
     @Test
     void shouldAnswerWithNotesAtFlatEndpoint() throws Exception {
-        // ADR-014: POST /api/exercises/answer — exerciseId no corpo, notes[] em vez de string
+        // ADR-014: POST /api/exercises/answer - exerciseId no corpo, notes[] em vez de string
         GenerateRequest req = new GenerateRequest("CHORD", 1, null);
         String resp = mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ class ExerciseControllerTest {
 
         Long exerciseId = mapper.readTree(resp).get("exerciseId").asLong();
 
-        // Responder com notas — backend avalia
+        // Responder com notas - backend avalia
         String answerBody = String.format(
             "{\"exerciseId\":%d,\"sessionId\":null,\"notes\":[60,64,67],\"responseTimeMs\":1000}",
             exerciseId);
@@ -128,7 +128,7 @@ class ExerciseControllerTest {
         Long exerciseId = new com.fasterxml.jackson.databind.ObjectMapper()
             .readTree(genResp).get("exerciseId").asLong();
 
-        // Responder com SESSION_NONE (0) — sandbox, sem persistência
+        // Responder com SESSION_NONE (0) - sandbox, sem persistência
         mockMvc.perform(post("/api/exercises/answer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
@@ -152,7 +152,7 @@ class ExerciseControllerTest {
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,67],\"responseTimeMs\":500}"))
             .andReturn().getResponse().getContentAsString();
 
-        // correctAnswer deve ter formato [60,67] — sem espaços
+        // correctAnswer deve ter formato [60,67] - sem espaços
         com.fasterxml.jackson.databind.JsonNode node =
             new com.fasterxml.jackson.databind.ObjectMapper().readTree(answerResp);
         String correctAnswer = node.get("correctAnswer").asText();

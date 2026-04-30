@@ -4,7 +4,7 @@ package pt.uab.musicaltrainer.domain;
  * Implementação de um intervalo musical entre duas notas.
  * <p>
  * Value object imutável. Nome e semítons são delegados ao enum
- * IntervalType — sem duplicação de dados.
+ * IntervalType - sem duplicação de dados.
  *
  * @author Daniel Junior
  */

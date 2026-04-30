@@ -49,7 +49,7 @@ public class ProgressService {
         long totalCorrect   = sessions.stream().mapToLong(SessionRecord::correctAnswers).sum();
         double accuracy     = totalExercises == 0 ? 0.0 : (double) totalCorrect / totalExercises;
 
-        // Zero-fill para todos os tipos — frontend não fica sem chave
+        // Zero-fill para todos os tipos - frontend não fica sem chave
         Map<String, long[]> typeCounts = daoFactory.createResultDao().countByExerciseType();
         Map<String, ProgressResponse.TypeStats> byType = new HashMap<>();
         for (ExerciseType type : ExerciseType.values()) {
@@ -72,7 +72,7 @@ public class ProgressService {
             ))
             .collect(Collectors.toList());
 
-        // RF08 — padrões mais fracos com dicas pedagógicas
+        // RF08 - padrões mais fracos com dicas pedagógicas
         List<ProgressResponse.WeakArea> weakestAreas = new ArrayList<>();
         List<pt.uab.musicaltrainer.dao.ResultDao.WeaknessAggregate> aggregates =
             daoFactory.createResultDao().findWeaknessAggregates(3, 10);

@@ -22,7 +22,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldReturn404WithProblemDetailForNonExistentExercise() throws Exception {
-        // exerciseId 99999 não existe — antes retornava 500, agora deve ser 404 com ProblemDetail
+        // exerciseId 99999 não existe - antes retornava 500, agora deve ser 404 com ProblemDetail
         mockMvc.perform(post("/api/exercises/answer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"exerciseId\":99999,\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
@@ -33,7 +33,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldReturn404WithProblemDetailForNonExistentSession() throws Exception {
-        // sessão 99999 não existe — antes retornava 404 com body vazio, agora com ProblemDetail
+        // sessão 99999 não existe - antes retornava 404 com body vazio, agora com ProblemDetail
         mockMvc.perform(post("/api/sessions/99999/end")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
@@ -43,7 +43,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldReturn400WithProblemDetailForInvalidType() throws Exception {
-        // tipo UNKNOWN — antes retornava plain text, agora ProblemDetail com status 400
+        // tipo UNKNOWN - antes retornava plain text, agora ProblemDetail com status 400
         mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"type\":\"UNKNOWN\",\"difficulty\":1}"))
@@ -54,7 +54,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldReturn400WithProblemDetailForMissingBody() throws Exception {
-        // corpo em falta em endpoint que precisa de JSON — deve ser 400 com ProblemDetail
+        // corpo em falta em endpoint que precisa de JSON - deve ser 400 com ProblemDetail
         mockMvc.perform(post("/api/exercises/generate")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
@@ -64,7 +64,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldReturn400WithProblemDetailWhenNotesNull() throws Exception {
-        // notas nulas rebentavam com NPE — deve devolver 400 com detalhe claro
+        // notas nulas rebentavam com NPE - deve devolver 400 com detalhe claro
         mockMvc.perform(post("/api/exercises/answer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"exerciseId\":1,\"sessionId\":0,\"responseTimeMs\":1000}"))
@@ -75,7 +75,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldReturn400WithProblemDetailWhenExerciseIdNull() throws Exception {
-        // exerciseId nulo rebentava com NPE no DAO — deve devolver 400 com detalhe claro
+        // exerciseId nulo rebentava com NPE no DAO - deve devolver 400 com detalhe claro
         mockMvc.perform(post("/api/exercises/answer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))

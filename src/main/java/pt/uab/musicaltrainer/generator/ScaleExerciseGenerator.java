@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * correctAnswer: tipo da escala como string
  * notesToPlay: as notas da escala em sequência ascendente (raiz a raiz+8va)
  * <p>
- * MVP suporta: MAJOR, MINOR_NATURAL, HARMONIC_MINOR — selecionados dinamicamente
+ * MVP suporta: MAJOR, MINOR_NATURAL, HARMONIC_MINOR - selecionados dinamicamente
  * via ScaleType.availableFor() a partir de uma lista canonizada sem aliases.
  * Iniciantes recebem raízes nas notas brancas (C3-B4) para sons familiares.
  */
@@ -50,7 +50,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
     private static final List<ScaleType> MVP_TYPES = buildMvpTypes();
 
     private static List<ScaleType> buildMvpTypes() {
-        // Tipos canonicos do MVP, sem aliases — IONIAN/AEOLIAN/etc. são excluídos por serem
+        // Tipos canonicos do MVP, sem aliases - IONIAN/AEOLIAN/etc. são excluídos por serem
         // redundantes. Aqui referenciamos directamente os três tipos pedagógicos do MVP.
         return Arrays.asList(ScaleType.MAJOR, ScaleType.MINOR_NATURAL, ScaleType.HARMONIC_MINOR);
     }
@@ -66,7 +66,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
 
         DifficultyLevel band = DifficultyLevel.of(difficulty);
 
-        // Tipos disponíveis para o nível pedido — intersecção dos MVP com availableFor()
+        // Tipos disponíveis para o nível pedido - intersecção dos MVP com availableFor()
         Set<ScaleType> bandSet = ScaleType.availableFor(band).stream()
             .collect(Collectors.toSet());
         List<String> available = MVP_TYPES.stream()
@@ -106,7 +106,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         Note root   = Note.fromMidi(rootMidi);
         Scale scale = Scale.get(scaleType, root);
 
-        // ADR-014: 8 notas — raiz até raiz uma oitava acima (ex: C4 D E F G A B C5)
+        // ADR-014: 8 notas - raiz até raiz uma oitava acima (ex: C4 D E F G A B C5)
         List<Note> scaleNotes = scale.getNotes();
         int[] notes = new int[scaleNotes.size() + 1];
         for (int i = 0; i < scaleNotes.size(); i++) {

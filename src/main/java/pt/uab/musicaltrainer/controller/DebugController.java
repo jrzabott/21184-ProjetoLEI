@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Debug — apenas testes",
+@Tag(name = "Debug - apenas testes",
      description = "Diagnóstico e geração em massa para testes manuais via Swagger. Não usar em produção.")
 @RestController
 @RequestMapping("/api/debug")
@@ -51,7 +51,7 @@ public class DebugController {
     @GetMapping("/exercises/difficulty/{type}")
     public ResponseEntity<?> getDifficulty(@PathVariable String type,
                                            @RequestParam(defaultValue = "5") int current) throws Exception {
-        // valida o tipo antes de prosseguir — tipo inválido = 400 via GlobalExceptionHandler
+        // valida o tipo antes de prosseguir - tipo inválido = 400 via GlobalExceptionHandler
         // usar validType.name() para garantir capitalização correcta no query à BD
         ExerciseType validType = ExerciseType.valueOf(type.toUpperCase());
         int suggested = difficultyService.suggestDifficulty(validType.name(), current);

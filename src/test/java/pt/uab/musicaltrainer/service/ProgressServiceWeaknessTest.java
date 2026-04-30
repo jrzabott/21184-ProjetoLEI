@@ -33,7 +33,7 @@ class ProgressServiceWeaknessTest {
 
     @Test
     void shouldReturnWeakestAreasAsList() throws Exception {
-        // campo weakestAreas sempre presente — lista (pode estar vazia ou nao consoante histórico)
+        // campo weakestAreas sempre presente - lista (pode estar vazia ou nao consoante histórico)
         ProgressResponse progress = service.buildProgress();
         assertThat(progress.weakestAreas()).isNotNull();
     }

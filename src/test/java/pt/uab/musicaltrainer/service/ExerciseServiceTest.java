@@ -258,7 +258,7 @@ class ExerciseServiceTest {
         assertThatCode(() -> service.evaluateAnswer(saved.id(), 99999L, expected))
             .doesNotThrowAnyException();
 
-        // Nenhum resultado guardado — sessão inexistente = fallback para sandbox
+        // Nenhum resultado guardado - sessão inexistente = fallback para sandbox
         assertThat(daoFactory.createResultDao().findAll().stream()
             .filter(r -> r.exerciseId().equals(saved.id()))
             .toList()).isEmpty();
