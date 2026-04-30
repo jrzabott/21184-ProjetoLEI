@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         String questionJson;
         try {
             questionJson = mapper.writeValueAsString(new IntervalQuestion(new int[]{low, high}));
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a serializar IntervalQuestion", e);
             throw new RuntimeException(e);
         }
@@ -97,7 +98,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             List<String> options = buildOptions(correctAnswer, Arrays.asList(IntervalType.values()));
             return new GeneratedExercise(ExerciseType.INTERVAL.name(), difficulty, questionJson,
                 correctAnswer, description, new int[]{noteA, noteB}, options);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar IntervalQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }

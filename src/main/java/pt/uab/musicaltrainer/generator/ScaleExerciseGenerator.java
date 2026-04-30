@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +96,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             ScaleQuestion q = mapper.readValue(questionJson, ScaleQuestion.class);
             List<String> allMvp = MVP_TYPES.stream().map(Enum::name).collect(Collectors.toList());
             return buildExercise(q.root(), q.type(), difficulty, allMvp);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ScaleQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
@@ -116,7 +117,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         String questionJson;
         try {
             questionJson = mapper.writeValueAsString(new ScaleQuestion(rootMidi, scaleType));
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a serializar ScaleQuestion", e);
             throw new RuntimeException(e);
         }

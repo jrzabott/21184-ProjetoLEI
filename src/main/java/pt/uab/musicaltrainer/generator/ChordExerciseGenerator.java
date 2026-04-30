@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.generator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             List<String> available = ChordType.availableFor(DifficultyLevel.of(difficulty)).stream()
                 .map(Enum::name).collect(Collectors.toList());
             return buildExercise(q.root(), q.type(), difficulty, available);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ChordQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
@@ -81,7 +82,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         String questionJson;
         try {
             questionJson = mapper.writeValueAsString(new ChordQuestion(rootMidi, chordType));
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             logger.error("Erro a serializar ChordQuestion", e);
             throw new RuntimeException(e);
         }
