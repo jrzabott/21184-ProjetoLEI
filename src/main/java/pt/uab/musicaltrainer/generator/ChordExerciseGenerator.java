@@ -8,6 +8,7 @@ import pt.uab.musicaltrainer.MusicConstants;
 import pt.uab.musicaltrainer.domain.Chord;
 import pt.uab.musicaltrainer.domain.ChordType;
 import pt.uab.musicaltrainer.domain.DifficultyLevel;
+import pt.uab.musicaltrainer.domain.IntervalType;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.dto.ChordQuestion;
 
@@ -86,15 +87,23 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             logger.error("Erro a serializar ChordQuestion", e);
             throw new RuntimeException(e);
         }
-        String description  = "Que tipo de acorde tem raiz em " + root.getDisplayName() + "?";
+        String description  = "Toca o acorde " + ChordType.valueOf(chordType).displayName()
+            + " com raiz em " + root.getDisplayName();
+        int[] iv = ChordType.valueOf(chordType).getIntervals();
+        String hint = "Raiz + " + IntervalType.fromSemitones(iv[1]).displayName()
+            + " + " + IntervalType.fromSemitones(iv[2]).displayName();
 
-        List<String> shuffled = new ArrayList<>(options);
-        Collections.shuffle(shuffled);
+        List<String> shuffled = new java.util.ArrayList<>(
+            options.stream()
+                .map(s -> ChordType.valueOf(s).displayName())
+                .collect(java.util.stream.Collectors.toList())
+        );
+        java.util.Collections.shuffle(shuffled);
 
         logger.info("Acorde gerado: root={}({}), type={}, difficulty={}",
             rootMidi, root.getDisplayName(), chordType, difficulty);
 
         return new GeneratedExercise(ExerciseType.CHORD.name(), difficulty, questionJson, chordType,
-            description, notes, shuffled);
+            description, hint, notes, shuffled);
     }
 }

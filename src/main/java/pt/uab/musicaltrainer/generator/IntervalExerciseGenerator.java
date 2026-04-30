@@ -73,15 +73,17 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             logger.error("Erro a serializar IntervalQuestion", e);
             throw new RuntimeException(e);
         }
-        String description   = "Que intervalo existe entre "
-            + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName() + "?";
+        String description   = "Reproduz o intervalo entre " + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName();
+        String hint = type.displayName() + " — " + type.semitones()
+            + " semítom" + (type.semitones() == 1 ? "" : "s");
+        String correctDisplay = type.displayName();
 
         logger.info("Intervalo gerado: type={}, low={}, high={}, difficulty={}",
             type.internalName(), low, high, difficulty);
 
         return new GeneratedExercise(
             ExerciseType.INTERVAL.name(), difficulty, questionJson, correctAnswer,
-            description, new int[]{low, high}, buildOptions(correctAnswer, available)
+            description, hint, new int[]{low, high}, buildOptions(correctDisplay, available)
         );
     }
 
@@ -92,12 +94,17 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             IntervalQuestion q = mapper.readValue(questionJson, IntervalQuestion.class);
             int noteA = q.notes()[0];
             int noteB = q.notes()[1];
-            Note low  = Note.fromMidi(noteA);
-            Note high = Note.fromMidi(noteB);
-            String description = "Que intervalo existe entre " + low.getDisplayName() + " e " + high.getDisplayName() + "?";
-            List<String> options = buildOptions(correctAnswer, Arrays.asList(IntervalType.values()));
+            String description = "Reproduz o intervalo entre "
+                + Note.fromMidi(noteA).getDisplayName() + " e " + Note.fromMidi(noteB).getDisplayName();
+            int semitones = Math.abs(noteB - noteA);
+            pt.uab.musicaltrainer.domain.IntervalType intervalType =
+                pt.uab.musicaltrainer.domain.IntervalType.fromSemitones(semitones);
+            String hint = intervalType.displayName() + " — " + semitones
+                + " semítom" + (semitones == 1 ? "" : "s");
+            List<String> options = buildOptions(intervalType.displayName(),
+                java.util.Arrays.asList(pt.uab.musicaltrainer.domain.IntervalType.values()));
             return new GeneratedExercise(ExerciseType.INTERVAL.name(), difficulty, questionJson,
-                correctAnswer, description, new int[]{noteA, noteB}, options);
+                correctAnswer, description, hint, new int[]{noteA, noteB}, options);
         } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar IntervalQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
@@ -114,16 +121,16 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
         return new int[]{21, 108};
     }
 
-    private List<String> buildOptions(String correct, List<IntervalType> available) {
+    private List<String> buildOptions(String correctDisplay, List<IntervalType> available) {
         List<String> pool = available.stream()
-            .map(IntervalType::internalName)
-            .filter(n -> !n.equals(correct))
-            .collect(Collectors.toCollection(ArrayList::new));
-        Collections.shuffle(pool);
-        List<String> options = new ArrayList<>();
-        options.add(correct);
+            .map(IntervalType::displayName)
+            .filter(n -> !n.equals(correctDisplay))
+            .collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new));
+        java.util.Collections.shuffle(pool);
+        List<String> options = new java.util.ArrayList<>();
+        options.add(correctDisplay);
         options.addAll(pool.subList(0, Math.min(3, pool.size())));
-        Collections.shuffle(options);
+        java.util.Collections.shuffle(options);
         return options;
     }
 }
