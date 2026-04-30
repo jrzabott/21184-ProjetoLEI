@@ -5,8 +5,18 @@ import java.util.List;
 /**
  * Contrato para um acorde musical.
  * <p>
- * Um acorde é um conjunto de notas derivadas de uma nota raiz
- * e tipo de acorde (MAJOR, MINOR, DIMINISHED, AUGMENTED).
+ * Um acorde é um conjunto de 3 ou mais notas tocadas simultaneamente (ou em arpejo).
+ * O acorde mais simples é a tríade, que consiste em: raiz + 3ª + 5ª.
+ * Exemplo - Acorde C Major: C (raiz) + E (3ª Maior, 4 semítons) + G (5ª Perfeita, 7 semítons).
+ * <p>
+ * Os tipos de acordes definem qualidade harmónica:
+ * - MAJOR (raiz + M3 + P5): som "brilhante", positivo
+ * - MINOR (raiz + m3 + P5): som "escuro", melancólico
+ * - DIMINISHED (raiz + m3 + d5): som "tenso", dissonante
+ * - AUGMENTED (raiz + M3 + A5): som "ambíguo", suspenso
+ * <p>
+ * Acordes são blocos de construção da harmonia e progressões de acordes
+ * (sequências de acordes) definem o caráter emocional e estrutura de uma composição.
  * <p>
  * Value object imutável: dois acordes com o mesmo tipo e raiz são equivalentes.
  *

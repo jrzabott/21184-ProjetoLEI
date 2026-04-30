@@ -5,8 +5,18 @@ import java.util.List;
 /**
  * Contrato para uma escala musical.
  * <p>
- * Uma escala é um conjunto ordenado de notas derivadas de uma nota raiz
- * e tipo de escala (MAJOR, MINOR_NATURAL, HARMONIC_MINOR, etc).
+ * Uma escala é um conjunto ordenado de notas derivadas de uma nota raiz,
+ * seguindo uma fórmula de intervalos que define o seu tipo (MAJOR, MINOR_NATURAL,
+ * HARMONIC_MINOR, etc). A escala é o "esqueleto" de uma composição — define
+ * que notas soam bem juntas.
+ * <p>
+ * Exemplo - Escala Maior (C Major): Fórmula W-W-H-W-W-W-H (W = tom, H = semitom)
+ * C → D (tom) → E (tom) → F (semitom) → G (tom) → A (tom) → B (tom) → C (semitom)
+ * = 8 notas (sete + a repetição da raiz uma oitava acima).
+ * <p>
+ * A escala Maior é a mais comum — é "brilhante", "feliz". A escala Menor Natural
+ * é mais "escura", "triste". Outras escalas (Harmónica, Melódica, Modos, Blues, Pentatónica)
+ * oferecem cores diferentes e são essenciais em vários géneros musicais.
  * <p>
  * Value object imutável: duas escalas com o mesmo tipo e raiz são equivalentes.
  *
