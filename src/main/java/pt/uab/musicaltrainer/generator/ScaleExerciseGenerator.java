@@ -121,15 +121,34 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             logger.error("Erro a serializar ScaleQuestion", e);
             throw new RuntimeException(e);
         }
-        String description  = "Que tipo de escala começa em " + root.getDisplayName() + "?";
+        String description  = "Toca a escala " + ScaleType.valueOf(scaleType).displayName()
+            + " com tónica em " + root.getDisplayName() + ", de raiz a raiz";
+        String hint = buildScaleHint(scaleType);
 
-        List<String> shuffled = new ArrayList<>(options);
-        Collections.shuffle(shuffled);
+        List<String> shuffled = new java.util.ArrayList<>(
+            options.stream()
+                .map(s -> ScaleType.valueOf(s).displayName())
+                .collect(java.util.stream.Collectors.toList())
+        );
+        java.util.Collections.shuffle(shuffled);
 
         logger.info("Escala gerada: root={}({}), type={}, difficulty={}",
             rootMidi, root.getDisplayName(), scaleType, difficulty);
 
         return new GeneratedExercise(ExerciseType.SCALE.name(), difficulty, questionJson, scaleType,
-            description, notes, shuffled);
+            description, hint, notes, shuffled);
+    }
+
+    private String buildScaleHint(String scaleType) {
+        int[] intervals = ScaleType.valueOf(scaleType).getIntervals();
+        StringBuilder sb = new StringBuilder("Fórmula: ");
+        for (int i = 1; i < intervals.length; i++) {
+            if (i > 1) sb.append(" - ");
+            int step = intervals[i] - intervals[i - 1];
+            sb.append(step == 1 ? "S" : step == 2 ? "T" : step + "st");
+        }
+        int lastStep = 12 - intervals[intervals.length - 1];
+        sb.append(" - ").append(lastStep == 1 ? "S" : lastStep == 2 ? "T" : lastStep + "st");
+        return sb.toString();
     }
 }

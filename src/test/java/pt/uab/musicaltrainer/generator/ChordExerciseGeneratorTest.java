@@ -2,6 +2,7 @@ package pt.uab.musicaltrainer.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import pt.uab.musicaltrainer.domain.ChordType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +53,9 @@ class ChordExerciseGeneratorTest {
     void shouldIncludeCorrectAnswerInOptions() {
         GeneratedExercise ex = generator.generate(1);
 
-        assertThat(ex.options()).contains(ex.correctAnswer());
+        // options contêm displayName; correctAnswer é o nome interno (enum name)
+        String expectedDisplayName = ChordType.valueOf(ex.correctAnswer()).displayName();
+        assertThat(ex.options()).contains(expectedDisplayName);
     }
 
     @Test

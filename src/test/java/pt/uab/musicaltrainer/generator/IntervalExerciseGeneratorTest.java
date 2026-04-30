@@ -3,6 +3,7 @@ package pt.uab.musicaltrainer.generator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import pt.uab.musicaltrainer.domain.IntervalType;
 
 import java.util.HashSet;
 
@@ -46,7 +47,11 @@ class IntervalExerciseGeneratorTest {
     void shouldIncludeCorrectAnswerInOptions() {
         GeneratedExercise ex = generator.generate(1);
 
-        assertThat(ex.options()).contains(ex.correctAnswer());
+        // options contêm displayName; correctAnswer é internalName (armazenado em BD)
+        String expectedDisplayName = java.util.Arrays.stream(IntervalType.values())
+            .filter(t -> t.internalName().equals(ex.correctAnswer()))
+            .findFirst().orElseThrow().displayName();
+        assertThat(ex.options()).contains(expectedDisplayName);
     }
 
     @Test
@@ -72,7 +77,8 @@ class IntervalExerciseGeneratorTest {
 
         assertThat(ex.notesToPlay()).containsExactly(60, 67);
         assertThat(ex.correctAnswer()).isEqualTo("5a Perfeita");
-        assertThat(ex.options()).contains("5a Perfeita");
+        // options contêm displayName ("5ª Perfeita"), não internalName
+        assertThat(ex.options()).contains("5ª Perfeita");
         assertThat(ex.options()).hasSize(4);
     }
 

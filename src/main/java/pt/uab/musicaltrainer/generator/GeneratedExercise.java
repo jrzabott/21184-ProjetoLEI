@@ -12,6 +12,7 @@ public record GeneratedExercise(
     String questionJson,
     String correctAnswer,
     String description,
+    String hint,
     int[] notesToPlay,
     List<String> options
 ) {}

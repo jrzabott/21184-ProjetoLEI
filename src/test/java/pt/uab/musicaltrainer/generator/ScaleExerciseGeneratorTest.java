@@ -70,7 +70,9 @@ class ScaleExerciseGeneratorTest {
     void shouldIncludeCorrectAnswerInOptions() {
         GeneratedExercise ex = generator.generate(1);
 
-        assertThat(ex.options()).contains(ex.correctAnswer());
+        // options contêm displayName; correctAnswer é o nome interno (enum name)
+        String expectedDisplayName = ScaleType.valueOf(ex.correctAnswer()).displayName();
+        assertThat(ex.options()).contains(expectedDisplayName);
     }
 
     @Test

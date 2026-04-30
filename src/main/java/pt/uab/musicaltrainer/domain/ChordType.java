@@ -27,32 +27,34 @@ public enum ChordType {
      * Acorde Maior: raiz, terça maior, quinta perfeita.
      * Intervalos: +0, +4, +7 semítons.
      */
-    MAJOR(new int[]{0, 4, 7}, DifficultyLevel.BEGINNER),
+    MAJOR(new int[]{0, 4, 7}, DifficultyLevel.BEGINNER,      "Maior"),
 
     /**
      * Acorde Menor: raiz, terça menor, quinta perfeita.
      * Intervalos: +0, +3, +7 semítons.
      */
-    MINOR(new int[]{0, 3, 7}, DifficultyLevel.INTERMEDIATE),
+    MINOR(new int[]{0, 3, 7}, DifficultyLevel.INTERMEDIATE,  "Menor"),
 
     /**
      * Acorde Diminuto: raiz, terça menor, quinta diminuta.
      * Intervalos: +0, +3, +6 semítons.
      */
-    DIMINISHED(new int[]{0, 3, 6}, DifficultyLevel.ADVANCED),
+    DIMINISHED(new int[]{0, 3, 6}, DifficultyLevel.ADVANCED,      "Diminuto"),
 
     /**
      * Acorde Aumentado: raiz, terça maior, quinta aumentada.
      * Intervalos: +0, +4, +8 semítons.
      */
-    AUGMENTED(new int[]{0, 4, 8}, DifficultyLevel.ADVANCED);
+    AUGMENTED(new int[]{0, 4, 8}, DifficultyLevel.ADVANCED,      "Aumentado");
 
     private final int[] intervals;
     private final DifficultyLevel difficulty;
+    private final String displayName;
 
-    ChordType(int[] intervals, DifficultyLevel difficulty) {
-        this.intervals  = intervals;
-        this.difficulty = difficulty;
+    ChordType(int[] intervals, DifficultyLevel difficulty, String displayName) {
+        this.intervals   = intervals;
+        this.difficulty  = difficulty;
+        this.displayName = displayName;
     }
 
     /**
@@ -68,6 +70,11 @@ public enum ChordType {
     public DifficultyLevel difficulty() {
         return difficulty;
     }
+
+    /**
+     * Retorna o nome legível em português para este tipo de acorde.
+     */
+    public String displayName() { return displayName; }
 
     /**
      * Retorna todos os acordes disponíveis até ao nível de dificuldade indicado (inclusive).

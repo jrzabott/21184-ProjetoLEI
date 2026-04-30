@@ -9,5 +9,6 @@ public record GenerateResponse(
     int suggestedDifficulty,
     int[] notes,
     String description,
+    String hint,
     List<String> options
 ) {}
