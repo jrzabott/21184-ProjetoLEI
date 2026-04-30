@@ -1,5 +1,6 @@
 package pt.uab.musicaltrainer.controller;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -59,5 +60,27 @@ class GlobalExceptionHandlerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status").value(400))
             .andExpect(jsonPath("$.detail").isString());
+    }
+
+    @Test
+    void shouldReturn400WithProblemDetailWhenNotesNull() throws Exception {
+        // notas nulas rebentavam com NPE — deve devolver 400 com detalhe claro
+        mockMvc.perform(post("/api/exercises/answer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"exerciseId\":1,\"sessionId\":0,\"responseTimeMs\":1000}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.detail").value(Matchers.containsString("notes")));
+    }
+
+    @Test
+    void shouldReturn400WithProblemDetailWhenExerciseIdNull() throws Exception {
+        // exerciseId nulo rebentava com NPE no DAO — deve devolver 400 com detalhe claro
+        mockMvc.perform(post("/api/exercises/answer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.detail").value(Matchers.containsString("exerciseId")));
     }
 }
