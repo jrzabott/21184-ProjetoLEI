@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Musical Trainer — Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F0E8; --text: #2C1810; --accent: #7B5EA7;
+  --correct: #4A7C59; --incorrect: #8B3A3A;
+  --key-white: #FFF9F0; --key-black: #1C1C1C;
+  --surface: #EDE8DD; --border: #D9D0C0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #2A2A2A; font-family: 'EB Garamond', Georgia, serif; padding: 40px 20px; color: #eee; }
+h1.doc-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #ccc; margin-bottom: 8px; font-weight: 400; }
+p.doc-sub { font-size: .85rem; color: #888; margin-bottom: 48px; }
+.section-title { font-family: 'EB Garamond', serif; font-size: 1rem; color: #aaa; margin: 48px 0 12px; border-bottom: 1px solid #444; padding-bottom: 6px; }
+.frames-row { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+.frame-wrap { display: flex; flex-direction: column; gap: 8px; }
+.frame-label { font-size: .75rem; color: #888; font-family: monospace; }
+.device { background: var(--bg); color: var(--text); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.5); overflow: hidden; position: relative; }
+.device.mobile { width: 375px; min-height: 200px; }
+
+/* App components */
+.app-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.app-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.app-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 12px; align-items: center; }
+.nav-links a { font-size: .85rem; color: var(--text); text-decoration: none; opacity: .65; }
+.help-link { font-size: .8rem; color: var(--accent); cursor: pointer; border: 1px solid var(--accent); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.midi-led { width: 10px; height: 10px; border-radius: 50%; background: #888; flex-shrink: 0; }
+.midi-led.connected { background: var(--correct); box-shadow: 0 0 6px var(--correct); }
+.midi-led.active { background: #fff; box-shadow: 0 0 8px #fff; }
+
+button, .btn { font-family: 'EB Garamond', serif; font-size: 1rem; padding: 9px 22px; border-radius: 6px; cursor: pointer; border: none; display: inline-block; text-align: center; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-secondary { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-sm { font-size: .85rem; padding: 6px 14px; }
+.w-full { width: 100%; }
+
+.type-selector { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.type-btn { font-family: 'EB Garamond', serif; font-size: .9rem; padding: 7px 16px; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text); }
+.type-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.exercise-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
+.exercise-card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 8px; }
+.exercise-card p { font-size: .9rem; opacity: .65; margin-bottom: 14px; }
+
+.feedback-panel { padding: 12px 16px; border-radius: 8px; font-size: .95rem; }
+.feedback-panel.correct { background: #E8F4EC; border: 1px solid #B8DEC4; color: var(--correct); }
+.feedback-panel.incorrect { background: #F5E8E8; border: 1px solid #DEB8B8; color: var(--incorrect); }
+
+.practice-banner { background: #F0EBF7; border-bottom: 1px solid #C5B2E0; color: var(--accent); font-size: .8rem; text-align: center; padding: 6px; }
+
+.progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+.progress-fill.correct { background: var(--correct); }
+
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: .9rem; }
+
+.hint-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: .85rem; opacity: .85; }
+.hint-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); margin-bottom: 4px; }
+
+.modal-overlay { position: absolute; inset: 0; background: rgba(44,24,16,.45); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: 90%; max-width: 320px; }
+.modal-box h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 12px; }
+.modal-box h4 { font-size: .9rem; font-weight: 600; margin: 14px 0 5px; color: var(--accent); }
+.modal-box p, .modal-box li { font-size: .83rem; opacity: .8; line-height: 1.5; }
+.modal-box ul { padding-left: 14px; }
+.modal-close { float: right; font-size: 1.2rem; cursor: pointer; opacity: .5; background: none; border: none; font-family: inherit; color: var(--text); }
+.faq-q { font-weight: 500; margin-top: 10px; font-size: .83rem; }
+.faq-a { font-size: .8rem; opacity: .65; margin-top: 2px; }
+.session-counter { font-size: .85rem; opacity: .7; }
+.session-counter strong { opacity: 1; color: var(--accent); }
+
+/* Keyboard */
+.keyboard-outer { padding: 12px 12px 16px; overflow-x: auto; background: var(--bg); }
+.keyboard { position: relative; display: flex; gap: 2px; width: fit-content; margin: 0 auto; }
+.wk { width: 36px; height: 100px; background: var(--key-white); border: 1px solid var(--border); border-radius: 0 0 5px 5px; position: relative; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; cursor: pointer; flex-shrink: 0; user-select: none; }
+.wk:hover { background: #EEE8D8; box-shadow: inset 0 -3px 0 var(--accent); }
+.wk.active { background: #DDD5C4; box-shadow: inset 0 -3px 0 var(--accent); }
+.wk .lbl { font-size: 9px; font-family: 'EB Garamond', serif; color: #aaa; pointer-events: none; }
+.bk { position: absolute; width: 22px; height: 62px; background: var(--key-black); border-radius: 0 0 4px 4px; z-index: 2; cursor: pointer; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; user-select: none; }
+.bk:hover { background: #3A3A3A; box-shadow: inset 0 -2px 0 var(--accent); }
+.bk .lbl { font-size: 7px; color: #777; font-family: 'EB Garamond', serif; pointer-events: none; }
+
+/* Utilities */
+.p-16 { padding: 16px; }
+.px-16 { padding: 0 16px; }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-6  { margin-bottom: 6px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-20 { margin-bottom: 20px; }
+.flex  { display: flex; }
+.gap-8 { gap: 8px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center  { justify-content: center; }
+.text-center { text-align: center; }
+.text-sm { font-size: .85rem; }
+.text-xs { font-size: .75rem; }
+.opacity-60 { opacity: .6; }
+.opacity-70 { opacity: .7; }
+</style>
+</head>
+<body>
+
+<h1 class="doc-title">♩ Musical Trainer — Wireframes</h1>
+<p class="doc-sub">feat/44 · 2026-05-01 · Daniel Junior · Relatório intercalar Cap. 2</p>
+
+<script>
+/* Piano keyboard generator.
+   startOctave/endOctave: the octaves to render (adds final C above endOctave).
+   MIDI ref: C4=60. Formula: midi(C_oct) = (oct+1)*12 */
+function buildKeyboard(id, startOctave, endOctave) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const WHITE  = [0,2,4,5,7,9,11]; // semitones: C D E F G A B
+  const NAMES  = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const HAS_BK = {0:1, 2:1, 5:1, 7:1, 9:1}; // white keys that have a black key to their right
+  const WK_W   = 38; // 36px key + 2px gap
+  let wi = 0; // white key index (for black key positioning)
+
+  for (let oct = startOctave; oct <= endOctave; oct++) {
+    for (let i = 0; i < WHITE.length; i++) {
+      const st   = WHITE[i];
+      const midi = (oct + 1) * 12 + st;
+      const name = NAMES[st] + oct;
+      const wk   = document.createElement('div');
+      wk.className = 'wk';
+      wk.innerHTML = `<span class="lbl">${name}</span>`;
+      el.appendChild(wk);
+      if (HAS_BK[st]) {
+        const bk = document.createElement('div');
+        bk.className = 'bk';
+        bk.style.left = (wi * WK_W + WK_W - 13) + 'px';
+        bk.innerHTML = `<span class="lbl">${NAMES[st+1]}${oct}</span>`;
+        el.appendChild(bk);
+      }
+      wi++;
+    }
+  }
+  // Final C — one octave above endOctave
+  const finalOct = endOctave + 1;
+  const wk = document.createElement('div');
+  wk.className = 'wk';
+  wk.innerHTML = `<span class="lbl">C${finalOct}</span>`;
+  el.appendChild(wk);
+}
+</script>
+
+<!-- ================================================
+     ECRA 1: index.html
+     ================================================ -->
+<p class="section-title">1 — index.html · Ecrã principal (375px mobile)</p>
+<div class="frames-row">
+
+  <!-- Sem MIDI -->
+  <div class="frame-wrap">
+    <div class="frame-label">sem dispositivo MIDI</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links">
+          <a href="#">Progresso</a>
+          <div class="help-link">?</div>
+          <div class="midi-led"></div>
+        </div>
+      </div>
+      <div class="p-16">
+        <p class="text-sm opacity-60 mb-8">O que queres praticar?</p>
+        <div class="type-selector">
+          <button class="type-btn active">Intervalos</button>
+          <button class="type-btn">Escalas</button>
+          <button class="type-btn">Acordes</button>
+        </div>
+        <div class="flex gap-8 mt-16">
+          <button class="btn btn-secondary w-full">Praticar</button>
+          <button class="btn btn-primary w-full">Iniciar sessão</button>
+        </div>
+        <p class="text-xs opacity-60 text-center mt-12">Praticar não guarda resultados</p>
+      </div>
+      <div class="keyboard-outer"><div class="keyboard" id="kb1a"></div></div>
+    </div>
+  </div>
+
+  <!-- MIDI ligado -->
+  <div class="frame-wrap">
+    <div class="frame-label">MIDI ligado (LED verde)</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links">
+          <a href="#">Progresso</a>
+          <div class="help-link">?</div>
+          <div class="midi-led connected"></div>
+        </div>
+      </div>
+      <div class="p-16">
+        <p class="text-sm opacity-60 mb-8">O que queres praticar?</p>
+        <div class="type-selector">
+          <button class="type-btn">Intervalos</button>
+          <button class="type-btn active">Escalas</button>
+          <button class="type-btn">Acordes</button>
+        </div>
+        <div class="flex gap-8 mt-16">
+          <button class="btn btn-secondary w-full">Praticar</button>
+          <button class="btn btn-primary w-full">Iniciar sessão</button>
+        </div>
+        <p class="text-xs opacity-60 text-center mt-12">Praticar não guarda resultados</p>
+      </div>
+      <div class="keyboard-outer"><div class="keyboard" id="kb1b"></div></div>
+    </div>
+  </div>
+
+  <!-- Modal de ajuda -->
+  <div class="frame-wrap">
+    <div class="frame-label">modal de ajuda aberto</div>
+    <div class="device mobile" style="position:relative">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links"><a href="#">Progresso</a><div class="help-link">?</div><div class="midi-led"></div></div>
+      </div>
+      <div class="p-16" style="opacity:.25">
+        <div class="type-selector">
+          <button class="type-btn active">Intervalos</button>
+          <button class="type-btn">Escalas</button>
+          <button class="type-btn">Acordes</button>
+        </div>
+        <div class="flex gap-8 mt-16">
+          <button class="btn btn-secondary w-full">Praticar</button>
+          <button class="btn btn-primary w-full">Iniciar sessão</button>
+        </div>
+      </div>
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <button class="modal-close">×</button>
+          <h3>Ajuda</h3>
+          <h4>Sobre</h4>
+          <p>Musical Trainer é uma ferramenta de treino auditivo. Identifica intervalos, escalas e acordes tocando no teclado virtual ou num controlador MIDI físico.</p>
+          <h4>Como funcionar</h4>
+          <ul>
+            <li><strong>Praticar</strong> — ouve e toca as notas. Sem pontuação.</li>
+            <li><strong>Iniciar sessão</strong> — os resultados contam.</li>
+            <li><strong>Progresso</strong> — vê a evolução por tipo.</li>
+          </ul>
+          <h4>Perguntas frequentes</h4>
+          <div class="faq-q">A prática conta para o progresso?</div>
+          <div class="faq-a">Não. O modo prática é efémero — nada é guardado quando sais.</div>
+          <div class="faq-q">Posso usar teclado MIDI físico?</div>
+          <div class="faq-a">Sim, se o browser suportar Web MIDI API (Chrome/Edge).</div>
+          <div class="flex justify-center mt-16">
+            <button class="btn btn-ghost btn-sm">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>buildKeyboard('kb1a',3,4); buildKeyboard('kb1b',3,4);</script>
+
+<!-- ================================================
+     ECRA 2: exercise.html
+     ================================================ -->
+<p class="section-title">2 — exercise.html · Exercício activo (375px mobile)</p>
+<div class="frames-row">
+
+  <!-- Aguardar resposta -->
+  <div class="frame-wrap">
+    <div class="frame-label">à espera da resposta</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links">
+          <div class="session-counter"><strong>3</strong>/5 correctas</div>
+          <button class="btn btn-ghost btn-sm">Terminar</button>
+          <div class="midi-led connected"></div>
+        </div>
+      </div>
+      <div class="p-16">
+        <div class="exercise-card">
+          <h2>Que intervalo é este?</h2>
+          <p>Ouve o som e toca as mesmas duas notas no teclado.</p>
+          <button class="btn btn-primary btn-sm">▶ Ouvir</button>
+        </div>
+      </div>
+      <div class="keyboard-outer"><div class="keyboard" id="kb2a"></div></div>
+    </div>
+  </div>
+
+  <!-- Resposta correcta -->
+  <div class="frame-wrap">
+    <div class="frame-label">resposta correcta</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links">
+          <div class="session-counter"><strong>4</strong>/6 correctas</div>
+          <button class="btn btn-ghost btn-sm">Terminar</button>
+          <div class="midi-led connected"></div>
+        </div>
+      </div>
+      <div class="p-16">
+        <div class="exercise-card">
+          <h2>Que intervalo é este?</h2>
+          <p>Ouve o som e toca as mesmas duas notas no teclado.</p>
+          <button class="btn btn-ghost btn-sm">▶ Ouvir</button>
+        </div>
+        <div class="feedback-panel correct mt-12">
+          ✓ Correcto — 3ª Maior (4 semítons)
+        </div>
+        <div class="flex justify-center mt-16">
+          <button class="btn btn-primary">Próximo exercício</button>
+        </div>
+      </div>
+      <div class="keyboard-outer"><div class="keyboard" id="kb2b"></div></div>
+    </div>
+  </div>
+
+  <!-- Resposta errada -->
+  <div class="frame-wrap">
+    <div class="frame-label">resposta errada</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links">
+          <div class="session-counter"><strong>3</strong>/7 correctas</div>
+          <button class="btn btn-ghost btn-sm">Terminar</button>
+          <div class="midi-led connected"></div>
+        </div>
+      </div>
+      <div class="p-16">
+        <div class="exercise-card">
+          <h2>Que intervalo é este?</h2>
+          <p>Ouve o som e toca as mesmas duas notas no teclado.</p>
+          <button class="btn btn-ghost btn-sm">▶ Ouvir</button>
+        </div>
+        <div class="feedback-panel incorrect mt-12">
+          ✗ Errado — era uma 5ª Perfeita. Tocaste uma 4ª.
+        </div>
+        <div class="flex justify-center mt-16">
+          <button class="btn btn-primary">Próximo exercício</button>
+        </div>
+      </div>
+      <div class="keyboard-outer"><div class="keyboard" id="kb2c"></div></div>
+    </div>
+  </div>
+
+  <!-- Modo pratica -->
+  <div class="frame-wrap">
+    <div class="frame-label">modo prática — banner visível</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links">
+          <div class="session-counter" style="color:var(--accent)">Prática</div>
+          <button class="btn btn-ghost btn-sm">Terminar</button>
+          <div class="midi-led"></div>
+        </div>
+      </div>
+      <div class="practice-banner">Modo prática — não conta para o progresso</div>
+      <div class="p-16">
+        <div class="exercise-card">
+          <h2>Toca a escala completa.</h2>
+          <p>Toca a escala Maior com tónica em C3, da raiz até à oitava acima.</p>
+          <button class="btn btn-primary btn-sm">▶ Ouvir</button>
+        </div>
+      </div>
+      <div class="keyboard-outer"><div class="keyboard" id="kb2d"></div></div>
+    </div>
+  </div>
+
+</div>
+<script>
+buildKeyboard('kb2a',3,4); buildKeyboard('kb2b',3,4);
+buildKeyboard('kb2c',3,4); buildKeyboard('kb2d',3,4);
+</script>
+
+<!-- ================================================
+     ECRA 3: session-end.html
+     ================================================ -->
+<p class="section-title">3 — session-end.html · Resumo de sessão (375px mobile)</p>
+<div class="frames-row">
+
+  <!-- Sessão real -->
+  <div class="frame-wrap">
+    <div class="frame-label">sessão pontuada — resultados guardados</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links"><div class="midi-led"></div></div>
+      </div>
+      <div class="p-16">
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:4px">Sessão terminada</h2>
+        <p class="text-sm opacity-60 mb-20">01 mai 2026 · 14:32</p>
+        <div class="stat-row"><span class="opacity-70">Exercícios</span><strong>12</strong></div>
+        <div class="stat-row"><span class="opacity-70">Correctos</span><strong style="color:var(--correct)">9</strong></div>
+        <div class="stat-row"><span class="opacity-70">Errados</span><strong style="color:var(--incorrect)">3</strong></div>
+        <div class="mt-16 mb-20">
+          <div class="flex justify-between text-sm mb-6"><span class="opacity-60">Precisão</span><strong>75%</strong></div>
+          <div class="progress-bar"><div class="progress-fill correct" style="width:75%"></div></div>
+        </div>
+        <div class="hint-card mb-20">
+          <div class="hint-label">Área mais fraca</div>
+          Trítono — 6 semítons. O intervalo mais instável da escala cromática.
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost w-full">← Voltar</button>
+          <button class="btn btn-primary w-full">Iniciar sessão</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pratica -->
+  <div class="frame-wrap">
+    <div class="frame-label">modo prática — nada guardado</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links"><div class="midi-led"></div></div>
+      </div>
+      <div class="practice-banner">Modo prática — não foi guardado</div>
+      <div class="p-16">
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:4px">Prática terminada</h2>
+        <p class="text-sm mb-20" style="color:var(--accent)">Estes resultados não ficam guardados.</p>
+        <div class="stat-row"><span class="opacity-70">Exercícios</span><strong>8</strong></div>
+        <div class="stat-row"><span class="opacity-70">Correctos</span><strong style="color:var(--correct)">6</strong></div>
+        <div class="stat-row"><span class="opacity-70">Errados</span><strong style="color:var(--incorrect)">2</strong></div>
+        <div class="mt-16 mb-20">
+          <div class="flex justify-between text-sm mb-6"><span class="opacity-60">Precisão nesta prática</span><strong>75%</strong></div>
+          <div class="progress-bar"><div class="progress-fill correct" style="width:75%"></div></div>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost w-full">← Voltar</button>
+          <button class="btn btn-primary w-full">Iniciar sessão</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================================================
+     ECRA 4: progress.html
+     ================================================ -->
+<p class="section-title">4 — progress.html · Dashboard (375px mobile)</p>
+<div class="frames-row">
+
+  <div class="frame-wrap">
+    <div class="frame-label">com histórico</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links"><a href="#">← Início</a><div class="midi-led"></div></div>
+      </div>
+      <div class="p-16">
+        <div class="mb-20">
+          <div class="flex justify-between text-sm mb-6"><span class="opacity-60">Precisão global</span><strong style="font-size:1.1rem">78%</strong></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+          <p class="text-xs opacity-60 mt-8">48 exercícios · 3 sessões</p>
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:12px">Por tipo</h3>
+        <div class="mb-8"><div class="flex justify-between text-sm mb-6"><span>Intervalos</span><span>82%</span></div><div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div></div>
+        <div class="mb-8"><div class="flex justify-between text-sm mb-6"><span>Escalas</span><span>61%</span></div><div class="progress-bar"><div class="progress-fill" style="width:61%"></div></div></div>
+        <div class="mb-20"><div class="flex justify-between text-sm mb-6"><span>Acordes</span><span>90%</span></div><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:10px">Áreas mais fracas</h3>
+        <div class="hint-card mb-8"><div class="hint-label">Intervalo · Trítono · 40%</div>6 semítons — o mais instável. Chamado "diabolus in musica" na teoria clássica.</div>
+        <div class="hint-card mb-20"><div class="hint-label">Escala · Menor Harmónica · 55%</div>Como a menor natural mas com 7º grau natural. O salto de 3 semítons é característico.</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:10px">Sessões recentes</h3>
+        <div class="stat-row"><span class="opacity-70">01 mai · 14:32</span><span>12 ex. · 75%</span></div>
+        <div class="stat-row"><span class="opacity-70">30 abr · 21:15</span><span>8 ex. · 88%</span></div>
+        <div class="stat-row" style="border:none"><span class="opacity-70">29 abr · 10:04</span><span>28 ex. · 71%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame-wrap">
+    <div class="frame-label">sem histórico (estado inicial)</div>
+    <div class="device mobile">
+      <div class="app-header">
+        <div class="app-logo">♩ Musical<span>Trainer</span></div>
+        <div class="nav-links"><a href="#">← Início</a><div class="midi-led"></div></div>
+      </div>
+      <div class="p-16 text-center" style="padding-top:60px">
+        <p style="font-size:2rem;margin-bottom:12px">♩</p>
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:8px">Ainda sem histórico</h2>
+        <p class="text-sm opacity-60 mb-20">Inicia uma sessão para começar a ver o teu progresso.</p>
+        <button class="btn btn-primary">Iniciar sessão</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
