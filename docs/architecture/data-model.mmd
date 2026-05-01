@@ -1,29 +1,31 @@
 erDiagram
     exercises {
-        INTEGER id PK "Identificador único"
-        TEXT type "Tipo: NOTE, INTERVAL, SCALE, CHORD"
-        INTEGER difficulty "Nível de dificuldade (1-5)"
-        TEXT question_data "JSON com dados da pergunta"
-        TEXT correct_answer "Resposta correcta serializada"
-        DATETIME created_at "Data de criação"
+        BIGINT id PK "Auto-increment"
+        VARCHAR type "INTERVAL | SCALE | CHORD"
+        INT difficulty "1-10 (CHECK constraint)"
+        VARCHAR question "Schema JSON por tipo - ver ADR-013"
+        VARCHAR correct_answer "Notas esperadas serializadas em JSON"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
     }
 
     sessions {
-        INTEGER id PK "Identificador único"
-        DATETIME started_at "Início da sessão"
-        DATETIME ended_at "Fim da sessão (null se activa)"
-        INTEGER exercise_count "Total de exercícios na sessão"
-        INTEGER correct_count "Total de respostas correctas"
+        BIGINT id PK "Auto-increment"
+        TIMESTAMP start_time "Inicio da sessao"
+        TIMESTAMP end_time "Fim da sessao - null se activa"
+        INT total_exercises "DEFAULT 0"
+        INT correct_answers "DEFAULT 0"
+        INT incorrect_answers "DEFAULT 0"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
     }
 
-    user_scores {
-        INTEGER id PK "Identificador único"
-        INTEGER session_id FK "Referência à sessão"
-        INTEGER exercise_id FK "Referência ao exercício"
-        TEXT answer_given "Resposta dada pelo utilizador"
-        BOOLEAN is_correct "Acertou ou errou"
-        DATETIME answered_at "Data e hora da resposta"
+    results {
+        BIGINT id PK "Auto-increment"
+        BIGINT session_id FK "ON DELETE CASCADE"
+        BIGINT exercise_id FK "ON DELETE SET NULL"
+        VARCHAR user_answer "Notas tocadas serializadas em JSON"
+        BOOLEAN is_correct "Resultado da avaliacao"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
     }
 
-    sessions ||--o{ user_scores : "contém"
-    exercises ||--o{ user_scores : "é respondido em"
+    sessions ||--o{ results : "contém"
+    exercises ||--o{ results : "é respondido em"
