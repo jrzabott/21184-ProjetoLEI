@@ -53,3 +53,13 @@ A navegação é feita com **páginas HTML separadas**, cada uma servida directa
 - Estado de sessão (`sessionId`) precisa de ser passado entre páginas via URL query params ou `sessionStorage` - solução: `sessionStorage` para `sessionId` activo
   - Ainda estou a pensar na possibilidade de tornar o estado obsfuscado com uma String codificada em Base64
 - Cada página carrega os seus scripts de raiz - sem lazy loading (irrelevante neste momento inicial)
+
+---
+
+## Actualização - 2026-05-01
+
+`select.html` foi absorvido em `index.html`. A selecção de tipo de exercício (INTERVAL/SCALE/CHORD)
+e o arranque de sessao ficam no ecrã inicial, evitando uma página extra para 3 botões.
+O ecrã de fim de sessao passa a ser `session-end.html` (autónomo) em vez de secção oculta em `exercise.html`.
+
+Páginas actuais: `index.html`, `exercise.html`, `session-end.html`, `progress.html`.
