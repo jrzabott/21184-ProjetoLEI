@@ -7,7 +7,7 @@ C4Container
     System_Boundary(sistema, "Musical Theory Trainer") {
         Container(frontend, "Frontend", "HTML + JavaScript ES6+", "Interface de utilizador: teclado virtual, ecrã de exercício, dashboard de progresso, modo sandbox")
         Container(backend, "Backend", "Java 21 + Spring Boot", "Gera exercícios procedurais, valida respostas, persiste sessões e resultados via JDBC + DAOs")
-        ContainerDb(db, "Base de Dados", "H2 (dev) / SQLite3 ou PostgreSQL (prod)", "Armazena exercícios, sessões, respostas e pontuações")
+        ContainerDb(db, "Base de Dados", "H2 (dev) / SQLite3 (prod)", "Armazena exercícios, sessões e resultados")
     }
 
     Rel(utilizador, frontend, "Interage via browser", "HTTP / Web Audio API")

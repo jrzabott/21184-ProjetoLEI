@@ -23,6 +23,16 @@ Esta pasta contém os artefactos de arquitectura do projecto.
 - **ER / modelo de dados:** [dbdiagram.io](https://dbdiagram.io) (gratuito) ou draw.io
 - **Alternativa universal:** draw.io exporta PNG e é gratuito para tudo
 
+## Nota sobre os diagramas deste projecto
+
+Os diagramas C4 e o modelo de dados estão escritos em [Mermaid](https://mermaid.js.org) (ficheiros `.mmd`),
+versionados em Git como código fonte. Os `.png` são exportados via `@mermaid-js/mermaid-cli`.
+
+O Mermaid é uma boa escolha para manter diagramas em sync com o código - mas tem limitações
+visuais conhecidas, especialmente no layout automático de diagramas C4 (sobreposição ocasional
+de labels, espaçamento irregular). O conteúdo está correcto; o aspecto visual é uma limitação
+da ferramenta, não um erro de design.
+
 ## Referência C4
 
 Documentação oficial: [c4model.com](https://c4model.com)  
