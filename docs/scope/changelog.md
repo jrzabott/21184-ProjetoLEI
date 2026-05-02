@@ -62,11 +62,11 @@
 
 ---
 
-## Sem. 8 · 5–6 mai · INTERCALAR
+## Sem. 8 · 28 abr–6 mai · DEMO INTERNA + INTERCALAR
 
-**Feito:** feat/27 - RF07 implementado: resultados persistidos em BD após cada resposta (sessionId != SESSION_NONE). Contadores de sessão actualizados atomicamente. RF08 parcial: byType com taxa de acerto real. SESSION_NONE=0L. feat/28 - RF09 implementado: DifficultyLevel enum (5 bandas BEGINNER→EXPERT). IntervalType, ScaleType (28 valores), ChordType classificados por dificuldade. Geradores usam availableFor() - zero magic numbers. DifficultyService com algoritmo 80/40%. Debug API: /api/debug/exercises/. ADR-015. OI01 fechado (SQLite3). OI07 fechado (ADR-013). feat/29 - F02 implementado: no-consecutive-repeat via sessionId em GenerateRequest. feat/30 - RF08 completo: weakestAreas com padrões específicos e dicas PT-PT. Backend completo.  
+**Feito:** feat/27-30 concluídos (semana anterior): RF07 persistência, RF08 dashboard com weakestAreas, RF09 dificuldade adaptativa, F02 no-consecutive-repeat. API polish (feat/38-41): hints pedagógicos nos exercícios, fix FK violation em session validation, RFC 7807 GlobalExceptionHandler central (ProblemDetail em todos os erros), Bean Validation em AnswerRequest, SessionResponse unificado com startedAt/endedAt, ProgressService enriquecido com zero-fill e timestamps. Wireframes dos 4 ecrãs HTML produzidos e PDF exportado para docs/design/ (feat/44-46). ADR-017 (deployment frontend em /frontend/) e ADR-018 (teclado CSS, range MIDI C2-C6, responsividade). Diagramas C4 e modelo ER corrigidos e actualizados (feat/45). Documentação humanizada: em dashes removidos, comentários redundantes limpos (feat/42-43). Auditoria abrangente do backend contra todos os contratos (feat/47): 7 domínios auditados, 40 inconsistências identificadas, prioridades corrigidas - gerador de escalas passa a usar sistema de dificuldade correctamente (modos a ADVANCED, pentatónicas a ELEMENTARY), campo options removido da API (violava ADR-014), ProgressController e SandboxController removeram try-catch local, schema.sql corrigido, testes de fronteira RF09 adicionados. 230 testes a passar.  
 **Bloqueou:** -  
-**Próxima semana:** Preparação relatório intercalar (deadline 6 Mai). Frontend Fase 5.
+**Próxima semana:** Relatório intercalar Cap. 1, 2 e 3 (deadline 6 Mai). Frontend Fase 5 após intercalar.
 
 ---
 

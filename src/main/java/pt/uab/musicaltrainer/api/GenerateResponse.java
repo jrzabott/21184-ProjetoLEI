@@ -1,7 +1,5 @@
 package pt.uab.musicaltrainer.api;
 
-import java.util.List;
-
 public record GenerateResponse(
     Long exerciseId,
     String type,
@@ -9,6 +7,5 @@ public record GenerateResponse(
     int suggestedDifficulty,
     int[] notes,
     String description,
-    String hint,
-    List<String> options
+    String hint
 ) {}

@@ -68,17 +68,20 @@ public enum ScaleType {
     private final int[] intervals;
     private final DifficultyLevel difficulty;
     private final String displayName;
+    private final boolean alias;
 
     ScaleType(int[] intervals, DifficultyLevel difficulty, String displayName) {
         this.intervals   = intervals;
         this.difficulty  = difficulty;
         this.displayName = displayName;
+        this.alias = false;
     }
 
     ScaleType(ScaleType aliasOf) {
         this.intervals   = aliasOf.intervals;
         this.difficulty  = aliasOf.difficulty;
         this.displayName = aliasOf.displayName;
+        this.alias = true;
     }
 
     /**
@@ -99,6 +102,9 @@ public enum ScaleType {
      * Retorna o nome legível em português para este tipo de escala.
      */
     public String displayName() { return displayName; }
+
+    /** Devolve true se este tipo e um alias de outro (ex: IONIAN e alias de MAJOR). */
+    public boolean isAlias() { return alias; }
 
     /**
      * Retorna todas as escalas disponíveis até ao nível de dificuldade indicado (inclusive).

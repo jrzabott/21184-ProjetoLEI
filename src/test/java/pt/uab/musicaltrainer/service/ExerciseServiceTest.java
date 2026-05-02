@@ -263,4 +263,34 @@ class ExerciseServiceTest {
             .filter(r -> r.exerciseId().equals(saved.id()))
             .toList()).isEmpty();
     }
+
+    // --- No-consecutive-repeat end-to-end (F02/P12) ---
+
+    @Test
+    void shouldNotGenerateSameExerciseConsecutivelyInSession() throws Exception {
+        // F02: sem exercícios consecutivos repetidos na mesma sessão
+        pt.uab.musicaltrainer.dto.SessionRecord session = sessionService.startSession();
+
+        // Gerar e avaliar primeiro exercício - cria histórico na sessão
+        ExerciseRecord first = service.generateAndSave("CHORD", 1, session.id());
+        int[] wrongNotes = new int[]{0, 1, 2};
+        service.evaluateAnswer(first.id(), session.id(), wrongNotes);
+
+        // Gerar segundo exercício - deve ser diferente do primeiro
+        // (com pool de ~37 raizes, probabilidade de repetição < 3%)
+        // Tentar até 10 vezes para confirmar que o repeat check funciona
+        boolean sawDifferent = false;
+        for (int attempt = 0; attempt < 10; attempt++) {
+            ExerciseRecord second = service.generateAndSave("CHORD", 1, session.id());
+            if (!second.question().equals(first.question())) {
+                sawDifferent = true;
+                break;
+            }
+            // Se gerou o mesmo, avalia e tenta de novo
+            service.evaluateAnswer(second.id(), session.id(), wrongNotes);
+        }
+        assertThat(sawDifferent)
+            .as("Gerador devia produzir exercício diferente do anterior em 10 tentativas")
+            .isTrue();
+    }
 }

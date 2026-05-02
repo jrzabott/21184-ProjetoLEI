@@ -41,7 +41,7 @@ public class ExerciseController {
         GenerateResponse response = new GenerateResponse(
             saved.id(), saved.type(), saved.difficulty(),
             suggested,
-            display.notesToPlay(), display.description(), display.hint(), display.options()
+            display.notesToPlay(), display.description(), display.hint()
         );
         logger.info("Exercício gerado: id={}, type={}", saved.id(), saved.type());
         return ResponseEntity.ok(response);

@@ -3,10 +3,6 @@ package pt.uab.musicaltrainer.generator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import pt.uab.musicaltrainer.domain.IntervalType;
-
-import java.util.HashSet;
-
 import static org.assertj.core.api.Assertions.*;
 
 class IntervalExerciseGeneratorTest {
@@ -37,31 +33,6 @@ class IntervalExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateFourOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        assertThat(ex.options()).hasSize(4);
-    }
-
-    @Test
-    void shouldIncludeCorrectAnswerInOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        // options contêm displayName; correctAnswer é internalName (armazenado em BD)
-        String expectedDisplayName = java.util.Arrays.stream(IntervalType.values())
-            .filter(t -> t.internalName().equals(ex.correctAnswer()))
-            .findFirst().orElseThrow().displayName();
-        assertThat(ex.options()).contains(expectedDisplayName);
-    }
-
-    @Test
-    void shouldHaveDistinctOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        assertThat(new HashSet<>(ex.options())).hasSameSizeAs(ex.options());
-    }
-
-    @Test
     void shouldGenerateNonBlankDescription() {
         GeneratedExercise ex = generator.generate(1);
 
@@ -77,9 +48,6 @@ class IntervalExerciseGeneratorTest {
 
         assertThat(ex.notesToPlay()).containsExactly(60, 67);
         assertThat(ex.correctAnswer()).isEqualTo("5a Perfeita");
-        // options contêm displayName ("5ª Perfeita"), não internalName
-        assertThat(ex.options()).contains("5ª Perfeita");
-        assertThat(ex.options()).hasSize(4);
     }
 
     @Test
@@ -98,5 +66,33 @@ class IntervalExerciseGeneratorTest {
         GeneratedExercise ex = generator.generate(5);
         assertThat(ex.notesToPlay()[0]).isBetween(21, 108);
         assertThat(ex.notesToPlay()[1]).isGreaterThan(ex.notesToPlay()[0]);
+    }
+
+    @Test
+    void shouldOnlyGenerateBeginnerIntervalsAtDifficulty1() {
+        // BEGINNER: UNISSONO(0-suprimido), TERCA_MAIOR(4), QUINTA_PERFEITA(7), OITAVA_PERFEITA(12)
+        // Semítons permitidos a difficulty=1: 4, 7, 12 (UNISSONO suprimido por playability)
+        java.util.Set<Integer> seenSemitones = new java.util.HashSet<>();
+        for (int i = 0; i < 100; i++) {
+            GeneratedExercise ex = generator.generate(1);
+            int[] notes = ex.notesToPlay();
+            seenSemitones.add(Math.abs(notes[1] - notes[0]));
+        }
+        // TRITONO (6), SEGUNDA_MENOR (1), QUINTA_AUM (8), SEXTA_MAIOR (9) NÃO devem aparecer
+        assertThat(seenSemitones).doesNotContain(1, 6, 8, 9);
+        // Só semítons BEGINNER: 4 (3ª Maior), 7 (5ª Perfeita), 12 (Oitava)
+        assertThat(seenSemitones).isSubsetOf(4, 7, 12);
+    }
+
+    @Test
+    void shouldGenerateTritonoAtAdvancedDifficulty() {
+        // TRITONO e SEGUNDA_MENOR são ADVANCED — devem aparecer a difficulty=7
+        java.util.Set<Integer> seenSemitones = new java.util.HashSet<>();
+        for (int i = 0; i < 200; i++) {
+            GeneratedExercise ex = generator.generate(7);
+            int[] notes = ex.notesToPlay();
+            seenSemitones.add(Math.abs(notes[1] - notes[0]));
+        }
+        assertThat(seenSemitones).containsAnyOf(6, 1); // TRITONO=6 ou SEGUNDA_MENOR=1
     }
 }

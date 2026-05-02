@@ -11,12 +11,8 @@ import pt.uab.musicaltrainer.domain.Scale;
 import pt.uab.musicaltrainer.domain.ScaleType;
 import pt.uab.musicaltrainer.dto.ScaleQuestion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +22,8 @@ import java.util.stream.Collectors;
  * correctAnswer: tipo da escala como string
  * notesToPlay: as notas da escala em sequência ascendente (raiz a raiz+8va)
  * <p>
- * MVP suporta: MAJOR, MINOR_NATURAL, HARMONIC_MINOR - selecionados dinamicamente
- * via ScaleType.availableFor() a partir de uma lista canonizada sem aliases.
- * Iniciantes recebem raízes nas notas brancas (C3-B4) para sons familiares.
+ * Tipos disponiveis por dificuldade via ScaleType.availableFor(), aliases excluidos.
+ * Iniciantes recebem raizes nas notas brancas (C3-B4) para sons familiares.
  */
 public class ScaleExerciseGenerator implements ExerciseGenerator {
 
@@ -43,18 +38,6 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
 
     private static final int[] WHITE_KEY_ROOTS = {48,50,52,53,55,57,59,60,62,64,65,67,69,71};
 
-    /**
-     * Tipos canónicos do MVP (sem aliases).
-     * Derivados de availableFor(INTERMEDIATE), excluindo aliases.
-     */
-    private static final List<ScaleType> MVP_TYPES = buildMvpTypes();
-
-    private static List<ScaleType> buildMvpTypes() {
-        // Tipos canonicos do MVP, sem aliases - IONIAN/AEOLIAN/etc. são excluídos por serem
-        // redundantes. Aqui referenciamos directamente os três tipos pedagógicos do MVP.
-        return Arrays.asList(ScaleType.MAJOR, ScaleType.MINOR_NATURAL, ScaleType.HARMONIC_MINOR);
-    }
-
     @Override
     public ExerciseType getExerciseType() {
         return ExerciseType.SCALE;
@@ -66,27 +49,28 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
 
         DifficultyLevel band = DifficultyLevel.of(difficulty);
 
-        // Tipos disponíveis para o nível pedido - intersecção dos MVP com availableFor()
-        Set<ScaleType> bandSet = ScaleType.availableFor(band).stream()
-            .collect(Collectors.toSet());
-        List<String> available = MVP_TYPES.stream()
-            .filter(bandSet::contains)
+        // Tipos canonicos disponiveis para esta banda — aliases excluidos (IONIAN=MAJOR, etc.)
+        List<String> available = ScaleType.availableFor(band).stream()
+            .filter(t -> !t.isAlias())
             .map(Enum::name)
             .collect(Collectors.toList());
-        if (available.isEmpty()) available = MVP_TYPES.stream().map(Enum::name).collect(Collectors.toList());
 
-        // Raízes brancas (MIDI % 12 in {0,2,4,5,7,9,11}) para iniciantes
+        if (available.isEmpty()) {
+            available = List.of(ScaleType.MAJOR.name());
+            logger.warn("Nenhum tipo disponivel para band={}, usando MAJOR como fallback", band);
+        }
+
+        // Raizes brancas para iniciantes
         int rootMidi;
         if (band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()) {
             rootMidi = WHITE_KEY_ROOTS[random.nextInt(WHITE_KEY_ROOTS.length)];
         } else {
-            rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
+            rootMidi = MusicConstants.MIDI_MEDIUM_LOW
+                + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
         }
 
         String scaleType = available.get(random.nextInt(available.size()));
-        // Opções: todos os tipos MVP (para o utilizador identificar qualquer um deles)
-        List<String> allMvp = MVP_TYPES.stream().map(Enum::name).collect(Collectors.toList());
-        return buildExercise(rootMidi, scaleType, difficulty, allMvp);
+        return buildExercise(rootMidi, scaleType, difficulty);
     }
 
     @Override
@@ -94,15 +78,14 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         logger.debug("Reconstruindo escala de BD: questionJson={}", questionJson);
         try {
             ScaleQuestion q = mapper.readValue(questionJson, ScaleQuestion.class);
-            List<String> allMvp = MVP_TYPES.stream().map(Enum::name).collect(Collectors.toList());
-            return buildExercise(q.root(), q.type(), difficulty, allMvp);
+            return buildExercise(q.root(), q.type(), difficulty);
         } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ScaleQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
     }
 
-    private GeneratedExercise buildExercise(int rootMidi, String scaleType, int difficulty, List<String> options) {
+    private GeneratedExercise buildExercise(int rootMidi, String scaleType, int difficulty) {
         Note root   = Note.fromMidi(rootMidi);
         Scale scale = Scale.get(scaleType, root);
 
@@ -125,18 +108,11 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             + " com tónica em " + root.getDisplayName() + ", de raiz a raiz";
         String hint = buildScaleHint(scaleType);
 
-        List<String> shuffled = new java.util.ArrayList<>(
-            options.stream()
-                .map(s -> ScaleType.valueOf(s).displayName())
-                .collect(java.util.stream.Collectors.toList())
-        );
-        java.util.Collections.shuffle(shuffled);
-
         logger.info("Escala gerada: root={}({}), type={}, difficulty={}",
             rootMidi, root.getDisplayName(), scaleType, difficulty);
 
         return new GeneratedExercise(ExerciseType.SCALE.name(), difficulty, questionJson, scaleType,
-            description, hint, notes, shuffled);
+            description, hint, notes);
     }
 
     private String buildScaleHint(String scaleType) {

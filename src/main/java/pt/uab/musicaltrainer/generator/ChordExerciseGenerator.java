@@ -12,9 +12,6 @@ import pt.uab.musicaltrainer.domain.IntervalType;
 import pt.uab.musicaltrainer.domain.Note;
 import pt.uab.musicaltrainer.dto.ChordQuestion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -57,7 +54,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         int rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
         String chordType = available.get(random.nextInt(available.size()));
         logger.debug("Band para difficulty {}: {}", difficulty, band);
-        return buildExercise(rootMidi, chordType, difficulty, available);
+        return buildExercise(rootMidi, chordType, difficulty);
     }
 
     @Override
@@ -65,16 +62,14 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         logger.debug("Reconstruindo acorde de BD: questionJson={}", questionJson);
         try {
             ChordQuestion q = mapper.readValue(questionJson, ChordQuestion.class);
-            List<String> available = ChordType.availableFor(DifficultyLevel.of(difficulty)).stream()
-                .map(Enum::name).collect(Collectors.toList());
-            return buildExercise(q.root(), q.type(), difficulty, available);
+            return buildExercise(q.root(), q.type(), difficulty);
         } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ChordQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
     }
 
-    private GeneratedExercise buildExercise(int rootMidi, String chordType, int difficulty, List<String> options) {
+    private GeneratedExercise buildExercise(int rootMidi, String chordType, int difficulty) {
         Note root   = Note.fromMidi(rootMidi);
         Chord chord = Chord.get(chordType, root);
 
@@ -93,17 +88,10 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
         String hint = "Raiz + " + IntervalType.fromSemitones(iv[1]).displayName()
             + " + " + IntervalType.fromSemitones(iv[2]).displayName();
 
-        List<String> shuffled = new java.util.ArrayList<>(
-            options.stream()
-                .map(s -> ChordType.valueOf(s).displayName())
-                .collect(java.util.stream.Collectors.toList())
-        );
-        java.util.Collections.shuffle(shuffled);
-
         logger.info("Acorde gerado: root={}({}), type={}, difficulty={}",
             rootMidi, root.getDisplayName(), chordType, difficulty);
 
         return new GeneratedExercise(ExerciseType.CHORD.name(), difficulty, questionJson, chordType,
-            description, hint, notes, shuffled);
+            description, hint, notes);
     }
 }
