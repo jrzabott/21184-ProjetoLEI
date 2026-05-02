@@ -132,8 +132,9 @@ realizada uma auditoria abrangente do backend contra os contratos documentados n
 requisitos, que identificou e corrigiu inconsistências - entre elas o facto de o gerador de
 escalas ignorar o sistema de dificuldade e a presença de um campo de múltipla escolha na API
 que contradizia o protocolo de resposta por notas MIDI. O frontend foi desenhado e especificado
+
 - wireframes produzidos (ver `docs/design/wireframes.pdf`), decisões de arquitetura documentadas
-nos ADRs 017 e 018 - e a implementação está agendada apra as semanas 9 a 12.
+  nos ADRs 017 e 018 - e a implementação está agendada apra as semanas 9 a 12.
 
 A API REST está documentada e testável interactivamente via Swagger UI, disponível em
 `http://localhost:8080/swagger-ui.html` após arranque da aplicação. Esta interface foi
@@ -215,7 +216,7 @@ prazo previsto para o intercalar.
 | Sem. 5     | 14-18 abr     | Produtividade reduzida - Páscoa e eFólios concorrentes (risco R04).                                                                                                                                                                                                                                                                           | -                       |
 | Sem. 6     | 21-25 abr     | Fase 2 - Persistência: DTOs, DAOs JDBC, 24 testes de integração. Suporte multi-base-de-dados. ADR-012.                                                                                                                                                                                                                                        | -                       |
 | Sem. 7     | 28 abr-2 mai  | Fase 3-4 - Geradores de exercícios e REST API completa. 171 testes. ADR-013, ADR-014. Demo interna ao orientador não ocorreu. Estou atrasado e não contactei o orientador. RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa). Auditoria abrangente do backend e correcção de inconsistências. Backend revisto. 230 testes. | **❌ Demo interna**      |
-| Sem. 8     | 3-6 mai       | Relatório intercalar. Testes funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                             | **Intercalar (6 mai)**  |
+| Sem. 8     | 3-6 mai       | Relatório intercalar. Testes funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                            | **Intercalar (6 mai)**  |
 | Sem. 9-10  | 7-16 mai      | Fase 5-6 - Frontend: teclado virtual, Web Audio API, Web MIDI API, ecrã de exercício.                                                                                                                                                                                                                                                         | -                       |
 | Sem. 11-12 | 19-30 mai     | Fase 7 - Dashboard de progresso, ecrã de fim de sessão. Testes de integração.                                                                                                                                                                                                                                                                 | -                       |
 | Sem. 13    | 2-6 jun       | Revisão geral. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4.                                                                                                                                                                                                                                                    | -                       |
@@ -307,38 +308,38 @@ do projeto.
 
 **Contexto pedagógico**
 
-Enquanto desenhava o sistema de dificuldade adaptativa, o problema ficou claro
-rapidamente: se a dificuldade ficar muito alta, o utilizador desiste; se ficar muito
-baixa, os exercícios tornam-se apenas chatos e desinteressantes. Fui pesquisar
+Enquanto pensava sobre o sistema de dificuldade, o problema ficou claro rapidamente:
+se a dificuldade ficar muito alta, o utilizador desiste; se ficar muito
+baixa, os exercícios tornam-se chatos e desinteressantes. Fui pesquisar
 estratégias para equilibrar isto - com o número de recursos pedagógicos e jogos
-existentes, alguém já devia ter pensado sobre o tema.
+existentes, alguém, de certeza, já pensou sobre o tema.
 
-Em minhas buscas, encontrei o princípio do Goldilocks (Csikszentmihalyi, 1990): a ideia
-de que existe uma zona óptima de desafio onde uma tarefa é suficientemente difícil para
+Nas minhas pesquisas, deparei-me com o princípio do Goldilocks (Csikszentmihalyi, 1990):
+a ideia de que existe uma zona ótima de desafio onde uma tarefa é suficientemente difícil para
 ser estimulante, mas alcançável o suficiente para não causar frustração e abandono. O
-conceito tem raízes na teoria do flow - o estado de absorção total numa actividade onde
+conceito tem raízes na teoria do flow - o estado de absorção total numa atividade onde
 as capacidades do utilizador e o nível de desafio estão alinhados.
 
 No treino auditivo esta zona é especialmente estreita. A diferença entre "consigo
-identificar este intervalo com esforço" e "é sempre o mesmo erro" é pequena mas decisiva
+identificar este intervalo com esforço" e "é sempre o mesmo erro" é pequena, mas decisiva
 para manter a prática. A dificuldade adaptativa existe para manter o utilizador nessa
 zona, ajustando automaticamente com base no histórico recente, sem intervenção manual.
 
 **Alternativas consideradas**
 
-Considerei três abordagens antes de optar pela actual:
+Considerei três abordagens antes de optar pela atual:
 
 - **Dificuldade fixa**: simples de implementar, mas sem qualquer personalização. Dois
   utilizadores com níveis muito diferentes teriam a mesma experiência. Rejeitada.
 
 - **Sistema Elo** (como no xadrez): teoricamente elegante, mas desenhado para contextos
   competitivos com dois oponentes. Adaptá-lo para exercícios de treino individual
-  implicaria definir um "oponente" artificial e calibrar o K-factor para música. A
+  implicaria definir um "oponente" artificial e calibrar o K-fator para música. A
   complexidade não era justificada para um MVP.
 
-- Spaced Repetition / SRS (como no Anki): optimizado para memorização de factos
-  estáticos. Teoria musical requer construção de competência auditiva, não memorização de
-  flashcards. A curva de repetição espaçada não mapeia naturalmente para "quão bem tocas
+- Spaced Repetition / SRS (como no Anki): otimizado para memorização de factos
+  estáticos. Teoria musical requer construção de competência auditiva, não apenas memorização
+  de flashcards. A curva de repetição espaçada não mapeia naturalmente para "quão bem tocas
   um acorde diminuto".
 
 Optei por uma abordagem de limiar simples sobre uma janela deslizante. É transparente,
@@ -358,7 +359,7 @@ fácil de testar e fácil de explicar ao utilizador.
   Isso não reflecte o nível real - é ruído estistíco. Com 100 exercícios, 80% implica
   80 acertos verificados, uma amostra genuinamente representativa.
 
-- **Clamp +-2 sobre a sugestão**: sem este clamp, um utilizador a praticar em dificuldade
+- **Pinçamento _(Clamping)_ +-2 sobre a sugestão**: sem este clamp, um utilizador a praticar em dificuldade
   1 que o sistema considera deveria estar em 7 seria forçado para 5 imediatamente. O
   clamp preserva a intenção do utilizador dentro de um intervalo razoável. Se o utilizador
   pede dificuldade 1, o sistema pode sugerir 3 no máximo, não 7.
@@ -366,7 +367,7 @@ fácil de testar e fácil de explicar ao utilizador.
 - **Backend em vez de frontend**: a proposta original colocava esta lógica no frontend.
   Movi-a para o backend por três razões: consistência entre sessões (o estado não se
   perde ao fechar o browser), impossibilidade de manipulação client-side, e centralização
-  da lógica de negócio no servidor, onde pertence.
+  da lógica de negócio no servidor, onde acreidto que esta pertence.
 
 **Pseudocódigo**
 
@@ -380,8 +381,9 @@ fácil de testar e fácil de explicar ao utilizador.
 **Limitações conhecidas**
 
 O algoritmo trata todos os tipos de exercício como independentes. Melhorar em intervalos
-não afecta a dificuldade de escalas. Isso é correcto para o MVP, mas num sistema mais
-sofisticado haveria transferência de aprendizagem entre tipos relacionados.
+não afeta a dificuldade de escalas. Isso é correto para o MVP, mas num sistema mais
+sofisticado haveria transferência de aprendizagem entre tipos relacionados. Optei por não adicionar mais 
+funcionalidades relacionadas à transferência de aprendizagem neste MVP.
 
 ---
 
@@ -390,7 +392,7 @@ sofisticado haveria transferência de aprendizagem entre tipos relacionados.
 **Contexto pedagógico**
 
 Saber que tenho 65% de acerto em intervalos não me diz o suficiente para melhorar.
-Saber que tenho 20% de acerto no trítono específico sim. A granularidade da identificação
+Saber que tenho 20% de acerto no trítono específico, sim. A granularidade da identificação
 de fraquezas é o que torna o feedback útil - a dica pedagógica que a aplicação fornece
 deve ser específica o sufficiente para orientar a prática.
 
@@ -405,28 +407,27 @@ deve ser específica o sufficiente para orientar a prática.
   produziria em tempo útil.
 
 - **Tags manuais pelo professor**: em aplicações como o Teoria existe marcação manual de
-  dificuldade. Não se aplica aqui - não há professor, é self-service.
+  dificuldade. Não se aplica aqui a este MVP - não há professor, é auto-serviço (_self-service_).
 
-Escolhi uma agregação SQL simples que agrupa por (tipo, padrão específico)
-e ordena pela taxa de acerto. É directa, sem dependências externas, e produz exactamente
-o nível de granularidade necessário.
+Escolhi um método de agregação SQL simples, por (tipo, padrão específico)
+e ordenação pela taxa de acerto. É direto, sem dependências externas, e produz o nível de granularidade necessário.
 
 **Justificação dos parâmetros**
 
 - **Mínimo de 3 tentativas**: com 1 ou 2 tentativas, um único erro produz 0% de acerto
-  - estatisticamente irrelevante. 3 é o mínimo para que a taxa de acerto seja uma medida
-  com algum significado. Há aqui um compromisso: com poucos dados, algumas fraquezas
-  reais ficam fora da análise. Aceito essa limitação em favor de não mostrar falsos
-  positvos.
+    - estatisticamente irrelevante. 3 é o mínimo para que a taxa de acerto seja uma medida
+      com algum significado. Há aqui um compromisso: com poucos dados, algumas fraquezas
+      reais ficam fora da análise. Aceito essa limitação em favor de não mostrar falsos
+      positvos.
 
 - **LIMIT 10**: mostrar as 10 áreas com pior desempenho. Na prática, o utilizador não
   consegue focar em mais do que 2-3 áreas de melhoria em simultâneo. 10 é um limite
   superior conservador; a apresentação no dashboard pode filtrar mais.
 
-- **questionJson como chave de agrupamento**: para intervalos, o grupo é o intervalo
+- **`questionJson` como chave de agrupamento**: para intervalos, o grupo é o intervalo
   específico (trítono, 5ª Perfeita, etc.), não apenas "intervalos em geral". Para escalas
-  e acordes, o grupo é o tipo (DORIAN, DIMINISHED, etc.). Esta granularidade é a que
-  tem valor pedagógico real.
+  e acordes, o grupo é o tipo (DORIAN, DIMINISHED, etc.). Esta granularidade é o que considero 
+  ter valor pedagógico real.
 
 **Pseudocódigo**
 
@@ -439,13 +440,13 @@ o nível de granularidade necessário.
     2. para cada linha: extrair padrão do questionJson
        INTERVAL → fromSemitones(|notes[1]-notes[0]|).internalName()
        SCALE / CHORD → questionJson.type
-    3. WeaknessHintProvider.getHint(type, padrão) → dica pedagógica PT-PT
+    3. WeaknessHintProvider.getHint(type, padrão) → dica pedagógica para o utilizador
 
 **Limitações conhecidas**
 
 O algoritmo não distingue entre "sempre errei este padrão" e "errei muito este padrão
 recentemente". Uma fraqueza antiga já superada pode continuar a aparecer se houver
-histórico suficiente. Uma solução futura seria aplicar um factor de decaimento temopral.
+histórico suficiente. Uma solução futura seria aplicar um fator de decaimento temopral.
 
 ---
 
@@ -456,37 +457,43 @@ histórico suficiente. Uma solução futura seria aplicar um factor de decaiment
 Um conjunto fixo de exercícios pode ser memorizado. Após algumas repetições, o
 utilizador reconhece o exercício pela sua "aparência" antes de o ouvir, o que invalida
 o treino auditivo. A geração procedural garante que cada sessão é genuinamente diferente,
-forçando o reconhecimento a partir do som e nao da memória visual.
+forçando o reconhecimento a partir do som e nao da memória visual. Curiosamente, o que 
+queremos obter é o efeito oposto: a memorização de conceitos musicais, porém recorrendo 
+a esta aparente imprevisibilidade por meio da aleatoriedade, penso que estamos a mascarar
+o objetivo final por meio do "reconhecimento" visual, auditivo e "matemático" escondido sob 
+as bestes de teoria.
 
 **Alternativas consideradas**
 
-- banco de exercícios estático: simples de implementar, mas finito e memorizável.
+- **banco de exercícios estático**: simples de implementar, mas finito e memorizável.
   Aplicações como o Ear Trainer da Teoria usam bancos curados - funcionam para conteúdo
-  de alta qualidade, mas limitam a variedade.
+  de alta qualidade, mas limitam a variedade. Exigiriam também um sistema próprio para
+  manutenção, em caso de adições, correções ou remoções de exercícios.
 
 - **Conteúdo via API externa**: delegar a geração a um serviço externo. Rejeitado por
   criar dependência externa, latência, impossibilidade de uso offline, e questões de
-  direitos de autor sobre conteúdo musical.
+  direitos de autor.
 
-- **Exercícios gerados por LLM**: tecnicamente possível mas não determinístico - um LLM
-  pode "inventar" intervalos ou escalas incorrectos. Teoria musical não tolera erros
-  factuais; um intervalo de "3.5 semítons" não existe.
+- **Exercícios gerados por LLM**: tecnicamente possível, porém não determinístico - um LLM
+  pode "inventar" intervalos ou escalas incorretas. Teoria musical é uma disciplina estabelecida,
+  não tolera erros factuais; um intervalo de "3.5 semítons" não existe.
 
-Optei por construir os exercícios directamente a partir do modelo de domínio
-Java - os mesmos objectos Scale, Chord, Interval que definem as regras musicais.
-A correcção de um exercício gerado é garantida pelo modelo, nao por validação externa.
+Optei por construir os exercícios diretamente a partir do modelo de domínio
+Java - os mesmos objetos `Scale`, `Chord`, `Interval` que definem as regras musicais.
+A correção de um exercício gerado é garantida pelo modelo, nao por validação externa.
 
 **Justificação das escolhas de design**
 
-- **Notas brancas para iniciantes**: para utilizadores BEGINNER e ELEMENTARY, as raízes
+- **Notas brancas para iniciantes**: para utilizadores `BEGINNER` e `ELEMENTARY`, as raízes
   são restritas às notas brancas do piano (C, D, E, F, G, A, B). Preto implica notação
   enarmónica (C# = Db) que introduz complexidade conceptual antes do momento certo. A
   música tonal básica - que é onde começa o treino auditivo - usa predominantemnte notas
   brancas.
 
-- **Filtragem de aliases (isAlias())**: o enum ScaleType contém IONIAN como alias de
-  MAJOR. Sem filtro, o gerador produziria exercícios "de escala IONIAN" e "de escala
-  MAJOR" que são musicalmente idênticos, confundindo o utilizador sem valor pedagógico.
+- **Filtragem de aliases (isAlias())**: o enum `ScaleType` contém `IONIAN` como alias de
+  `MAJOR`. Sem filtro, o gerador produziria exercícios "de escala `IONIAN`" e "de escala
+  `MAJOR`" que são musicalmente idênticos, confundindo o utilizador sem valor pedagógico 
+  adicionado.
 
 - **Selecção aleatória dentro da banda**: não sequencial, não ponderada. A aleatoriedade
   garante que o utilizador não antecipa o próximo exercício, o que é o requisito central
@@ -508,7 +515,7 @@ A correcção de um exercício gerado é garantida pelo modelo, nao por validaç
 **Limitações conhecidas**
 
 A aleatoriedade uniforme dentro de uma banda significa que um iniciante pode receber
-PENTATONIC_MAJOR e MINOR_NATURAL com igual probabilidade, mesmo que MAJOR seja mais
+`PENTATONIC_MAJOR` e `MINOR_NATURAL` com igual probabilidade, mesmo que `MAJOR` seja mais
 fundamental pedagogicamente. Uma versão futura poderia introduzir pesos por frequência
 de uso no ensino tradiconal.
 
@@ -551,7 +558,7 @@ Ref: Evans (2003), pp. 97-103.
 #### Sentinel Value
 
 `MusicConstants.SESSION_NONE = 0L` distingue o modo sandbox (sem persistência) de
-uma sessão activa. O campo `sessionId` em `AnswerRequest` é primitivo `long` - quando
+uma sessão ativa. O campo `sessionId` em `AnswerRequest` é primitivo `long` - quando
 omitido no JSON, Jackson deserializa para 0L automaticamente. Sem nulls, sem validação
 extra.
 
@@ -564,11 +571,11 @@ interactiva em `docs/design/wireframes.html`).
 
 A interface organiza-se em quatro ecrãs:
 
-- **index.html** - ecrã principal: selector de tipo de exercício, dois modos de entrada
+- **index.html** - ecrã principal: seletor de tipo de exercício, dois modos de entrada
   (Praticar sem persistência, ou Iniciar sessão com registo), teclado virtual CSS e
   modal de ajuda
-- **exercise.html** - ecrã de exercício activo: instrução por tipo, botão de áudio,
-  teclado virtual, feedback após resposta (correcto/errado + resposta esperada)
+- **exercise.html** - ecrã de exercício ativo: instrução por tipo, botão de áudio,
+  teclado virtual, feedback após resposta (correto/errado + resposta esperada)
 - **session-end.html** - resumo de sessão: total de exercícios, taxa de acerto, barra
   de progresso, dica pedagógica da área mais fraca
 - progress.html - dashboard: precisão global, breakdown por tipo, áreas mais fracas
@@ -576,11 +583,11 @@ A interface organiza-se em quatro ecrãs:
 
 A separação em quatro ecrãs distintos reflecte um princípio pedagógico: o utilizador
 não deve estar a gerir a interface enquanto tenta ouvir. O ecrã de exercício tem
-exactamente uma acção possível - ouvir e responder. O dashboard e o resumo de sessão
+exatamente uma ação possível - ouvir e responder. O dashboard e o resumo de sessão
 estão fora desse fluxo para nao distrair durante a prática.
 
-As decisões de arquitectura do frontend estão documentadas em ADR-017 (deployment:
-directoria `/frontend/` servida pelo Spring Boot) e ADR-018 (teclado CSS, range
+As decisões de arquitetura do frontend estão documentadas em ADR-017 (deployment:
+diretoria `/frontend/` servida pelo Spring Boot) e ADR-018 (teclado CSS, range
 C2-C6 desktop / C3-C5 mobile, breakpoints 768px e 1024px).
 
 ---
@@ -614,7 +621,7 @@ extensível para futuros tipos de imput.
 Os exercícios são gerados algoritmicamente a partir do modelo de domínio musical em
 runtime, sem ficheiros de dados externos nem conteúdo estático pré-definido. Uma base de
 dados de exercícios pré-definidos foi rejeitada por limitar a variedade e não demonstrar
-que o modelo musical está correctamente formalizado. APIs externas de teoria musical foram
+que o modelo musical está corretamente formalizado. APIs externas de teoria musical foram
 rejeitadas por introduzirem dependências fora do controlo do sistema e potencial violação
 da restrição CB03. A abordagem garante variedade virtualmente infinita e deployment simples.
 
@@ -662,10 +669,10 @@ ferramentas de build, código transparente para o júri, e compatibilidade com C
 
 #### ADR-009 - Estrutura de ecrãs: páginas HTML separadas
 
-A navegação é feita com páginas HTML separadas servidas directamente pelo browser, sem
+A navegação é feita com páginas HTML separadas servidas diretamente pelo browser, sem
 router em JavaScript. A abordagem SPA com router em JS puro foi rejeitada por exigir
 gestão de histórico de browser e estado global - complexidade desnecessária para o nível
-de experiência actual. SPA com framework viola CB07. As páginas actuais são index.html,
+de experiência atual. SPA com framework viola CB07. As páginas atuais são index.html,
 exercise.html, session-end.html e progress.html, cada uma autónoma e testável de forma
 independente.
 
@@ -682,20 +689,20 @@ como Java records imutáveis (Java 16+).
 O projeto segue TDD (Red-Green-Refactor) em 85%+ do código de produção: nenhuma feature
 é implementada sem um teste que falha primeiro, e nenhum bug é corrigido sem o reproduzir
 em teste. Testes escritos após implementação foram rejeitados por não prevenirem regressões
-com a mesma eficácia. O critério adoptado é que cada contrato funcional da aplicação tem
-um teste correspondente, focado em comportamento esperado e nao em edge cases raros.
+com a mesma eficácia. O critério adotado é que cada contrato funcional da aplicação tem
+um teste correspondente, focado em comportamento esperado e não em edge cases raros.
 
 #### ADR-012 - Modelo de dados e estratégia de persistência
 
-O schema de persistência define tres tabelas - sessions, exercises e results - com chaves
-estrangeiras e políticas de integridade referencial (CASCADE em sessions, SET NULL em
-exercises). DAOs sem anotações Spring usam try-with-resources para gestão de conexões,
-garantindo controlo total sobre cada operação. O histórico de resultados suporta
+O schema de persistência define três tabelas - `sessions`, `exercises` e `results` - com chaves
+estrangeiras e integridade referencial (`CASCADE` em `sessions`, `SET NULL` em
+`exercises`). DAOs sem anotações Spring usam `try-with-resources` para gestão de conexões,
+garantindo controlo sobre cada operação. O histórico de resultados suporta
 dificuldade adaptativa (RF09) via análise dos últimos 100 exercícios do mesmo tipo.
 
 #### ADR-013 - Schema do campo question nos exercícios
 
-O campo question na tabela exercises armazena JSON mínimo baseado em números MIDI: dois
+O campo `question` na tabela exercises armazena JSON mínimo baseado em números MIDI: dois
 MIDI para intervalos, raiz e tipo para escalas e acordes. Guardar todas as notas da
 escala ou acorde foi rejeitado por ser redundante - o domínio é determinístico e
 reconstrói as notas a partir de raiz e tipo. A decisão fecha o open item OI07 e garante
@@ -706,35 +713,40 @@ que geradores e controllers usam um schema consistente.
 O utilizador responde tocando notas, enviando um array de números MIDI ao endpoint de
 resposta. O modelo anterior de resposta por nome textual foi rejeitado por reduzir o
 exercício a escolha múltipla, eliminando a componente de performance musical. As regras
-de validação variam por tipo: intervalos exigem MIDI exacto, escalas validam padrão de
+de validação variam por tipo: intervalos exigem MIDI exato, escalas validam padrão de
 intervalos independente de oitava, acordes validam padrão ascendente I-III-V independente
 de oitava.
 
 #### ADR-015 - Taxonomia de dificuldade para exercícios
 
-Foi criado o enum DifficultyLevel com 5 bandas semânticas (BEGINNER a EXPERT) que
-mapeiam a escala numérica 1-10. Cada tipo de exercício carrega o seu nível e os geradores
-filtram via availableFor(DifficultyLevel), eliminando magic numbers. A alternativa de
+Foi criado o enum `DifficultyLevel` com 5 bandas semânticas (`BEGINNER` a `EXPERT`) que
+mapeiam a escala numérica `1-10`. Cada tipo de exercício carrega o seu nível e os geradores
+filtram via `availableFor(DifficultyLevel)`, eliminando _magic numbers_. A alternativa de
 manter inteiros sem semântica foi rejeitada por tornar RF09 (dificuldade adaptativa)
-impossível de implementar de forma correcta e consistente. O DifficultyService centraliza
+impossível de implementar de forma correta e consistente. O `DifficultyService` centraliza
 o algoritmo de adaptação baseado nos últimos 100 resultados por tipo.
 
 #### ADR-016 - Contrato de Erros: RFC 7807 Problem Details
 
-Todos os erros HTTP usam ProblemDetail (RFC 7807, nativo no Spring Boot 3) com um GlobalExceptionHandler central, eliminando try-catch disperso em cada controller. A alternativa de endpoints separados por tipo de erro foi rejeitada por violar separação de responsabilidades; manter formatos inconsistentes (plain text, JSON genérico, nada) foi rejeitado por tornar o parsing frontend impossível sem lógica ad-hoc. A centralização garante que todos os clientes HTTP - frontend, Swagger, Postman, integradores - conseguem parsear erros uniformemente e que novos endpoints herdam o comportamento automaticamnte.
+Todos os erros HTTP usam `ProblemDetail` (RFC 7807, nativo no Spring Boot 3) com um `GlobalExceptionHandler` central,
+eliminando `try-catch` disperso em cada `controller`. A alternativa de endpoints separados por tipo de erro foi rejeitada
+por violar separação de responsabilidades; manter formatos inconsistentes (plain text, JSON genérico, nada) foi
+rejeitado por tornar o parsing frontend impossível sem lógica ad-hoc. A centralização garante que todos os clientes
+HTTP - frontend, Swagger, Postman, integradores - conseguem parsear erros uniformemente e que novos endpoints herdam o
+comportamento automaticamnte.
 
 #### ADR-017 - Frontend: localização no repositório e integração com Spring Boot
 
-Os ficheiros frontend ficam na directoria /frontend/ na raiz do repositório, servida pelo
+Os ficheiros frontend ficam na diretoria `/frontend/` na raiz do repositório, servida pelo
 Spring Boot via configuração em application.properties. Colocar o frontend em
-src/main/resources/static/ foi rejeitado por acoplar a estrutura frontend ao layout Maven.
+`src/main/resources/static/` foi rejeitado por acoplar a estrutura frontend ao layout Maven.
 Repositório separado foi rejeitado por overhead injustificado para MVP académico com um
-único developer. O URL do backend fica centralizado em js/api.js - uma linha para mudar
+único developer. O URL do backend fica centralizado em `js/api.js` - uma linha para mudar
 de ambiente em produção.
 
 #### ADR-018 - Teclado virtual: range MIDI e design responsivo
 
-O teclado virtual é implementado em CSS puro (flexbox e position:absolute para teclas
+O teclado virtual é implementado em CSS puro (`flexbox` e `position:absolute` para teclas
 pretas) com tres breakpoints: mobile (25 teclas C3-C5), tablet (37 teclas C2-C5) e
 desktop (49 teclas C2-C6). Um piano completo de 88 teclas foi rejeitado por ser inviável
 em mobile (largura de 2464px). Imagem PNG com image map foi rejeitada por dificultar
@@ -743,12 +755,13 @@ ELEMENTARY sem scroll, com breakpoints alinhados com Bootstrap 5 e Tailwind.
 
 #### ADR-019 - Expansão do domínio de escalas além do MVP original
 
-O enum ScaleType foi construido com 28 tipos de escala em vez dos 3 definidos no MVP,
-desbloqueados progressivamente por DifficultyLevel. Manter apenas os 3 tipos originais
+O enum `ScaleType` foi construido com 28 tipos de escala em vez dos 3 definidos no MVP,
+desbloqueados progressivamente por `DifficultyLevel`. Manter apenas os 3 tipos originais
 foi rejeitado por desperdiçar um modelo já construido sem beneficio pedagógico. A expansão
-é invisível para utilizadores iniciantes (BEGINNER vê apenas MAJOR) e não exige mudança
-de código no gerador para adicionar novos tipos. Esta ADR regulariza retroactivamente uma
-decisão implementada em feat/13-25 sem registo prévio, identificada na auditoria de Sem. 8.
+é invisível para utilizadores iniciantes (`BEGINNER` vê apenas `MAJOR`) e não exige mudança
+de código no gerador para adicionar novos tipos. Esta ADR regulariza retroativamente uma
+decisão implementada sem registo prévio, esta discrepância foi **identificada na auditoria 
+realizada durante a Semana 8**.
 
 ---
 
@@ -793,21 +806,21 @@ O desenvolvimento foi organizado em fases sequenciais, cada uma com pré-condiç
 explícitas. Esta estrutura garantiu que cada fase arrancasse com uma base estável e
 evitou que bugs de uma fase se propagassem para a seguinte.
 
-| Fase | Descrição | Precedência | Estado |
-|---|---|---|---|
-| 0 | Setup: Maven, Spring Boot, H2, estrutura de pacotes | - | ✅ Completo |
-| 1 | Modelo de domínio: Note, Interval, Scale, Chord, enums de tipo | Fase 0 | ✅ Completo |
-| 2 | Persistência: DTOs, DAOs JDBC, suporte multi-BD, DaoFactory | Fase 1 | ✅ Completo |
-| 3 | Geradores de exercícios: Interval, Scale, Chord com Strategy pattern | Fase 2 | ✅ Completo |
-| 4 | REST API: endpoints de exercícios, sessões, progresso, sandbox | Fase 3 | ✅ Completo |
-| 4.1 | RF07/RF08/RF09: persistência de resultados, dashboard, dificuldade adaptativa | Fase 4 | ✅ Completo |
-| 4.2 | API polish: RFC 7807, Bean Validation, SessionResponse unificado | Fase 4.1 | ✅ Completo |
-| 4.3 | Auditoria e correcção de inconsistências (feat/47-feat/48) | Fase 4.2 | ✅ Completo |
-| 5 | Frontend: teclado virtual CSS, Web Audio API, index.html | Fase 4 | ⏳ Pendente |
-| 6 | Frontend: ecrã de exercício, Web MIDI API, fluxo completo | Fase 5 | ⏳ Pendente |
-| 7 | Frontend: dashboard, session-end, wireframes implementados | Fase 6 | ⏳ Pendente |
-| 8 | Testes de integração frontend-backend, casos limite | Fase 7 | ⏳ Pendente |
-| 9 | Revisão final, validação dos critérios de aceitação, capturas de ecrã | Fase 8 | ⏳ Pendente |
+| Fase | Descrição                                                                     | Precedência | Estado     |
+|------|-------------------------------------------------------------------------------|-------------|------------|
+| 0    | Setup: Maven, Spring Boot, H2, estrutura de pacotes                           | -           | ✅ Completo |
+| 1    | Modelo de domínio: Note, Interval, Scale, Chord, enums de tipo                | Fase 0      | ✅ Completo |
+| 2    | Persistência: DTOs, DAOs JDBC, suporte multi-BD, DaoFactory                   | Fase 1      | ✅ Completo |
+| 3    | Geradores de exercícios: Interval, Scale, Chord com Strategy pattern          | Fase 2      | ✅ Completo |
+| 4    | REST API: endpoints de exercícios, sessões, progresso, sandbox                | Fase 3      | ✅ Completo |
+| 4.1  | RF07/RF08/RF09: persistência de resultados, dashboard, dificuldade adaptativa | Fase 4      | ✅ Completo |
+| 4.2  | API polish: RFC 7807, Bean Validation, SessionResponse unificado              | Fase 4.1    | ✅ Completo |
+| 4.3  | Auditoria e correcção de inconsistências                                      | Fase 4.2    | ✅ Completo |
+| 5    | Frontend: teclado virtual CSS, Web Audio API, index.html                      | Fase 4      | ⏳ Pendente |
+| 6    | Frontend: ecrã de exercício, Web MIDI API, fluxo completo                     | Fase 5      | ⏳ Pendente |
+| 7    | Frontend: dashboard, session-end, wireframes implementados                    | Fase 6      | ⏳ Pendente |
+| 8    | Testes de integração frontend-backend, casos limite                           | Fase 7      | ⏳ Pendente |
+| 9    | Revisão final, validação dos critérios de aceitação, capturas de ecrã         | Fase 8      | ⏳ Pendente |
 
 ---
 
@@ -821,14 +834,14 @@ exercícios (RF01-RF02), avaliação automática (RF05), persistência de result
 dashboard de progresso com identificação de padrões fracos (RF08) e dificuldade
 adaptativa (RF09). O modo sandbox (RF10) está implementado via o sentinel SESSION_NONE.
 
-São 230 testes a passar - unitários, de integração e de propriedade (jqwik). A cobertura
-inclui testes de fronteira para o algoritmo de dificuldade adaptativa (exactamente 80%,
-exactamente 40%, 39%) que estavam em falta antes da audtioria da semana 8.
+São 230 testes a passar - diferentes tipos: testes unitários, de integração e de propriedade (jqwik). 
+A cobertura inclui testes de fronteira para o algoritmo de dificuldade adaptativa 
+(exactamente 80%, exactamente 40%, 39%) que estavam em falta antes da audtioria da semana 8.
 
-Na semana 8 foi realizada uma auditoria abrangente do backend contra todos os contratos
+Na semana 8 foi realizada uma verificação abrangente do backend contra todos os contratos
 documentados. Foram identificados e corrigidos problemas que a suite de testes não
 apanhava: o gerador de escalas ignorava o sistema de dificuldade e usava sempre os mesmos
-3 tipos, o campo `options` violava o protocolo MIDI, dois controllers tinham try-catch
+3 tipos, o campo `options` violava o protocolo de verificação da entrada, dois controllers tinham try-catch
 locais que contornavam o handler de erros central, e o modelo ER tinha inconsistências
 face ao schema SQL real.
 
@@ -843,7 +856,7 @@ na semana 9, após a entrega do relatório intercalar.
 
 19 ADRs documentam todas as decisões de arquitectura significativas, com alternativas
 consideradas e consequências. Os diagramas C4 (contexto e contentores) e o modelo ER
-estão actualizados e consistentes com o código.
+estão actualizados e espero que consistentes com o código.
 
 ---
 
@@ -851,15 +864,16 @@ estão actualizados e consistentes com o código.
 
 O calendário revisto para as semanas 9-16, após a entrega intercalar:
 
-| Semanas | Datas | Planeado |
-|---|---|---|
-| Sem. 9-10 | 7-16 mai | Fase 5 - Frontend: teclado virtual CSS, Web Audio API, index.html com selector de tipo e modos Praticar/Sessão |
-| Sem. 11-12 | 19-30 mai | Fase 6-7 - ecrã de exercício com Web MIDI API, dashboard de progresso, session-end |
-| Sem. 13 | 2-6 jun | Fase 8-9 - testes de integração, validação de todos os critérios de aceitação do MVP, capturas de ecrã para Cap. 4 |
-| Sem. 14 | 9-13 jun | Cap. 4 (Testes) e Cap. 5 (Conclusões); revisão bibliográfica APA |
-| Sem. 15 | 16-20 jun | Reunião de preparação para defesa com orientador; ensaio de perguntas |
-| Sem. 16 | 24 jun | Submissão do relatório final |
+| Semanas    | Datas     | Planeado                                                                                                           |
+|------------|-----------|--------------------------------------------------------------------------------------------------------------------|
+| Sem. 9-10  | 7-16 mai  | Fase 5 - Frontend: teclado virtual CSS, Web Audio API, index.html com selector de tipo e modos Praticar/Sessão     |
+| Sem. 11-12 | 19-30 mai | Fase 6-7 - ecrã de exercício com Web MIDI API, dashboard de progresso, session-end                                 |
+| Sem. 13    | 2-6 jun   | Fase 8-9 - testes de integração, validação de todos os critérios de aceitação do MVP, capturas de ecrã para Cap. 4 |
+| Sem. 14    | 9-13 jun  | Cap. 4 (Testes) e Cap. 5 (Conclusões); revisão bibliográfica APA                                                   |
+| Sem. 15    | 16-20 jun | Reunião de preparação para defesa com orientador; ensaio de perguntas                                              |
+| Sem. 16    | 24 jun    | Submissão do relatório final                                                                                       |
 
 O risco principal para a fase restante é a inexperiência em frontend (R02 nos riscos do
 projeto). A mitigação está no design minimalista já validado nos wireframes e na decisão
-de usar vanilla JS sem frameworks, que reduz a superfície de risco tecnológico.
+de usar vanilla JS sem frameworks, o que reduz a superfície de risco tecnológico, pode acabar por gerar mais código 
+_boilerplate_ para realizar ações trivviais.
