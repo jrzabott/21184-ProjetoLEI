@@ -51,14 +51,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ProblemDetail> handleConflict(IllegalStateException ex) {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
-        pd.setTitle("Conflito de Estado");
-        log.warn("Conflito: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(pd);
-    }
-
     /**
      * Catch-all para erros inesperados de infraestrutura (BD, serialização JSON, etc.).
      * Erros Spring MVC são tratados pela classe base ResponseEntityExceptionHandler
