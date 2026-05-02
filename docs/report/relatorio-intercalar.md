@@ -761,3 +761,83 @@ https://www.w3.org/TR/webaudio/
 
 World Wide Web Consortium. (2015). *Web MIDI API - W3C Editor's Draft*.
 https://www.w3.org/TR/webmidi/
+
+---
+
+## Capítulo 3 - Implementação
+
+### 3.1 Decomposição em Fases
+
+O desenvolvimento foi organizado em fases sequenciais, cada uma com pré-condições
+explícitas. Esta estrutura garantiu que cada fase arrancasse com uma base estável.
+
+| Fase | Descrição | Precedência | Estado |
+|---|---|---|---|
+| 0 | Setup: Maven, Spring Boot, H2, estrutura de pacotes | - | ✅ Completo |
+| 1 | Modelo de domínio: Note, Interval, Scale, Chord, enums de tipo | Fase 0 | ✅ Completo |
+| 2 | Persistência: DTOs, DAOs JDBC, suporte multi-BD, DaoFactory | Fase 1 | ✅ Completo |
+| 3 | Geradores de exercícios: Interval, Scale, Chord com Strategy pattern | Fase 2 | ✅ Completo |
+| 4 | REST API: endpoints de exercícios, sessões, progresso, sandbox | Fase 3 | ✅ Completo |
+| 4.1 | RF07/RF08/RF09: persistência de resultados, dashboard, dificuldade adaptativa | Fase 4 | ✅ Completo |
+| 4.2 | API polish: RFC 7807, Bean Validation, SessionResponse unificado | Fase 4.1 | ✅ Completo |
+| 4.3 | Auditoria e correcção de inconsistências (feat/47-feat/48) | Fase 4.2 | ✅ Completo |
+| 5 | Frontend: teclado virtual CSS, Web Audio API, index.html | Fase 4 | ⏳ Pendente |
+| 6 | Frontend: ecrã de exercício, Web MIDI API, fluxo completo | Fase 5 | ⏳ Pendente |
+| 7 | Frontend: dashboard, session-end, wireframes implementados | Fase 6 | ⏳ Pendente |
+| 8 | Testes de integração frontend-backend, casos limite | Fase 7 | ⏳ Pendente |
+| 9 | Revisão final, validação dos critérios de aceitação, capturas de ecrã | Fase 8 | ⏳ Pendente |
+
+---
+
+### 3.2 Estado de Implementação à Data do Intercalar
+
+**Backend - completo**
+
+À data deste relatório (2 de maio de 2026), o backend está completamente implementado
+e revisto. Todos os requisitos Must-have do MVP estão verificados: geração procedural de
+exercícios (RF01-RF02), avaliação automática (RF05), persistência de resultados (RF07),
+dashboard de progresso com identificação de padrões fracos (RF08) e dificuldade
+adaptativa (RF09). O modo sandbox (RF10) está implementado via o sentinel SESSION_NONE.
+
+São 230 testes a passar - unitários, de integração e de propriedade (jqwik). A cobertura
+inclui testes de fronteira para o algoritmo de dificuldade adaptativa (exactamente 80%,
+exactamente 40%, 39%) que estavam em falta antes da auditoria da semana 8.
+
+Na semana 8 foi realizada uma auditoria abrangente do backend contra todos os contratos
+documentados. Foram identificados e corrigidos problemas que a suite de testes não
+apanhava: o gerador de escalas ignorava o sistema de dificuldade e usava sempre os mesmos
+3 tipos, o campo `options` violava o protocolo MIDI, dois controllers tinham try-catch
+locais que contornavam o handler de erros central, e o modelo ER tinha inconsistências
+face ao schema SQL real.
+
+**Frontend - desenhado, não implementado**
+
+O frontend foi desenhado e especificado: wireframes dos 4 ecrãs produzidos
+(`docs/design/wireframes.pdf`), decisões de arquitectura documentadas nos ADRs 017 e 018
+(deployment, teclado CSS, range MIDI, breakpoints responsivos). A implementação começa
+na semana 9, após a entrega do relatório intercalar.
+
+**Documentação - completa**
+
+19 ADRs documentam todas as decisões de arquitectura significativas, com alternativas
+consideradas e consequências. Os diagramas C4 (contexto e contentores) e o modelo ER
+estão actualizados e consistentes com o código.
+
+---
+
+### 3.3 Calendário da Fase Restante
+
+O calendário revisto para as semanas 9-16, após a entrega intercalar:
+
+| Semanas | Datas | Planeado |
+|---|---|---|
+| Sem. 9-10 | 7-16 mai | Fase 5 - Frontend: teclado virtual CSS, Web Audio API, index.html com selector de tipo e modos Praticar/Sessão |
+| Sem. 11-12 | 19-30 mai | Fase 6-7 - ecrã de exercício com Web MIDI API, dashboard de progresso, session-end |
+| Sem. 13 | 2-6 jun | Fase 8-9 - testes de integração, validação de todos os critérios de aceitação do MVP, capturas de ecrã para Cap. 4 |
+| Sem. 14 | 9-13 jun | Cap. 4 (Testes) e Cap. 5 (Conclusões); revisão bibliográfica APA |
+| Sem. 15 | 16-20 jun | Reunião de preparação para defesa com orientador; ensaio de perguntas |
+| Sem. 16 | 24 jun | Submissão do relatório final |
+
+O risco principal para a fase restante é a inexperiência em frontend (R02 nos riscos do
+projecto). A mitigação está no design minimalista já validado nos wireframes e na decisão
+de usar vanilla JS sem frameworks, que reduz a superfície de risco tecnológico.
