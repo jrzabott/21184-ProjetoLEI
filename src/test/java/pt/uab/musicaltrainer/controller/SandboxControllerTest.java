@@ -57,4 +57,23 @@ class SandboxControllerTest {
             .andExpect(jsonPath("$.notes[0].midiNumber").value(60))
             .andExpect(jsonPath("$.interval").value(org.hamcrest.Matchers.nullValue()));
     }
+
+    @Test
+    void shouldReturn400WithProblemDetailForInvalidNoteFormat() throws Exception {
+        // ADR-016: erros devolvem ProblemDetail, não plain text
+        mockMvc.perform(get("/api/sandbox/note-info")
+                .param("notes", "abc"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.detail").isString());
+    }
+
+    @Test
+    void shouldReturn400WithProblemDetailForNoteOutOfRange() throws Exception {
+        mockMvc.perform(get("/api/sandbox/note-info")
+                .param("notes", "-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.detail").isString());
+    }
 }
