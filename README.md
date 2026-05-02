@@ -11,9 +11,10 @@
 
 ## Estado actual
 
-🟢 **Verde** - Backend completo (Fases 0-4). 160 testes a passar. API REST funcional.
+🟢 **Verde** - Backend completo (Fases 0-4). 230 testes a passar. API REST funcional. Wireframes completos. ADRs documentados.  
+🟡 **Em progresso** - Relatório intercalar (deadline 6 mai)
 
-**Última actualização:** Sem. 7 (27 Abr 2026)
+**Última actualização:** Sem. 8 (30 Abr 2026)
 
 ---
 
@@ -24,11 +25,15 @@
 - [x] Suporte multi-BD - H2 (dev), SQLite e PostgreSQL (produção) ✅
 - [x] Geração procedural de exercícios (intervalos, escalas, tríades) ✅
 - [x] API REST completa (generate, answer, sessions, progress, sandbox) ✅
-- [x] 160 testes de integração a passar ✅
+- [x] RFC 7807 GlobalExceptionHandler com Bean Validation ✅
+- [x] Dificuldade adaptativa (RF09) ✅
+- [x] Dashboard de progresso (RF08) ✅
+- [x] 230 testes de integração a passar ✅
+- [x] Wireframes dos 4 ecrãs (docs/design/) ✅
+- [x] 19 ADRs documentados ✅
 - [ ] Teclado virtual com som (Web Audio API) - Fase 5
 - [ ] Input MIDI físico (Web MIDI API) - Fase 5
-- [ ] Dashboard de progresso - Frontend Fase 7
-- [ ] Dificuldade adaptativa - a implementar
+- [ ] Frontend implementado - a partir de Sem. 9
 
 ---
 
