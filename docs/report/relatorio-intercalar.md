@@ -215,7 +215,7 @@ prazo previsto para o intercalar.
 | Sem. 5     | 14-18 abr     | Produtividade reduzida - Páscoa e eFólios concorrentes (risco R04).                                                                                                                                                                                                                                                                           | -                       |
 | Sem. 6     | 21-25 abr     | Fase 2 - Persistência: DTOs, DAOs JDBC, 24 testes de integração. Suporte multi-base-de-dados. ADR-012.                                                                                                                                                                                                                                        | -                       |
 | Sem. 7     | 28 abr-2 mai  | Fase 3-4 - Geradores de exercícios e REST API completa. 171 testes. ADR-013, ADR-014. Demo interna ao orientador não ocorreu. Estou atrasado e não contactei o orientador. RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa). Auditoria abrangente do backend e correcção de inconsistências. Backend revisto. 230 testes. | **❌ Demo interna**      |
-| Sem. 8     | 3-6 mai       | Relatório intercalar. Test funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                              | **Intercalar (6 mai)**  |
+| Sem. 8     | 3-6 mai       | Relatório intercalar. Testes funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                             | **Intercalar (6 mai)**  |
 | Sem. 9-10  | 7-16 mai      | Fase 5-6 - Frontend: teclado virtual, Web Audio API, Web MIDI API, ecrã de exercício.                                                                                                                                                                                                                                                         | -                       |
 | Sem. 11-12 | 19-30 mai     | Fase 7 - Dashboard de progresso, ecrã de fim de sessão. Testes de integração.                                                                                                                                                                                                                                                                 | -                       |
 | Sem. 13    | 2-6 jun       | Revisão geral. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4.                                                                                                                                                                                                                                                    | -                       |
@@ -299,7 +299,7 @@ mas não persistida - modo sandbox.
 A aplicação implementa três algoritmos centrais: adaptação de dificuldade, identificação
 de padrões fracos e geração procedural de exercícios. Nenhum deles é tecnicamente
 sofisticado - o objectivo foi que fossem simples, justificáveis e suficientes para o scope
-do projecto.
+do projeto.
 
 ---
 
@@ -562,6 +562,11 @@ A interface organiza-se em quatro ecrãs:
   de progresso, dica pedagógica da área mais fraca
 - **progress.html** - dashboard: precisão global, breakdown por tipo, áreas mais fracas
   com dicas, histórico de sessões
+
+A separação em quatro ecrãs distintos reflecte um princípio pedagógico: o utilizador
+não deve estar a gerir a interface enquanto tenta ouvir. O ecrã de exercício tem
+exactamente uma acção possível - ouvir e responder. O dashboard e o resumo de sessão
+estão fora desse fluxo para não distrair durante a prática.
 
 As decisões de arquitectura do frontend estão documentadas em ADR-017 (deployment:
 directoria `/frontend/` servida pelo Spring Boot) e ADR-018 (teclado CSS, range
@@ -839,5 +844,5 @@ O calendário revisto para as semanas 9-16, após a entrega intercalar:
 | Sem. 16 | 24 jun | Submissão do relatório final |
 
 O risco principal para a fase restante é a inexperiência em frontend (R02 nos riscos do
-projecto). A mitigação está no design minimalista já validado nos wireframes e na decisão
+projeto). A mitigação está no design minimalista já validado nos wireframes e na decisão
 de usar vanilla JS sem frameworks, que reduz a superfície de risco tecnológico.
