@@ -30,8 +30,7 @@ ehthumbs.db
 .env
 .env.local
 
-# Generated PDF (regenerate from .docx manually)
-docs/report/*.pdf
-
-# LibreOffice/Word lock files
+# Word/LibreOffice temp and lock files
 .~lock.*
+~$*
+~WRL*.tmp
