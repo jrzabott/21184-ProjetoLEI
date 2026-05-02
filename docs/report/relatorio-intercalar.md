@@ -770,6 +770,10 @@ realizada durante a Semana 8**.
 Alur, D., Crupi, J., & Malks, D. (2003). *Core J2EE Patterns: Best Practices and
 Design Strategies* (2nd ed.). Prentice Hall.
 
+Anthropic. (2025). *Claude Code* [Ferramenta de assistência com IA]. Utilizada ao longo
+do desenvolvimento para pesquisa de alternativas técnicas, sugestões de boas práticas,
+exemplos de código e revisão de documentação. https://claude.ai/
+
 Csikszentmihalyi, M. (1990). *Flow: The psychology of optimal experience*. Harper & Row.
 
 Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of

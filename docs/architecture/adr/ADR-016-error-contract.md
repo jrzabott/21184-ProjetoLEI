@@ -36,7 +36,6 @@ Mapeamento de excepções:
 | HttpMessageNotReadableException | 400 | Corpo em falta ou JSON inválido |
 | IllegalArgumentException | 400 | Input inválido (tipo desconhecido, valor fora de range) |
 | ResourceNotFoundException | 404 | Recurso não encontrado por ID |
-| IllegalStateException | 409 | Conflito de estado (sessão já terminada) |
 | Exception (catch-all) | 500 | Erro inesperado |
 
 ## Razão
