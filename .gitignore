@@ -30,6 +30,8 @@ ehthumbs.db
 .env
 .env.local
 
-# Generated report (binary - regenerate with scripts/build_docx.py)
-docs/report/*.docx
+# Generated PDF (regenerate from .docx manually)
 docs/report/*.pdf
+
+# LibreOffice/Word lock files
+.~lock.*
