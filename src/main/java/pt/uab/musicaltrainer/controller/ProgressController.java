@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.uab.musicaltrainer.api.ProgressResponse;
 import pt.uab.musicaltrainer.service.ProgressService;
 
 /**
@@ -25,13 +26,9 @@ public class ProgressController {
 
     @Operation(summary = "Obter progresso", description = "Devolve métricas globais: sessões, exercícios, taxa de acerto por tipo")
     @GetMapping("/progress")
-    public ResponseEntity<?> getProgress() {
+    public ResponseEntity<ProgressResponse> getProgress() throws Exception {
         logger.debug("GET /api/progress");
-        try {
-            return ResponseEntity.ok(service.buildProgress());
-        } catch (Exception e) {
-            logger.error("Erro ao obter progresso", e);
-            return ResponseEntity.internalServerError().body("Erro ao obter progresso");
-        }
+        ProgressResponse progress = service.buildProgress();
+        return ResponseEntity.ok(progress);
     }
 }
