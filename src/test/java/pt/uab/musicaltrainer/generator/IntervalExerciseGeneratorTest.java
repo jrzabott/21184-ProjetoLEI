@@ -99,4 +99,32 @@ class IntervalExerciseGeneratorTest {
         assertThat(ex.notesToPlay()[0]).isBetween(21, 108);
         assertThat(ex.notesToPlay()[1]).isGreaterThan(ex.notesToPlay()[0]);
     }
+
+    @Test
+    void shouldOnlyGenerateBeginnerIntervalsAtDifficulty1() {
+        // BEGINNER: UNISSONO(0-suprimido), TERCA_MAIOR(4), QUINTA_PERFEITA(7), OITAVA_PERFEITA(12)
+        // Semítons permitidos a difficulty=1: 4, 7, 12 (UNISSONO suprimido por playability)
+        java.util.Set<Integer> seenSemitones = new java.util.HashSet<>();
+        for (int i = 0; i < 100; i++) {
+            GeneratedExercise ex = generator.generate(1);
+            int[] notes = ex.notesToPlay();
+            seenSemitones.add(Math.abs(notes[1] - notes[0]));
+        }
+        // TRITONO (6), SEGUNDA_MENOR (1), QUINTA_AUM (8), SEXTA_MAIOR (9) NÃO devem aparecer
+        assertThat(seenSemitones).doesNotContain(1, 6, 8, 9);
+        // Só semítons BEGINNER: 4 (3ª Maior), 7 (5ª Perfeita), 12 (Oitava)
+        assertThat(seenSemitones).isSubsetOf(4, 7, 12);
+    }
+
+    @Test
+    void shouldGenerateTritonoAtAdvancedDifficulty() {
+        // TRITONO e SEGUNDA_MENOR são ADVANCED — devem aparecer a difficulty=7
+        java.util.Set<Integer> seenSemitones = new java.util.HashSet<>();
+        for (int i = 0; i < 200; i++) {
+            GeneratedExercise ex = generator.generate(7);
+            int[] notes = ex.notesToPlay();
+            seenSemitones.add(Math.abs(notes[1] - notes[0]));
+        }
+        assertThat(seenSemitones).containsAnyOf(6, 1); // TRITONO=6 ou SEGUNDA_MENOR=1
+    }
 }

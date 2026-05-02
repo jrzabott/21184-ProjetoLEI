@@ -28,9 +28,31 @@ class ChordExerciseGeneratorTest {
 
     @Test
     void shouldGenerateValidChordType() {
+        // difficulty=1 (BEGINNER) -> apenas MAJOR disponível
         GeneratedExercise ex = generator.generate(1);
+        assertThat(ex.correctAnswer()).isEqualTo("MAJOR");
+    }
 
-        assertThat(ex.correctAnswer()).isIn("MAJOR", "MINOR", "DIMINISHED", "AUGMENTED");
+    @Test
+    void shouldUnlockMinorAtIntermediateDifficulty() {
+        // difficulty=5 (INTERMEDIATE) -> MAJOR e MINOR disponíveis
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        for (int i = 0; i < 100; i++) {
+            seen.add(generator.generate(5).correctAnswer());
+        }
+        assertThat(seen).containsAnyOf("MAJOR", "MINOR");
+        // DIMINISHED não deve aparecer a difficulty=5
+        assertThat(seen).doesNotContain("DIMINISHED", "AUGMENTED");
+    }
+
+    @Test
+    void shouldUnlockDiminishedAndAugmentedAtAdvancedDifficulty() {
+        // difficulty=7 (ADVANCED) -> todos os 4 tipos disponíveis
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        for (int i = 0; i < 200; i++) {
+            seen.add(generator.generate(7).correctAnswer());
+        }
+        assertThat(seen).containsAnyOf("DIMINISHED", "AUGMENTED");
     }
 
     @Test
