@@ -41,12 +41,14 @@ segurança e a auto-estima do estudante.
 Num mundo perfeito, este feedback seria imediato e ajudaria diretamente o desenvolvimento
 de competências musicais. Confirmar se um intervalo é mesmo uma 5ª Perfeita, ou se um acorde
 é menor, precisa de alguém de fora que conheça esses conceitos - normalmente um professor.
-Que raramente está disponível em tempo real.
+Que raramente está disponível em tempo real durante a prática de exploração musical, aquela
+que realmente reforça o aprendizado e expande o conhecimento. Refiro-me ao momento privado
+e informal, sem o rigor da prática musical observada.
 
 O resultado é que conceitos fundamentais ficam imprecisos durante anos. Esta imprecisão
 limita a capacidade de improvisar, ler partituras e comunicar musicalmente. É como aprender
 a andar de bicicleta com as rodinhas sempre colocadas: a insegurança leva à pouca exploração
-prática, e as práticas repetitivas e mecânicas acabam por ser infrutíferas.
+prática, e a práticas repetitivas e mecânicas acabam por ser infrutíferas.
 
 ---
 
@@ -54,8 +56,9 @@ prática, e as práticas repetitivas e mecânicas acabam por ser infrutíferas.
 
 **Dentro do âmbito:**
 
-- Exercícios de identificação de intervalos, escalas (maior, menor natural, menor harmónica)
-  e tríades (maior, menor, diminuto, aumentado)
+- Exercícios de identificação de intervalos, escalas (Maior, Menor Natural, Menor Harmónica
+  em níveis iniciais; modos diatónicos e escalas adicionais desbloqueados progressivamente
+  com o nível de dificuldade) e tríades (maior, menor, diminuto, aumentado)
 - Teclado virtual clicável com reprodução de som via Web Audio API
 - Suporte a controlador MIDI físico USB, com detecção automática (Web MIDI API)
 - Avaliação automática com feedback imediato (correto/errado + resposta correta se errado)
@@ -69,7 +72,7 @@ prática, e as práticas repetitivas e mecânicas acabam por ser infrutíferas.
 - Autenticação ou gestão de múltiplos utilizadores (CB01, CB02)
 - Ditado rítmico (CB05)
 - Versão mobile nativa - aplicação web exclusivamente (CB06)
-- Modos diatónicos e progressões de acordes - reservados para versão futura
+- Progressões de acordes - reservadas para versão futura
 - Reconhecimento de áudio por microfone
 
 ---
@@ -78,11 +81,11 @@ prática, e as práticas repetitivas e mecânicas acabam por ser infrutíferas.
 
 Os critérios de aceitação observáveis do MVP estão organizados em nove objetivos:
 
-- **F01** - Modelo de domínio musical completo: Note, Interval, Scale, Chord, com todos os
-  casos verificados por testes unitários
+- **F01** - Modelo de domínio musical amplo, mas não exaustivo: `Note`, `Interval`, `Scale`,
+  `Chord`, com todos os casos verificados por testes unitários
 - **F02** - Geração procedural de exercícios dos três tipos (intervalos, escalas, acordes),
-  sem repetição consecutiva na mesma sessão
-- **F03** - Teclado virtual clicável no browser (C3 a C5 em mobile, C2 a C6 em desktop),
+  sem repetição consecutiva (mesmo exercício) na mesma sessão
+- **F03** - Teclado virtual _clicável_ no browser (C3 a C5 em mobile, C2 a C6 em desktop),
   com reprodução de som via Web Audio API
 - **F04** - Input via controlador MIDI físico com detecção automática, sem configuração manual
 - **F05** - Avaliação automática com feedback imediato: correto/errado e resposta correta quando
@@ -123,11 +126,19 @@ utilizador completar uma sessão de exercícios de teoria musical em menos de 5 
 O sucesso é verificável: se a aplicação gera exercícios, valida respostas corretamente,
 toca som, aceita input MIDI e regista progresso - o objetivo está atingido.
 
-À data deste relatório intercalar (1 de maio de 2026), o backend está completamente
-implementado: 222 testes a passar, todos os requisitos Must-have verificados. O frontend
-foi desenhado e especificado - wireframes produzidos (ver `docs/design/wireframes.pdf`),
-decisões de arquitetura documentadas nos ADRs 017 e 018 - mas a implementação está
-agendada para as semanas 9 a 12, após a entrega intercalar.
+À data deste relatório intercalar (2 de maio de 2026), o backend está implementado e
+revisto: 230 testes a passar, todos os requisitos Must-have verificados. Na semana 8 foi
+realizada uma auditoria abrangente do backend contra os contratos documentados nos ADRs e
+requisitos, que identificou e corrigiu inconsistências - entre elas o facto de o gerador de
+escalas ignorar o sistema de dificuldade e a presença de um campo de múltipla escolha na API
+que contradizia o protocolo de resposta por notas MIDI. O frontend foi desenhado e especificado
+- wireframes produzidos (ver `docs/design/wireframes.pdf`), decisões de arquitetura documentadas
+nos ADRs 017 e 018 - e a implementação está agendada para as semanas 9 a 12.
+
+A API REST está documentada e testável interactivamente via Swagger UI, disponível em
+`http://localhost:8080/swagger-ui.html` após arranque da aplicação. Esta interface foi
+usada ao longo do desenvolvimento para verificação manual dos endpoints e foi o principal
+instrumento da auditoria realizada na semana 8.
 
 ---
 
@@ -172,6 +183,22 @@ a lógica de negócio no servidor:
 O `DifficultyService` implementa o algoritmo; o frontend recebe `suggestedDifficulty` na
 resposta de `generate` como sugestão informativa.
 
+#### 1.7.5 Refinamentos da API identificados em auditoria pré-intercalar
+
+Na semana 8, antes de redigir este relatório, foi feita uma auditoria abrangente do backend
+contra os contratos documentados. Dois refinamentos relevantes resultaram desta revisão:
+
+O campo `options` foi removido da resposta de geração de exercícios. Este campo era um
+resquício do design original de múltipla escolha e contradizia o protocolo de resposta
+baseado em notas MIDI definido na arquitectura - o utilizador toca as notas, não selecciona
+de uma lista. A sua presença era uma inconsistência entre o código e o contrato documentado.
+
+O domínio de escalas foi expandido para além das três escalas do MVP original (Maior, Menor
+Natural, Menor Harmónica). O enum `ScaleType` classifica 28 tipos de escala em bandas de
+dificuldade; o gerador passou a usar esta classificação correctamente, desbloqueando modos
+diatónicos (Dórico, Frígio, Lídio, etc.) a partir do nível ADVANCED e escalas exóticas no
+nível EXPERT. Esta expansão foi documentada depois, no ADR-019, durante a auditoria da semana 8.
+
 ---
 
 ### 1.8 Calendário Atualizado
@@ -181,17 +208,17 @@ por sobreposição com a Páscoa e a entrega de eFólios de outras unidades curr
 (risco R04, identificado na proposta). O backend foi concluído na semana 8, dentro do
 prazo previsto para o intercalar.
 
-| Semanas | Datas | Realizado / Planeado | Marco |
-|---|---|---|---|
-| Sem. 1-2 | 17-28 mar | Kick-off com orientador. Proposta entregue: sinopse, MVP com critérios de aceitação, stack, calendário. | **✅ Proposta (25 mar)** |
-| Sem. 3-4 | 31 mar-11 abr | Levantamento de requisitos MoSCoW (RF01-RF14, RNF, CB, OI). ADRs 001-011 formalizados. Diagramas C4 e modelo de dados. Repositório GitHub configurado. | - |
-| Sem. 5 | 14-18 abr | Produtividade reduzida - Páscoa e eFólios concorrentes (risco R04). | - |
-| Sem. 6 | 22-25 abr | Fase 2 - Persistência: DTOs, DAOs JDBC, 24 testes de integração. Suporte multi-base-de-dados. ADR-012. | - |
-| Sem. 7 | 28 abr-2 mai | Fase 3-4 - Geradores de exercícios e REST API completa. 171 testes. ADR-013, ADR-014. Demo interna ao orientador. | **✅ Demo interna** |
-| Sem. 8 | 5-6 mai | RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa). Backend completo. 222 testes. Relatório intercalar. | **Intercalar (6 mai)** |
-| Sem. 9-10 | 7-16 mai | Fase 5-6 - Frontend: teclado virtual, Web Audio API, Web MIDI API, ecrã de exercício. | - |
-| Sem. 11-12 | 19-30 mai | Fase 7 - Dashboard de progresso, ecrã de fim de sessão. Testes de integração. | - |
-| Sem. 13 | 2-6 jun | Revisão geral. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4. | - |
-| Sem. 14 | 9-13 jun | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Anexos. | - |
-| Sem. 15 | 16-20 jun | Reunião de preparação para defesa. Ensaio de perguntas de júri. | **Prep. defesa** |
-| Sem. 16 | 24 jun | Submissão do relatório final. Código e demo linkados no repositório. | **Final (24 jun)** |
+| Semanas | Datas         | Realizado / Planeado                                                                                                                                                                                                                                                                                                                          | Marco                   |
+|---|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| Sem. 1-2 | 17-28 mar     | Kick-off com orientador. Proposta entregue: sinopse, MVP com critérios de aceitação, stack, calendário.                                                                                                                                                                                                                                       | **✅ Proposta (25 mar)** |
+| Sem. 3-4 | 31 mar-11 abr | Levantamento de requisitos MoSCoW (RF01-RF14, RNF, CB, OI). ADRs 001-011 formalizados. Diagramas C4 e modelo de dados. Repositório GitHub configurado.                                                                                                                                                                                        | -                       |
+| Sem. 5 | 14-18 abr     | Produtividade reduzida - Páscoa e eFólios concorrentes (risco R04).                                                                                                                                                                                                                                                                           | -                       |
+| Sem. 6 | 21-25 abr     | Fase 2 - Persistência: DTOs, DAOs JDBC, 24 testes de integração. Suporte multi-base-de-dados. ADR-012.                                                                                                                                                                                                                                        | -                       |
+| Sem. 7 | 28 abr-2 mai  | Fase 3-4 - Geradores de exercícios e REST API completa. 171 testes. ADR-013, ADR-014. Demo interna ao orientador não ocorreu. Estou atrasado e não contactei o orientador. RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa). Auditoria abrangente do backend e correcção de inconsistências. Backend revisto. 230 testes. | **❌ Demo interna**      |
+| Sem. 8 | 3-6 mai       | Relatório intercalar. Test funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                              | **Intercalar (6 mai)**  |
+| Sem. 9-10 | 7-16 mai      | Fase 5-6 - Frontend: teclado virtual, Web Audio API, Web MIDI API, ecrã de exercício.                                                                                                                                                                                                                                                         | -                       |
+| Sem. 11-12 | 19-30 mai     | Fase 7 - Dashboard de progresso, ecrã de fim de sessão. Testes de integração.                                                                                                                                                                                                                                                                 | -                       |
+| Sem. 13 | 2-6 jun       | Revisão geral. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4.                                                                                                                                                                                                                                                    | -                       |
+| Sem. 14 | 9-13 jun      | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Anexos.                                                                                                                                                                                                                                                                     | -                       |
+| Sem. 15 | 16-20 jun     | Reunião de preparação para defesa. Ensaio de perguntas de júri.                                                                                                                                                                                                                                                                               | **Prep. defesa**        |
+| Sem. 16 | 24 jun        | Submissão do relatório final. Código e demo linkados no repositório.                                                                                                                                                                                                                                                                          | **Final (24 jun)**      |
