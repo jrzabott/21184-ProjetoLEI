@@ -34,21 +34,21 @@ Há apenas o exercício e o feedback.
 ### 1.2 Necessidades Identificadas
 
 Aprender teoria musical é um obstáculo frequente para músicos autodidactas e estudantes em
-turmas numerosas. O problema não é a falta de recursos - temos: livros, vídeos, aplicações,
+turmas numerosas. O problema não é a falta de recursos - temos livros, vídeos, aplicações,
 etc. O problema é a falta de uma verificação personalizada que sirva para construir a
 segurança e a auto-estima do estudante.
 
 Num mundo perfeito, este feedback seria imediato e ajudaria diretamente o desenvolvimento
 de competências musicais. Confirmar se um intervalo é mesmo uma 5ª Perfeita, ou se um acorde
 é menor, precisa de alguém de fora que conheça esses conceitos - normalmente um professor.
-Que raramente está disponível em tempo real durante a prática de exploração musical, aquela
+Que raramente está disponível em tmpo real durante a prática de exploração musical, aquela
 que realmente reforça o aprendizado e expande o conhecimento. Refiro-me ao momento privado
 e informal, sem o rigor da prática musical observada.
 
 O resultado é que conceitos fundamentais ficam imprecisos durante anos. Esta imprecisão
 limita a capacidade de improvisar, ler partituras e comunicar musicalmente. É como aprender
 a andar de bicicleta com as rodinhas sempre colocadas: a insegurança leva à pouca exploração
-prática, e a práticas repetitivas e mecânicas acabam por ser infrutíferas.
+prática, e práticas repetitivas e mecânicas acabam por ser infrutíferas.
 
 ---
 
@@ -62,7 +62,7 @@ prática, e a práticas repetitivas e mecânicas acabam por ser infrutíferas.
 - Teclado virtual clicável com reprodução de som via Web Audio API
 - Suporte a controlador MIDI físico USB, com detecção automática (Web MIDI API)
 - Avaliação automática com feedback imediato (correto/errado + resposta correta se errado)
-- Sessões de treino com persistência de resultados entre utilizações
+- Sessões de treino com persistência de rsultados entre utilizações
 - Dashboard de progresso por tipo de exercício e identificação de padrões de erro
 - Dificuldade adaptativa baseada nos últimos 100 exercícios por tipo
 - Modo sandbox: tocar livremente e ver o nome das notas e intervalos em tempo real
@@ -133,7 +133,7 @@ requisitos, que identificou e corrigiu inconsistências - entre elas o facto de 
 escalas ignorar o sistema de dificuldade e a presença de um campo de múltipla escolha na API
 que contradizia o protocolo de resposta por notas MIDI. O frontend foi desenhado e especificado
 - wireframes produzidos (ver `docs/design/wireframes.pdf`), decisões de arquitetura documentadas
-nos ADRs 017 e 018 - e a implementação está agendada para as semanas 9 a 12.
+nos ADRs 017 e 018 - e a implementação está agendada apra as semanas 9 a 12.
 
 A API REST está documentada e testável interactivamente via Swagger UI, disponível em
 `http://localhost:8080/swagger-ui.html` após arranque da aplicação. Esta interface foi
@@ -230,7 +230,7 @@ prazo previsto para o intercalar.
 ### 2.1 Stack Tecnológica
 
 A selecção tecnológica foi orientada por dois princípios: reduzir dependências
-externas ao mínimo e usar tecnologias com experiência prévia existente.
+externas ao mínimo e usar tecnologias onde já tinha experiência prévia.
 
 | Componente           | Tecnologia                     | Justificação                                                                                                                                                              |
 |----------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -246,7 +246,7 @@ externas ao mínimo e usar tecnologias com experiência prévia existente.
 
 ### 2.2 Arquitectura C4 - Nível 1 (Contexto)
 
-O sistema Musical Theory Trainer é uma aplicação web standalone. Não há sistemas
+O sistema Musical Theory Trainer é uma aplicação web standalone. Nao há sistemas
 externos de autenticação, APIs de terceiros nem serviços de armazenamento remoto.
 A única dependência externa opcional é um controlador MIDI físico ligado por USB,
 cujos eventos são capturados directamente pelo browser via Web MIDI API.
@@ -261,7 +261,7 @@ cujos eventos são capturados directamente pelo browser via Web MIDI API.
 
 A aplicação divide-se em três contentores: o frontend (HTML + JS vanilla), o backend
 (Spring Boot) e a base de dados (H2 em desenvolvimento, SQLite3 em produção). O
-frontend comunica com o backend exclusivamente via REST/JSON. O backend persiste dados
+frontend comunica com o backend exclusivmente via REST/JSON. O backend persiste dados
 via JDBC/SQL. O frontend é servido pelo mesmo processo Spring Boot, a partir da
 directoria `/frontend/` configurada em `application.properties` (ADR-017).
 
@@ -311,7 +311,7 @@ O problema do Goldilocks aplica-se ao treino auditivo: demasiado fácil e o util
 desengaja; demasiado difícil e desiste. A dificuldade adaptativa existe para manter o
 utilizador na zona de aprendizagem efectiva - onde os exercícios são desafiantes mas
 alcançáveis. Sem adaptação, o utilizador ficaria preso num nível que entretanto dominou
-ou seria forçado a gerir a dificuldade manualmente, o que quebra o fluxo de prática.
+ou seria forçado a gerir a dificuldade manualmente, o que quebra o fluxo de prátcia.
 
 **Alternativas consideradas**
 
@@ -325,7 +325,7 @@ Considerei três abordagens antes de optar pela actual:
   implicaria definir um "oponente" artificial e calibrar o K-factor para música. A
   complexidade não era justificada para um MVP.
 
-- **Spaced Repetition (SRS)** (como no Anki): optimizado para memorização de factos
+- Spaced Repetition / SRS (como no Anki): optimizado para memorização de factos
   estáticos. Teoria musical requer construção de competência auditiva, não memorização de
   flashcards. A curva de repetição espaçada não mapeia naturalmente para "quão bem tocas
   um acorde diminuto".
@@ -337,14 +337,14 @@ fácil de testar e fácil de explicar ao utilizador.
 
 - **80% para subir, 40% para descer**: o limiar de 80% aproxima-se da "zona de
   desenvolvimento proximal" de Vygotsky - um nível onde o utilizador consegue resolver a
-  maioria dos problemas com algum esforço, mas não de forma automática. Abaixo de 40% o
+  maioria dos problemas com algum esforço, mas nao de forma automática. Abaixo de 40% o
   utilizador está claramente a falhar mais do que a acertar, o que é contraproducente
   pedagogicamente. A assimetria (80 vs 40) é intencional: é mais fácil descer do que
   subir, o que reduz a frustração.
 
 - **Janela de 100 exercícios**: com uma janela de 10 (como previa a proposta original),
   três acertos consecutivos produziam 100% de acerto e disparavam uma subida imediata.
-  Isso não reflecte o nível real - é ruído estatístico. Com 100 exercícios, 80% implica
+  Isso não reflecte o nível real - é ruído estistíco. Com 100 exercícios, 80% implica
   80 acertos verificados, uma amostra genuinamente representativa.
 
 - **Clamp +-2 sobre a sugestão**: sem este clamp, um utilizador a praticar em dificuldade
@@ -355,7 +355,7 @@ fácil de testar e fácil de explicar ao utilizador.
 - **Backend em vez de frontend**: a proposta original colocava esta lógica no frontend.
   Movi-a para o backend por três razões: consistência entre sessões (o estado não se
   perde ao fechar o browser), impossibilidade de manipulação client-side, e centralização
-  da lógica de negócio no servidor onde pertence.
+  da lógica de negócio no servidor, onde pertence.
 
 **Pseudocódigo**
 
@@ -381,14 +381,14 @@ sofisticado haveria transferência de aprendizagem entre tipos relacionados.
 Saber que tenho 65% de acerto em intervalos não me diz o suficiente para melhorar.
 Saber que tenho 20% de acerto no trítono específico sim. A granularidade da identificação
 de fraquezas é o que torna o feedback útil - a dica pedagógica que a aplicação fornece
-deve ser específica o suficiente para orientar a prática.
+deve ser específica o sufficiente para orientar a prática.
 
 **Alternativas consideradas**
 
 - **Agregação apenas por tipo de exercício**: registar "intervalos: 65%", "escalas: 70%".
   Demasiado grosseiro - não distingue onde dentro de cada tipo o utilizador falha.
 
-- **Análise por machine learning / clustering**: identificar padrões automaticamente sem
+- análise por machine learning / clustering: identificar padrões automaticamente sem
   regras definidas à priori. Seria academicamente interessante mas completamente fora de
   scope para um MVP, e requereria volume de dados que um utilizador individual nunca
   produziria em tempo útil.
@@ -396,7 +396,7 @@ deve ser específica o suficiente para orientar a prática.
 - **Tags manuais pelo professor**: em aplicações como o Teoria existe marcação manual de
   dificuldade. Não se aplica aqui - não há professor, é self-service.
 
-A abordagem escolhida é uma agregação SQL simples que agrupa por (tipo, padrão específico)
+Escolhi uma agregação SQL simples que agrupa por (tipo, padrão específico)
 e ordena pela taxa de acerto. É directa, sem dependências externas, e produz exactamente
 o nível de granularidade necessário.
 
@@ -406,7 +406,7 @@ o nível de granularidade necessário.
   - estatisticamente irrelevante. 3 é o mínimo para que a taxa de acerto seja uma medida
   com algum significado. Há aqui um compromisso: com poucos dados, algumas fraquezas
   reais ficam fora da análise. Aceito essa limitação em favor de não mostrar falsos
-  positivos.
+  positvos.
 
 - **LIMIT 10**: mostrar as 10 áreas com pior desempenho. Na prática, o utilizador não
   consegue focar em mais do que 2-3 áreas de melhoria em simultâneo. 10 é um limite
@@ -434,7 +434,7 @@ o nível de granularidade necessário.
 
 O algoritmo não distingue entre "sempre errei este padrão" e "errei muito este padrão
 recentemente". Uma fraqueza antiga já superada pode continuar a aparecer se houver
-histórico suficiente. Uma solução futura seria aplicar um factor de decaimento temporal.
+histórico suficiente. Uma solução futura seria aplicar um factor de decaimento temopral.
 
 ---
 
@@ -445,11 +445,11 @@ histórico suficiente. Uma solução futura seria aplicar um factor de decaiment
 Um conjunto fixo de exercícios pode ser memorizado. Após algumas repetições, o
 utilizador reconhece o exercício pela sua "aparência" antes de o ouvir, o que invalida
 o treino auditivo. A geração procedural garante que cada sessão é genuinamente diferente,
-forçando o reconhecimento a partir do som e não da memória visual.
+forçando o reconhecimento a partir do som e nao da memória visual.
 
 **Alternativas consideradas**
 
-- **Banco de exercícios estático**: simples de implementar, mas finito e memorizável.
+- banco de exercícios estático: simples de implementar, mas finito e memorizável.
   Aplicações como o Ear Trainer da Teoria usam bancos curados - funcionam para conteúdo
   de alta qualidade, mas limitam a variedade.
 
@@ -461,16 +461,16 @@ forçando o reconhecimento a partir do som e não da memória visual.
   pode "inventar" intervalos ou escalas incorrectos. Teoria musical não tolera erros
   factuais; um intervalo de "3.5 semítons" não existe.
 
-A abordagem escolhida constrói os exercícios directamente a partir do modelo de domínio
+Optei por construir os exercícios directamente a partir do modelo de domínio
 Java - os mesmos objectos Scale, Chord, Interval que definem as regras musicais.
-A correcção de um exercício gerado é garantida pelo modelo, não por validação externa.
+A correcção de um exercício gerado é garantida pelo modelo, nao por validação externa.
 
 **Justificação das escolhas de design**
 
 - **Notas brancas para iniciantes**: para utilizadores BEGINNER e ELEMENTARY, as raízes
   são restritas às notas brancas do piano (C, D, E, F, G, A, B). Preto implica notação
   enarmónica (C# = Db) que introduz complexidade conceptual antes do momento certo. A
-  música tonal básica - que é onde começa o treino auditivo - usa predominantemente notas
+  música tonal básica - que é onde começa o treino auditivo - usa predominantemnte notas
   brancas.
 
 - **Filtragem de aliases (isAlias())**: o enum ScaleType contém IONIAN como alias de
@@ -499,7 +499,7 @@ A correcção de um exercício gerado é garantida pelo modelo, não por valida�
 A aleatoriedade uniforme dentro de uma banda significa que um iniciante pode receber
 PENTATONIC_MAJOR e MINOR_NATURAL com igual probabilidade, mesmo que MAJOR seja mais
 fundamental pedagogicamente. Uma versão futura poderia introduzir pesos por frequência
-de uso no ensino tradicional.
+de uso no ensino tradiconal.
 
 ---
 
@@ -525,7 +525,7 @@ Ref: Gamma et al. (1994), pp. 107-116.
 
 `SessionDao`, `ExerciseDao` e `ResultDao` extendem `AbstractDao<T>`, que encapsula
 a lógica de `Connection`, `PreparedStatement` e `ResultSet`. A camada de serviço
-nunca escreve SQL. A decisão de não usar Spring Data JPA (ADR-010) mantém as queries
+nunca escreve SQL. Optei por não usar Spring Data JPA (ADR-010) para manter as queries
 explícitas e controláveis.
 Ref: Alur et al. (2003), pp. 462-475.
 
@@ -560,13 +560,13 @@ A interface organiza-se em quatro ecrãs:
   teclado virtual, feedback após resposta (correcto/errado + resposta esperada)
 - **session-end.html** - resumo de sessão: total de exercícios, taxa de acerto, barra
   de progresso, dica pedagógica da área mais fraca
-- **progress.html** - dashboard: precisão global, breakdown por tipo, áreas mais fracas
+- progress.html - dashboard: precisão global, breakdown por tipo, áreas mais fracas
   com dicas, histórico de sessões
 
 A separação em quatro ecrãs distintos reflecte um princípio pedagógico: o utilizador
 não deve estar a gerir a interface enquanto tenta ouvir. O ecrã de exercício tem
 exactamente uma acção possível - ouvir e responder. O dashboard e o resumo de sessão
-estão fora desse fluxo para não distrair durante a prática.
+estão fora desse fluxo para nao distrair durante a prática.
 
 As decisões de arquitectura do frontend estão documentadas em ADR-017 (deployment:
 directoria `/frontend/` servida pelo Spring Boot) e ADR-018 (teclado CSS, range
@@ -585,7 +585,7 @@ consideradas e as consequências principais.
 A aplicação divide-se em três camadas independentes: Frontend (HTML/JS vanilla), Backend
 (Java/Spring Boot com API REST) e Persistência (H2 em desenvolvimento). A abordagem
 monolítica com Thymeleaf foi rejeitada por misturar frontend e backend, dificultando a
-avaliação independente de cada camada. A arquitectura de microserviços foi rejeitada por
+avaliação independente de cada camada. Microserviços foram rejeitados por
 introduzir complexidade desproporcional ao âmbito do projeto. A separação facilita
 desenvolvimento paralelo e extensão futura sem alterar o backend.
 
@@ -596,7 +596,7 @@ virem do teclado virtual ou de um controlador MIDI físico. Endpoints separados 
 de input foram rejeitados por violar a separação de responsabilidades - a origem do input
 é uma preocupação exclusiva da camada de apresentação. O frontend normaliza os eventos
 heterogéneos para um callback único antes de chamar a API, mantendo o backend simples e
-extensível para futuros tipos de input.
+extensível para futuros tipos de imput.
 
 #### ADR-003 - Geração procedural de exercícios sem datasets externos
 
@@ -627,7 +627,7 @@ introduzir um terceiro processo com overhead desproporcional. RF04 foi classific
 
 #### ADR-006 - Java 21 + Spring Boot para o backend
 
-O backend é implementado em Java 21 com Spring Boot, stack onde há experiência directa
+O backend é implementado em Java 21 com Spring Boot, stack onde tenho experiência directa
 de desenvolvimento. Node.js, Python/FastAPI e Quarkus foram rejeitados por exigirem curva
 de aprendizagem onde já existe domínio em Java/Spring. O Spring Boot minimiza configuração
 via auto-configuration e Tomcat embebido, e o ecossistema extenso garante documentação
@@ -646,7 +646,7 @@ a troca requer apenas alterar o driver e o schema.sql.
 O frontend é implementado em HTML e JavaScript ES6+ puro, sem frameworks (React, Vue,
 Angular) e sem ferramentas de build (npm, Vite, Webpack). React e Vue foram rejeitados
 por exigirem curva de aprendizagem com JSX, bundler e gestão de estado - complexidade
-desproporcional ao scope com pouca experiência em frontend. A decisão mantém zero
+desproporcional ao scope com pouca experiência em frontend. Fico com zero
 ferramentas de build, código transparente para o júri, e compatibilidade com CB07.
 
 #### ADR-009 - Estrutura de ecrãs: páginas HTML separadas
@@ -672,7 +672,7 @@ O projeto segue TDD (Red-Green-Refactor) em 85%+ do código de produção: nenhu
 é implementada sem um teste que falha primeiro, e nenhum bug é corrigido sem o reproduzir
 em teste. Testes escritos após implementação foram rejeitados por não prevenirem regressões
 com a mesma eficácia. O critério adoptado é que cada contrato funcional da aplicação tem
-um teste correspondente, focado em comportamento esperado e não em edge cases raros.
+um teste correspondente, focado em comportamento esperado e nao em edge cases raros.
 
 #### ADR-012 - Modelo de dados e estratégia de persistência
 
@@ -710,7 +710,7 @@ o algoritmo de adaptação baseado nos últimos 100 resultados por tipo.
 
 #### ADR-016 - Contrato de Erros: RFC 7807 Problem Details
 
-Todos os erros HTTP usam ProblemDetail (RFC 7807, nativo no Spring Boot 3) com um GlobalExceptionHandler central, eliminando try-catch disperso em cada controller. A alternativa de endpoints separados por tipo de erro foi rejeitada por violar separação de responsabilidades; manter formatos inconsistentes (plain text, JSON genérico, nada) foi rejeitado por tornar o parsing frontend impossível sem lógica ad-hoc. A centralização garante que todos os clientes HTTP - frontend, Swagger, Postman, integradores - conseguem parsear erros uniformemente e que novos endpoints herdam o comportamento automaticamente.
+Todos os erros HTTP usam ProblemDetail (RFC 7807, nativo no Spring Boot 3) com um GlobalExceptionHandler central, eliminando try-catch disperso em cada controller. A alternativa de endpoints separados por tipo de erro foi rejeitada por violar separação de responsabilidades; manter formatos inconsistentes (plain text, JSON genérico, nada) foi rejeitado por tornar o parsing frontend impossível sem lógica ad-hoc. A centralização garante que todos os clientes HTTP - frontend, Swagger, Postman, integradores - conseguem parsear erros uniformemente e que novos endpoints herdam o comportamento automaticamnte.
 
 #### ADR-017 - Frontend: localização no repositório e integração com Spring Boot
 
@@ -774,7 +774,8 @@ https://www.w3.org/TR/webmidi/
 ### 3.1 Decomposição em Fases
 
 O desenvolvimento foi organizado em fases sequenciais, cada uma com pré-condições
-explícitas. Esta estrutura garantiu que cada fase arrancasse com uma base estável.
+explícitas. Esta estrutura garantiu que cada fase arrancasse com uma base estável e
+evitou que bugs de uma fase se propagassem para a seguinte.
 
 | Fase | Descrição | Precedência | Estado |
 |---|---|---|---|
@@ -806,7 +807,7 @@ adaptativa (RF09). O modo sandbox (RF10) está implementado via o sentinel SESSI
 
 São 230 testes a passar - unitários, de integração e de propriedade (jqwik). A cobertura
 inclui testes de fronteira para o algoritmo de dificuldade adaptativa (exactamente 80%,
-exactamente 40%, 39%) que estavam em falta antes da auditoria da semana 8.
+exactamente 40%, 39%) que estavam em falta antes da audtioria da semana 8.
 
 Na semana 8 foi realizada uma auditoria abrangente do backend contra todos os contratos
 documentados. Foram identificados e corrigidos problemas que a suite de testes não
