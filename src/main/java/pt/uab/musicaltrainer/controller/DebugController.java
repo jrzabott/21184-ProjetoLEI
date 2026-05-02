@@ -88,7 +88,8 @@ public class DebugController {
                     "type",        type.name(),
                     "difficulty",  diff,
                     "notes",       display.notesToPlay(),
-                    "description", display.description()
+                    "description", display.description(),
+                    "hint",        display.hint()
                 ));
             }
         }
