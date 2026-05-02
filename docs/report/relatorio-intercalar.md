@@ -222,3 +222,389 @@ prazo previsto para o intercalar.
 | Sem. 14 | 9-13 jun      | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Anexos.                                                                                                                                                                                                                                                                     | -                       |
 | Sem. 15 | 16-20 jun     | Reunião de preparação para defesa. Ensaio de perguntas de júri.                                                                                                                                                                                                                                                                               | **Prep. defesa**        |
 | Sem. 16 | 24 jun        | Submissão do relatório final. Código e demo linkados no repositório.                                                                                                                                                                                                                                                                          | **Final (24 jun)**      |
+
+---
+
+## Capítulo 2 - Desenho
+
+### 2.1 Stack Tecnológica
+
+A selecção tecnológica foi orientada por dois princípios: reduzir dependências
+externas ao mínimo e usar tecnologias com experiência prévia existente.
+
+| Componente | Tecnologia | Justificação |
+|---|---|---|
+| Backend | Java 21 + Spring Boot 3.3 | Experiência prévia; Spring Boot minimiza configuração de infraestrutura; JDBC puro sem ORM mantém controlo explícito das queries SQL (ADR-010) |
+| Frontend | HTML + JavaScript ES6+ vanilla | Sem experiência prévia com frameworks - React ou Vue adicionariam curva de aprendizagem desproporcional para o scope do projeto (ADR-008) |
+| Áudio | Web Audio API (nativa) | Zero dependências externas; funciona em qualquer browser moderno sem instalação adicional; suficiente para sintetizar notas isoladas (ADR-004) |
+| MIDI | Web MIDI API (nativa) | Zero dependências; detecção automática de controladores USB; o backend é agnóstico à origem da nota - MIDI ou teclado virtual produzem o mesmo tipo de resposta (ADR-005) |
+| Base de dados (dev) | H2 in-memory | Arranca sem configuração; schema recriado a cada reinício; consola web integrada para inspecção durante desenvolvimento (ADR-007) |
+| Base de dados (prod) | SQLite3 | Zero configuração de servidor, ficheiro único portátil, adequado para aplicação single-user; decidido em OI01 (ADR-001) |
+| Build | Maven | Standard no ecossistema Java/Spring; gestão de dependências madura e estável |
+
+---
+
+### 2.2 Arquitectura C4 - Nível 1 (Contexto)
+
+O sistema Musical Theory Trainer é uma aplicação web standalone. Não há sistemas
+externos de autenticação, APIs de terceiros nem serviços de armazenamento remoto.
+A única dependência externa opcional é um controlador MIDI físico ligado por USB,
+cujos eventos são capturados directamente pelo browser via Web MIDI API.
+
+![Diagrama C4 Nível 1 - Contexto](../architecture/c4-context.png)
+
+*Figura 1: Diagrama de contexto C4 - utilizador, sistema e controlador MIDI externo.*
+
+---
+
+### 2.3 Arquitectura C4 - Nível 2 (Contentores)
+
+A aplicação divide-se em três contentores: o frontend (HTML + JS vanilla), o backend
+(Spring Boot) e a base de dados (H2 em desenvolvimento, SQLite3 em produção). O
+frontend comunica com o backend exclusivamente via REST/JSON. O backend persiste dados
+via JDBC/SQL. O frontend é servido pelo mesmo processo Spring Boot, a partir da
+directoria `/frontend/` configurada em `application.properties` (ADR-017).
+
+![Diagrama C4 Nível 2 - Contentores](../architecture/c4-containers.png)
+
+*Figura 2: Diagrama de contentores C4 - frontend, backend e base de dados.*
+
+---
+
+### 2.4 Modelo de Dados
+
+O modelo de dados tem três tabelas: `exercises`, `sessions` e `results`.
+
+- `exercises` - regista cada exercício gerado: tipo (INTERVAL, SCALE, CHORD),
+  dificuldade (1-10), `question` (JSON com dados da pergunta, schema em ADR-013)
+  e `correct_answer` (array de notas MIDI esperadas em JSON)
+- `sessions` - ciclo de vida de uma sessão de treino: `start_time`, `end_time`
+  (null se activa), contadores atómicos `total_exercises`, `correct_answers`,
+  `incorrect_answers`
+- `results` - regista cada resposta: FK para sessão e exercício, `user_answer`
+  (notas MIDI tocadas em JSON), `is_correct`
+
+A FK `results.session_id` usa ON DELETE CASCADE - apagada a sessão, os resultados
+são apagados. Quando `session_id = 0` (SESSION_NONE, ADR-014), a resposta é avaliada
+mas não persistida - modo sandbox.
+
+![Modelo de Dados ER](../architecture/data-model.png)
+
+*Figura 3: Diagrama entidade-relação - exercises, sessions e results.*
+
+---
+
+### 2.5 Algoritmos Principais
+
+#### 2.5.1 Dificuldade Adaptativa (RF09)
+
+O `DifficultyService` calcula a dificuldade sugerida com base nos últimos 100
+exercícios completados do mesmo tipo:
+
+    entrada: tipo T, dificuldade actual D
+    1. buscar os últimos 100 resultados onde exercises.type = T
+    2. taxa_acerto = correctos / total
+    3. se taxa_acerto >= 0.80  → sugerir D + 1
+       se taxa_acerto < 0.40   → sugerir D - 1
+       senão                   → sugerir D
+    4. clamp: sugestão entre 1 e 10
+    5. effectiveDiff = clamp(sugestão, D - 2, D + 2)
+    6. retornar effectiveDiff e sugestão informativa ao frontend
+
+A janela de 100 exercícios evita oscilações por variância em amostras pequenas -
+com 10 exercícios, 3 acertos consecutivos podiam inflar artificialmente a dificuldade.
+
+#### 2.5.2 Identificação de Padrões Fracos (RF08)
+
+O `ProgressService` identifica os padrões onde o utilizador tem pior desempenho:
+
+    1. SELECT type, questionJson, COUNT(*) total, SUM(is_correct) correctos
+       FROM results JOIN exercises ON exercise_id = id
+       GROUP BY type, questionJson
+       HAVING COUNT(*) >= 3
+       ORDER BY (correctos * 1.0 / COUNT(*)) ASC
+       LIMIT 10
+    2. para cada linha: extrair padrão do questionJson por tipo
+       INTERVAL → IntervalType.fromSemitones(|notes[1] - notes[0]|).internalName()
+       SCALE    → questionJson.type
+       CHORD    → questionJson.type
+    3. WeaknessHintProvider.getHint(type, padrão) → dica pedagógica PT-PT
+
+O limiar de 3 tentativas evita que um único erro apareça com 0% de acerto.
+
+#### 2.5.3 Geração Procedural de Exercícios
+
+Os exercícios são gerados inteiramente a partir do modelo de domínio, sem datasets:
+
+    entrada: tipo T, dificuldade D
+    1. banda = DifficultyLevel.of(D)
+    2. tipos_disponíveis = T.availableFor(banda).filter(!isAlias)
+    3. tipo_escolhido = random(tipos_disponíveis)
+    4. raiz = escolher nota MIDI por banda:
+       se banda <= ELEMENTARY: raiz ∈ notas brancas (C3-B4)
+       senão: raiz ∈ [C2, C5] cromático
+    5. objecto = domain.get(tipo_escolhido, Note.fromMidi(raiz))
+    6. questionJson = serialize(raiz, tipo_escolhido)
+    7. notesToPlay = objecto.getNotes() + [raiz + 12] se escala
+    8. guardar em BD e devolver ao frontend
+
+---
+
+### 2.6 Padrões de Design
+
+#### Strategy (GoF)
+
+`ExerciseGenerator` é uma interface que define o contrato de geração e reconstrução
+de exercícios. `IntervalExerciseGenerator`, `ScaleExerciseGenerator` e
+`ChordExerciseGenerator` implementam a interface independentemente. Adicionar um novo
+tipo de exercício não requer alterar `GeneratorFactory` nem `ExerciseService`.
+Ref: Gamma et al. (1994), pp. 315-323.
+
+#### Factory Method (GoF)
+
+`GeneratorFactory` encapsula a criação dos geradores e recebe `ObjectMapper` via
+injecção de dependências Spring. `DaoFactory` faz o mesmo para os DAOs, recebendo o
+`DataSource` correcto conforme o perfil activo (H2, SQLite, PostgreSQL). Os consumers
+nunca instanciam directamente.
+Ref: Gamma et al. (1994), pp. 107-116.
+
+#### Data Access Object (Core J2EE Patterns)
+
+`SessionDao`, `ExerciseDao` e `ResultDao` extendem `AbstractDao<T>`, que encapsula
+a lógica de `Connection`, `PreparedStatement` e `ResultSet`. A camada de serviço
+nunca escreve SQL. A decisão de não usar Spring Data JPA (ADR-010) mantém as queries
+explícitas e controláveis.
+Ref: Alur et al. (2003), pp. 462-475.
+
+#### Value Object / Record (DDD)
+
+As entidades de domínio (`Note`, `Interval`, `Scale`, `Chord`) e os DTOs
+(`SessionRecord`, `ExerciseRecord`, `ResultRecord`) são Java records imutáveis.
+A imutabilidade elimina bugs de estado partilhado e simplifica o raciocínio sobre
+o fluxo de dados.
+Ref: Evans (2003), pp. 97-103.
+
+#### Sentinel Value
+
+`MusicConstants.SESSION_NONE = 0L` distingue o modo sandbox (sem persistência) de
+uma sessão activa. O campo `sessionId` em `AnswerRequest` é primitivo `long` - quando
+omitido no JSON, Jackson deserializa para 0L automaticamente. Sem nulls, sem validação
+extra.
+
+---
+
+### 2.7 Wireframes
+
+O protótipo de navegação está disponível em `docs/design/wireframes.pdf` (versão
+interactiva em `docs/design/wireframes.html`).
+
+A interface organiza-se em quatro ecrãs:
+
+- **index.html** - ecrã principal: selector de tipo de exercício, dois modos de entrada
+  (Praticar sem persistência, ou Iniciar sessão com registo), teclado virtual CSS e
+  modal de ajuda
+- **exercise.html** - ecrã de exercício activo: instrução por tipo, botão de áudio,
+  teclado virtual, feedback após resposta (correcto/errado + resposta esperada)
+- **session-end.html** - resumo de sessão: total de exercícios, taxa de acerto, barra
+  de progresso, dica pedagógica da área mais fraca
+- **progress.html** - dashboard: precisão global, breakdown por tipo, áreas mais fracas
+  com dicas, histórico de sessões
+
+As decisões de arquitectura do frontend estão documentadas em ADR-017 (deployment:
+directoria `/frontend/` servida pelo Spring Boot) e ADR-018 (teclado CSS, range
+C2-C6 desktop / C3-C5 mobile, breakpoints 768px e 1024px).
+
+---
+
+### 2.8 Decisões de Arquitectura
+
+As decisões de arquitectura estão documentadas individualmente em
+`docs/architecture/adr/`. Esta secção resume cada decisão com as alternativas
+consideradas e as consequências principais.
+
+#### ADR-001 - Arquitectura em 3 camadas
+
+A aplicação divide-se em três camadas independentes: Frontend (HTML/JS vanilla), Backend
+(Java/Spring Boot com API REST) e Persistência (H2 em desenvolvimento). A abordagem
+monolítica com Thymeleaf foi rejeitada por misturar frontend e backend, dificultando a
+avaliação independente de cada camada. A arquitectura de microserviços foi rejeitada por
+introduzir complexidade desproporcional ao âmbito do projeto. A separação facilita
+desenvolvimento paralelo e extensão futura sem alterar o backend.
+
+#### ADR-002 - Backend agnóstico à origem do input
+
+O backend recebe respostas musicais sempre pelo mesmo endpoint REST, independentemente de
+virem do teclado virtual ou de um controlador MIDI físico. Endpoints separados por tipo
+de input foram rejeitados por violar a separação de responsabilidades - a origem do input
+é uma preocupação exclusiva da camada de apresentação. O frontend normaliza os eventos
+heterogéneos para um callback único antes de chamar a API, mantendo o backend simples e
+extensível para futuros tipos de input.
+
+#### ADR-003 - Geração procedural de exercícios sem datasets externos
+
+Os exercícios são gerados algoritmicamente a partir do modelo de domínio musical em
+runtime, sem ficheiros de dados externos nem conteúdo estático pré-definido. Uma base de
+dados de exercícios pré-definidos foi rejeitada por limitar a variedade e não demonstrar
+que o modelo musical está correctamente formalizado. APIs externas de teoria musical foram
+rejeitadas por introduzirem dependências fora do controlo do sistema e potencial violação
+da restrição CB03. A abordagem garante variedade virtualmente infinita e deployment simples.
+
+#### ADR-004 - Web Audio API para reprodução de som
+
+O som é gerado no browser via Web Audio API nativa, usando síntese de osciladores com
+frequência calculada por f = 440 * 2^((midiNumber - 69) / 12). Bibliotecas externas
+como Tone.js e Howler.js foram rejeitadas por introduzirem dependências desnecessárias
+para o scope. Ficheiros MP3/WAV por nota foram rejeitados por requererem 88 ou mais
+ficheiros de áudio e violarem a restrição CB08. A decisão resulta em zero dependências
+de áudio e controlo total sobre timbre e duração.
+
+#### ADR-005 - Web MIDI API para input de hardware MIDI
+
+O input de controladores MIDI físicos é capturado via Web MIDI API nativa do browser,
+com graceful degradation em Safari (único browser moderno sem suporte). Plugins como
+JazzPlugin foram rejeitados por serem obsoletos e incompatíveis com o objectivo de
+funcionar no browser sem instalação. Um servidor MIDI via WebSocket foi rejeitado por
+introduzir um terceiro processo com overhead desproporcional. RF04 foi classificado como
+"Should have" para que a ausência de hardware não impeça a entrega.
+
+#### ADR-006 - Java 21 + Spring Boot para o backend
+
+O backend é implementado em Java 21 com Spring Boot, stack onde há experiência directa
+de desenvolvimento. Node.js, Python/FastAPI e Quarkus foram rejeitados por exigirem curva
+de aprendizagem onde já existe domínio em Java/Spring. O Spring Boot minimiza configuração
+via auto-configuration e Tomcat embebido, e o ecossistema extenso garante documentação
+disponível para qualquer decisão técnica.
+
+#### ADR-007 - H2 para desenvolvimento; PostgreSQL ou SQLite3 para produção
+
+Em desenvolvimento usa-se H2 (in-memory ou ficheiro), que permite iniciar sem qualquer
+setup de base de dados e inclui consola web. PostgreSQL desde o inicio foi rejeitado por
+exigir instalação antes de escrever a primeira linha de código. A decisão de produção
+(PostgreSQL vs SQLite3) fica em aberto até antes da demo interna (OI01); com JDBC puro
+a troca requer apenas alterar o driver e o schema.sql.
+
+#### ADR-008 - JavaScript vanilla no frontend (sem frameworks)
+
+O frontend é implementado em HTML e JavaScript ES6+ puro, sem frameworks (React, Vue,
+Angular) e sem ferramentas de build (npm, Vite, Webpack). React e Vue foram rejeitados
+por exigirem curva de aprendizagem com JSX, bundler e gestão de estado - complexidade
+desproporcional ao scope com pouca experiência em frontend. A decisão mantém zero
+ferramentas de build, código transparente para o júri, e compatibilidade com CB07.
+
+#### ADR-009 - Estrutura de ecrãs: páginas HTML separadas
+
+A navegação é feita com páginas HTML separadas servidas directamente pelo browser, sem
+router em JavaScript. A abordagem SPA com router em JS puro foi rejeitada por exigir
+gestão de histórico de browser e estado global - complexidade desnecessária para o nível
+de experiência actual. SPA com framework viola CB07. As páginas actuais são index.html,
+exercise.html, session-end.html e progress.html, cada uma autónoma e testável de forma
+independente.
+
+#### ADR-010 - DAO classes com JDBC puro em vez de Spring Data JPA
+
+A camada de persistência usa classes DAO com JdbcTemplate e SQL explícito, sem anotações
+@Entity, Hibernate, nem JpaRepository. Spring Data JPA foi rejeitado por introduzir
+lazy loading, proxies e cache - comportamentos difíceis de controlar e de defender
+perante o júri. O resultado é SQL visível e explícito em cada DAO, com DTOs implementados
+como Java records imutáveis (Java 16+).
+
+#### ADR-011 - TDD como metodologia de desenvolvimento
+
+O projeto segue TDD (Red-Green-Refactor) em 85%+ do código de produção: nenhuma feature
+é implementada sem um teste que falha primeiro, e nenhum bug é corrigido sem o reproduzir
+em teste. Testes escritos após implementação foram rejeitados por não prevenirem regressões
+com a mesma eficácia. O critério adoptado é que cada contrato funcional da aplicação tem
+um teste correspondente, focado em comportamento esperado e não em edge cases raros.
+
+#### ADR-012 - Modelo de dados e estratégia de persistência
+
+O schema de persistência define tres tabelas - sessions, exercises e results - com chaves
+estrangeiras e políticas de integridade referencial (CASCADE em sessions, SET NULL em
+exercises). DAOs sem anotações Spring usam try-with-resources para gestão de conexões,
+garantindo controlo total sobre cada operação. O histórico de resultados suporta
+dificuldade adaptativa (RF09) via análise dos últimos 100 exercícios do mesmo tipo.
+
+#### ADR-013 - Schema do campo question nos exercícios
+
+O campo question na tabela exercises armazena JSON mínimo baseado em números MIDI: dois
+MIDI para intervalos, raiz e tipo para escalas e acordes. Guardar todas as notas da
+escala ou acorde foi rejeitado por ser redundante - o domínio é determinístico e
+reconstrói as notas a partir de raiz e tipo. A decisão fecha o open item OI07 e garante
+que geradores e controllers usam um schema consistente.
+
+#### ADR-014 - Protocolo de resposta baseado em notas MIDI
+
+O utilizador responde tocando notas, enviando um array de números MIDI ao endpoint de
+resposta. O modelo anterior de resposta por nome textual foi rejeitado por reduzir o
+exercício a escolha múltipla, eliminando a componente de performance musical. As regras
+de validação variam por tipo: intervalos exigem MIDI exacto, escalas validam padrão de
+intervalos independente de oitava, acordes validam padrão ascendente I-III-V independente
+de oitava.
+
+#### ADR-015 - Taxonomia de dificuldade para exercícios
+
+Foi criado o enum DifficultyLevel com 5 bandas semânticas (BEGINNER a EXPERT) que
+mapeiam a escala numérica 1-10. Cada tipo de exercício carrega o seu nível e os geradores
+filtram via availableFor(DifficultyLevel), eliminando magic numbers. A alternativa de
+manter inteiros sem semântica foi rejeitada por tornar RF09 (dificuldade adaptativa)
+impossível de implementar de forma correcta e consistente. O DifficultyService centraliza
+o algoritmo de adaptação baseado nos últimos 100 resultados por tipo.
+
+#### ADR-016 - Contrato de Erros: RFC 7807 Problem Details
+
+Todos os erros HTTP usam ProblemDetail (RFC 7807, nativo no Spring Boot 3) com um GlobalExceptionHandler central, eliminando try-catch disperso em cada controller. A alternativa de endpoints separados por tipo de erro foi rejeitada por violar separação de responsabilidades; manter formatos inconsistentes (plain text, JSON genérico, nada) foi rejeitado por tornar o parsing frontend impossível sem lógica ad-hoc. A centralização garante que todos os clientes HTTP - frontend, Swagger, Postman, integradores - conseguem parsear erros uniformemente e que novos endpoints herdam o comportamento automaticamente.
+
+#### ADR-017 - Frontend: localização no repositório e integração com Spring Boot
+
+Os ficheiros frontend ficam na directoria /frontend/ na raiz do repositório, servida pelo
+Spring Boot via configuração em application.properties. Colocar o frontend em
+src/main/resources/static/ foi rejeitado por acoplar a estrutura frontend ao layout Maven.
+Repositório separado foi rejeitado por overhead injustificado para MVP académico com um
+único developer. O URL do backend fica centralizado em js/api.js - uma linha para mudar
+de ambiente em produção.
+
+#### ADR-018 - Teclado virtual: range MIDI e design responsivo
+
+O teclado virtual é implementado em CSS puro (flexbox e position:absolute para teclas
+pretas) com tres breakpoints: mobile (25 teclas C3-C5), tablet (37 teclas C2-C5) e
+desktop (49 teclas C2-C6). Um piano completo de 88 teclas foi rejeitado por ser inviável
+em mobile (largura de 2464px). Imagem PNG com image map foi rejeitada por dificultar
+highlight dinâmico e resize. O range desktop cobre todos os exercícios BEGINNER e
+ELEMENTARY sem scroll, com breakpoints alinhados com Bootstrap 5 e Tailwind.
+
+#### ADR-019 - Expansão do domínio de escalas além do MVP original
+
+O enum ScaleType foi construido com 28 tipos de escala em vez dos 3 definidos no MVP,
+desbloqueados progressivamente por DifficultyLevel. Manter apenas os 3 tipos originais
+foi rejeitado por desperdiçar um modelo já construido sem beneficio pedagógico. A expansão
+é invisível para utilizadores iniciantes (BEGINNER vê apenas MAJOR) e não exige mudança
+de código no gerador para adicionar novos tipos. Esta ADR regulariza retroactivamente uma
+decisão implementada em feat/13-25 sem registo prévio, identificada na auditoria de Sem. 8.
+
+---
+
+### 2.9 Referências
+
+Alur, D., Crupi, J., & Malks, D. (2003). *Core J2EE Patterns: Best Practices and
+Design Strategies* (2nd ed.). Prentice Hall.
+
+Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of
+Software*. Addison-Wesley.
+
+Fowler, M. (2002). *Patterns of Enterprise Application Architecture*.
+Addison-Wesley.
+
+Gamma, E., Helm, R., Johnson, R., & Vlissides, J. (1994). *Design Patterns:
+Elements of Reusable Object-Oriented Software*. Addison-Wesley.
+
+Internet Engineering Task Force. (2016). *RFC 7807 - Problem Details for HTTP
+APIs*. https://www.rfc-editor.org/rfc/rfc7807
+
+Spring Team. (2024). *Spring Boot 3.3.0 Reference Documentation*.
+https://docs.spring.io/spring-boot/docs/3.3.0/reference/html/
+
+World Wide Web Consortium. (2021). *Web Audio API - W3C Recommendation*.
+https://www.w3.org/TR/webaudio/
+
+World Wide Web Consortium. (2015). *Web MIDI API - W3C Editor's Draft*.
+https://www.w3.org/TR/webmidi/
