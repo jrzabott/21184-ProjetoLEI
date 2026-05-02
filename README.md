@@ -1,6 +1,6 @@
 # Musical Theory Trainer
 
-> Aprende teoria musical através de exercícios procedurais com feedback imediato - Duolingo para teoria musical.
+> Treino auditivo de teoria musical com feedback imediato - exercícios procedurais de intervalos, escalas e acordes via teclado virtual ou controlador MIDI.
 
 **Estudante:** Daniel Junior · 2304335  
 **Orientador:** Pedro Pestana  
@@ -11,65 +11,84 @@
 
 ## Estado actual
 
-🟢 **Verde** - Backend completo (Fases 0-4). 230 testes a passar. API REST funcional. Wireframes completos. ADRs documentados.  
-🟡 **Em progresso** - Relatório intercalar (deadline 6 mai)
+🟢 **Backend completo** - Fases 0-4.3 concluídas. 230 testes a passar. API REST funcional e documentada.  
+🟢 **Relatório intercalar entregue** - Cap. 1-3 completos. Deadline 6 Mai cumprida.  
+🟡 **Frontend a iniciar** - Wireframes prontos. Implementação agendada para Sem. 9-12.
 
-**Última actualização:** Sem. 8 (30 Abr 2026)
-
----
-
-## O que está implementado
-
-- [x] Modelo de domínio Java (Note, Interval, Scale, Chord) ✅
-- [x] Persistência JDBC pura - SessionDao, ExerciseDao, ResultDao ✅
-- [x] Suporte multi-BD - H2 (dev), SQLite e PostgreSQL (produção) ✅
-- [x] Geração procedural de exercícios (intervalos, escalas, tríades) ✅
-- [x] API REST completa (generate, answer, sessions, progress, sandbox) ✅
-- [x] RFC 7807 GlobalExceptionHandler com Bean Validation ✅
-- [x] Dificuldade adaptativa (RF09) ✅
-- [x] Dashboard de progresso (RF08) ✅
-- [x] 230 testes de integração a passar ✅
-- [x] Wireframes dos 4 ecrãs (docs/design/) ✅
-- [x] 19 ADRs documentados ✅
-- [ ] Teclado virtual com som (Web Audio API) - Fase 5
-- [ ] Input MIDI físico (Web MIDI API) - Fase 5
-- [ ] Frontend implementado - a partir de Sem. 9
-
----
-
-## O que está pendente
-
-### Fase 5: Frontend - Teclado Virtual
-- [ ] index.html + piano.js + audio.js
-- [ ] Web Audio API (síntese sonora)
-- [ ] Ligação ao backend via fetch
-
-### Fase 6-9: Frontend - Ecrãs
-- [ ] exercise.html - ecrã de exercício activo
-- [ ] progress.html - dashboard de progresso
-- [ ] Ecrã de fim de sessão, selecção de exercício
+**Última actualização:** Sem. 8 · 2 Mai 2026
 
 ---
 
 ## Como instalar e correr
 
-> Instruções a completar na Fase 0 (setup Spring Boot). Nenhum código existe ainda.
+**Requisitos:** Java 21+, Maven 3.9+
 
-Requisitos previstos: Java 21+, Maven 3.9+. O backend arrancará com `mvn spring-boot:run`; o frontend abre directamente no browser sem servidor adicional.
+```bash
+git clone https://github.com/jrzabott/21184-ProjetoLEI
+cd 21184-ProjetoLEI
+mvn spring-boot:run
+```
+
+- **API REST:** `http://localhost:8080`
+- **Swagger UI (documentação interactiva):** `http://localhost:8080/swagger-ui.html`
+- **Frontend:** ainda não implementado (Sem. 9+)
+
+Por defeito usa H2 em memória (sem configuração adicional). Para SQLite: `--spring.profiles.active=sqlite`.
+
+---
+
+## O que está implementado
+
+### Backend (completo)
+- [x] Modelo de domínio musical: `Note`, `Interval`, `Scale` (28 tipos), `Chord` — value objects imutáveis
+- [x] Persistência JDBC pura: `SessionDao`, `ExerciseDao`, `ResultDao` — zero ORM
+- [x] Suporte multi-BD: H2 (dev), SQLite, PostgreSQL — Strategy + Factory pattern (ADR-009)
+- [x] Geração procedural de exercícios por dificuldade: intervalos, escalas, tríades
+- [x] Dificuldade adaptativa (RF09): janela 100 exercícios, limiares 80%/40%, clamp ±2
+- [x] Sem repetição consecutiva do mesmo exercício na mesma sessão (RF-F02)
+- [x] Dashboard de progresso: taxa de acerto por tipo, identificação de padrões fracos (RF08)
+- [x] API REST completa: `/generate`, `/answer`, `/sessions`, `/progress`, `/sandbox`
+- [x] RFC 7807 `ProblemDetail` em todos os erros (`GlobalExceptionHandler`)
+- [x] Hints pedagógicos por tipo de exercício
+- [x] 230 testes: unitários, integração, property-based (jqwik)
+
+### Documentação (completa)
+- [x] 19 ADRs em `docs/architecture/adr/`
+- [x] Diagramas C4 nível 1 e 2 em `docs/architecture/`
+- [x] Modelo de dados ER em `docs/architecture/data-model.png`
+- [x] Wireframes dos 4 ecrãs em `docs/design/wireframes.pdf`
+- [x] Relatório intercalar em `docs/report/` (Markdown + .docx)
+
+### Pendente
+- [ ] Frontend: teclado virtual + Web Audio API (Sem. 9-10)
+- [ ] Frontend: ecrã de exercício + MIDI input (Sem. 11)
+- [ ] Frontend: dashboard + session-end (Sem. 12)
+- [ ] Cap. 4 (Testes) e Cap. 5 (Conclusões) — relatório final (24 Jun)
+
+---
+
+## Como correr os testes
+
+```bash
+mvn test
+```
+
+Resultado esperado: `Tests run: 230, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
 
 ---
 
 ## Decisões de arquitectura principais
 
-| Decisão | Alternativa considerada | Razão da escolha                                                                                                               |
-|---------|------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| Java 21 + Spring Boot | Node.js / FastAPI | Experiência prévia - JDBC puro com DAOs em vez de JPA: SQL explícito, zero Hibernate magic                                     |
-| HTML + JS vanilla (frontend) | React / Vue | Pouca experiência c/ frontend - frameworks adicionariam curva de aprendizado desnecessária                                     |
-| Geração procedural (sem datasets) | Ficheiros de dados externos | Simplifica deploy, modelo musical está formalizado no código                                                                   |
-| Web Audio API nativa | Biblioteca de áudio (Tone.js) | Zero dependências externas, suficiente para o scope                                                                            |
-| H2 (dev) + PostgreSQL/SQLite3 (prod) | PostgreSQL logo de início | H2 permite arrancar sem configuração; decisão prod em aberto (OI01); ainda incerto se tentari suportar múltiplas engines de DB |
+| Decisão | Alternativa considerada | Razão |
+|---|---|---|
+| Java 21 + Spring Boot | Node.js / FastAPI | Experiência prévia; ecosistema familiar |
+| JDBC puro (sem ORM) | Spring Data JPA | SQL explícito, zero Hibernate magic, queries visíveis |
+| HTML + JS vanilla | React / Vue | CB07 (sem frameworks); menor curva de aprendizado no frontend |
+| Geração procedural | Datasets externos | Deploy simplificado; modelo musical formalizado no código |
+| H2 (dev) + SQLite/PostgreSQL (prod) | PostgreSQL apenas | H2 arranca sem configuração; SQLite para deploy simples (ADR-009) |
+| Web Audio API nativa | Tone.js | Zero dependências externas; suficiente para o scope (ADR-018) |
 
-Para detalhe completo: `docs/architecture/adr/`
+Detalhe completo: `docs/architecture/adr/`
 
 ---
 
@@ -79,42 +98,38 @@ Para detalhe completo: `docs/architecture/adr/`
 
 - Spring Boot - https://spring.io/projects/spring-boot
 - Web Audio API (MDN) - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
-- Web Audio API (compatibilidade) - https://caniuse.com/audio-api
 - Web MIDI API (MDN) - https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
-- Web MIDI API (compatibilidade) - https://caniuse.com/midi *(não suportado em Safari - ver ADR-005)*
 - C4 Model - https://c4model.com
+- RFC 7807 - https://www.rfc-editor.org/rfc/rfc7807
 - Conventional Commits - https://www.conventionalcommits.org
 
 ### Ferramentas de IA utilizadas
 
-| Ferramenta                 | Para que foi usada                                                                                                           |
-|----------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| Claude (claude.ai)         | Definição de arquitectura, levantamento de requisitos, modelação do domínio musical, planeamento de implementação            |
-| Gemini (gemini.google.com) | Desafiar, validar e dupla verificação de sugestões da IA principal                                                           |
-| Grok (grok.com)            | Desafiar, validar e tripla verificação de sugestões da IA principal. Diferentes ferramentas, sugerem diferentes perspectivas |
-| Claude Code                | Assistência na implementação (a partir de Sem. 5), documentação técnica, revisão de código  
+| Ferramenta | Para que foi usada |
+|---|---|
+| Claude Code | Arquitectura, implementação, documentação técnica, revisão de código, relatório |
+| Gemini CLI | Extracção de PDFs, conteúdo Moodle, validação de sugestões |
 
 ---
 
 ## Changelog
 
-### 2026-04-24 · Sem. 5
+### Sem. 8 · 28 Abr–6 Mai · Intercalar
 
-**Task 1.1 - Setup Spring Boot** 
-Spring Boot 3.3.0 configurado com Java 21 e Maven 3.9.15. Package base `pt.uab.musicaltrainer` criado, aplicação arranca sem erros. Schema SQL definido com tabelas para exercises, sessions, results. H2 em memória para desenvolvimento. `mvn clean test` passa, build sucesso.
+Auditoria abrangente do backend: 40 inconsistências identificadas e corrigidas. Gerador de escalas passa a usar sistema de dificuldade correctamente. Campo `options` removido da API (violava ADR-014). Controllers corrigidos para propagar erros via `GlobalExceptionHandler`. Schema SQL corrigido. Testes de fronteira RF09 adicionados. ADR-019 (expansão domínio de escalas). Relatório intercalar completo: Cap. 1-3, 19 ADRs resumidos, Goldilocks + Vygotsky referenciados, .docx gerado a partir do template UAb. 230 testes.
 
-**Task 1.2 - Modelo de Domínio (Note)**
-Classe Note implementada com conversão MIDI para notação musical (C4, D#4, etc). Static cache de 128 notas (C-1 a G9) - O(1) lookups. Métodos: `fromMidi(int)`, `getName()`, `getOctave()`, `getMidiNumber()`. 7 testes, todos passing. TDD aplicado - testes escritos antes da implementação.
+### Sem. 7 · 28 Abr–2 Mai
 
-**Task 1.3 - Modelo de Domínio (Interval)**
-Classe Interval implementada para identificação de intervalos musicais. Factory estático `Interval.between(Note, Note)` calcula distância em semítoms e mapeia para nome completo (Uníssono, 2ª Menor/Maior, 5ª Perfeita, Oitava Perfeita, etc). 10 testes cobrindo todos intervalos até oitava, incluindo casos descendentes. TDD aplicado - IntervalTest escrito e falhado antes da implementação.
+Fase 3 concluída: geradores de exercícios (Strategy pattern, TDD). ExerciseService com Factory pattern, avaliação por notas MIDI. Fase 4 concluída: REST API completa com RFC 7807. RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa), F02 (no-consecutive-repeat). Wireframes 4 ecrãs + PDF. ADR-017, ADR-018. 171 testes.
 
-**Task 1.4 - Modelo de Domínio (Scale)**
-Classe Scale implementada com suporte para 6 tipos de escalas: MAJOR, MINOR_NATURAL, HARMONIC_MINOR, DORIAN, PENTATONIC_MINOR, BLUES. Factory estático `Scale.get(type, root)` gera notas usando padrões de semítons (interval patterns). 8 testes cobrindo diferentes escalas e raízes, incluindo diferenças entre tipos. TDD aplicado - testes escritos antes da implementação.
+### Sem. 6 · 22–25 Abr
 
-**Task 1.5 - Modelo de Domínio (Chord)**
-Classe Chord implementada com suporte para 4 tipos de tríades: MAJOR, MINOR, DIMINISHED, AUGMENTED. Factory estático `Chord.get(type, root)` gera notas usando padrões de semítons. Value object com equals()/hashCode() para comparação confiável. 13 testes cobrindo todos tipos de tríades, diferenciação entre tipos e raízes, igualdade, e uso em coleções hash-based. TDD aplicado - testes escritos antes da implementação.
+Fase 2 concluída: DTOs, DAOs JDBC puros (SessionDao, ExerciseDao, ResultDao). 24 testes de integração. Strategy + Factory para multi-BD (H2/SQLite/PostgreSQL). ADR-012. OI01 resolvido.
+
+### Sem. 4–5 · 7–17 Abr
+
+Repositório GitHub criado com estrutura do template. ADR-001 a ADR-011 formalizados. Diagramas C4 e modelo de dados. Repositório enviado ao orientador (13 Abr). Spring Boot 3.3.0 configurado, modelo de domínio completo (Note, Interval, Scale, Chord).
 
 ---
 
-*Última actualização: 2026-04-24 · Sem. 5*
+*Última actualização: 2 Mai 2026 · Sem. 8*
