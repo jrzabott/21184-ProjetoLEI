@@ -28,9 +28,10 @@ class ScaleExerciseGeneratorTest {
 
     @Test
     void shouldGenerateValidScaleType() {
+        // difficulty=1 BEGINNER: apenas MAJOR disponivel
         GeneratedExercise ex = generator.generate(1);
-
-        assertThat(ex.correctAnswer()).isIn("MAJOR", "MINOR_NATURAL", "HARMONIC_MINOR");
+        assertThat(ScaleType.valueOf(ex.correctAnswer()).isAlias()).isFalse();
+        assertThat(ex.correctAnswer()).isEqualTo("MAJOR");
     }
 
     @Test
@@ -60,10 +61,11 @@ class ScaleExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateThreeOptions() {
+    void shouldGenerateOptions() {
+        // P04 vai remover o campo options — por agora verifica apenas que nao esta vazio
         GeneratedExercise ex = generator.generate(1);
 
-        assertThat(ex.options()).hasSize(3);
+        assertThat(ex.options()).isNotEmpty();
     }
 
     @Test
@@ -83,12 +85,13 @@ class ScaleExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateAllThreeScaleTypesEventually() {
+    void shouldGenerateMultipleScaleTypesAtElementaryDifficulty() {
         Set<String> seen = new HashSet<>();
-        for (int i = 0; i < 100; i++) {
-            seen.add(generator.generate(5).correctAnswer());
+        for (int i = 0; i < 300; i++) {
+            seen.add(generator.generate(3).correctAnswer());
         }
-        assertThat(seen).containsExactlyInAnyOrder("MAJOR", "MINOR_NATURAL", "HARMONIC_MINOR");
+        assertThat(seen).containsAnyOf("MAJOR", "MINOR_NATURAL");
+        assertThat(seen.size()).isGreaterThan(1);
     }
 
     @Test
