@@ -64,30 +64,6 @@ class ChordExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateFourOptions() {
-        // 4 tipos de acorde disponíveis a difficulty=8 (ADVANCED)
-        GeneratedExercise ex = generator.generate(8);
-
-        assertThat(ex.options()).hasSize(4);
-    }
-
-    @Test
-    void shouldIncludeCorrectAnswerInOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        // options contêm displayName; correctAnswer é o nome interno (enum name)
-        String expectedDisplayName = ChordType.valueOf(ex.correctAnswer()).displayName();
-        assertThat(ex.options()).contains(expectedDisplayName);
-    }
-
-    @Test
-    void shouldHaveDistinctOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        assertThat(new HashSet<>(ex.options())).hasSameSizeAs(ex.options());
-    }
-
-    @Test
     void shouldGenerateAllFourChordTypesEventually() {
         Set<String> seen = new HashSet<>();
         for (int i = 0; i < 100; i++) {
@@ -107,7 +83,6 @@ class ChordExerciseGeneratorTest {
         assertThat(ex.notesToPlay()).hasSize(3);
         assertThat(ex.notesToPlay()[0]).isEqualTo(60);
         assertThat(ex.correctAnswer()).isEqualTo("MAJOR");
-        assertThat(ex.options()).hasSize(4);
     }
 
     @Test

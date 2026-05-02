@@ -61,30 +61,6 @@ class ScaleExerciseGeneratorTest {
     }
 
     @Test
-    void shouldGenerateOptions() {
-        // P04 vai remover o campo options — por agora verifica apenas que nao esta vazio
-        GeneratedExercise ex = generator.generate(1);
-
-        assertThat(ex.options()).isNotEmpty();
-    }
-
-    @Test
-    void shouldIncludeCorrectAnswerInOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        // options contêm displayName; correctAnswer é o nome interno (enum name)
-        String expectedDisplayName = ScaleType.valueOf(ex.correctAnswer()).displayName();
-        assertThat(ex.options()).contains(expectedDisplayName);
-    }
-
-    @Test
-    void shouldHaveDistinctOptions() {
-        GeneratedExercise ex = generator.generate(1);
-
-        assertThat(new HashSet<>(ex.options())).hasSameSizeAs(ex.options());
-    }
-
-    @Test
     void shouldGenerateMultipleScaleTypesAtElementaryDifficulty() {
         Set<String> seen = new HashSet<>();
         for (int i = 0; i < 300; i++) {

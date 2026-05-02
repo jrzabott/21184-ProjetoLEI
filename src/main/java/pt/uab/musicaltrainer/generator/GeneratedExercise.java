@@ -1,10 +1,8 @@
 package pt.uab.musicaltrainer.generator;
 
-import java.util.List;
-
 /**
- * Resultado imutável de um gerador de exercícios.
- * Contém dados para guardar em BD e dados para enriquecer a resposta REST.
+ * Resultado imutavel de um gerador de exercicios.
+ * ADR-014: sem campo options — protocolo baseado em notas MIDI, sem multipla escolha.
  */
 public record GeneratedExercise(
     String type,
@@ -13,6 +11,5 @@ public record GeneratedExercise(
     String correctAnswer,
     String description,
     String hint,
-    int[] notesToPlay,
-    List<String> options
+    int[] notesToPlay
 ) {}

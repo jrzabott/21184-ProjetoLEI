@@ -70,7 +70,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         }
 
         String scaleType = available.get(random.nextInt(available.size()));
-        return buildExercise(rootMidi, scaleType, difficulty, available);
+        return buildExercise(rootMidi, scaleType, difficulty);
     }
 
     @Override
@@ -78,19 +78,14 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
         logger.debug("Reconstruindo escala de BD: questionJson={}", questionJson);
         try {
             ScaleQuestion q = mapper.readValue(questionJson, ScaleQuestion.class);
-            DifficultyLevel band = DifficultyLevel.of(difficulty);
-            List<String> allAvailable = ScaleType.availableFor(band).stream()
-                .filter(t -> !t.isAlias())
-                .map(Enum::name)
-                .collect(Collectors.toList());
-            return buildExercise(q.root(), q.type(), difficulty, allAvailable);
+            return buildExercise(q.root(), q.type(), difficulty);
         } catch (JsonProcessingException e) {
             logger.error("Erro a desserializar ScaleQuestion: {}", questionJson, e);
             throw new RuntimeException(e);
         }
     }
 
-    private GeneratedExercise buildExercise(int rootMidi, String scaleType, int difficulty, List<String> options) {
+    private GeneratedExercise buildExercise(int rootMidi, String scaleType, int difficulty) {
         Note root   = Note.fromMidi(rootMidi);
         Scale scale = Scale.get(scaleType, root);
 
@@ -113,18 +108,11 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             + " com tónica em " + root.getDisplayName() + ", de raiz a raiz";
         String hint = buildScaleHint(scaleType);
 
-        List<String> shuffled = new java.util.ArrayList<>(
-            options.stream()
-                .map(s -> ScaleType.valueOf(s).displayName())
-                .collect(java.util.stream.Collectors.toList())
-        );
-        java.util.Collections.shuffle(shuffled);
-
         logger.info("Escala gerada: root={}({}), type={}, difficulty={}",
             rootMidi, root.getDisplayName(), scaleType, difficulty);
 
         return new GeneratedExercise(ExerciseType.SCALE.name(), difficulty, questionJson, scaleType,
-            description, hint, notes, shuffled);
+            description, hint, notes);
     }
 
     private String buildScaleHint(String scaleType) {
