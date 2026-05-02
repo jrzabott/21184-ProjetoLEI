@@ -10,7 +10,7 @@ import re
 import sys
 from pathlib import Path
 from docx import Document
-from docx.shared import Pt
+from docx.shared import Pt, Cm
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
@@ -341,11 +341,11 @@ def iter_md_blocks(md_text):
             i += 1
             continue
 
-        # Skip image lines
+        # Image lines
         if re.match(r'^!\[', stripped):
-            note = re.sub(r'!\[([^\]]*)\]\([^)]+\)', r'[Figura: \1 — ver docs/architecture/]', stripped)
-            if note != stripped:
-                yield ('para', note)
+            m_img = re.match(r'^!\[([^\]]*)\]\(([^)]+)\)', stripped)
+            if m_img:
+                yield ('image', (m_img.group(2), m_img.group(1)))
             i += 1
             continue
 
@@ -383,9 +383,9 @@ def iter_md_blocks(md_text):
 
 # ─── Insert content ───────────────────────────────────────────────────────────
 
-def insert_content(doc, md_text):
+def insert_content(doc, md_text, md_dir):
     count = {'heading1': 0, 'heading2': 0, 'heading3': 0,
-             'para': 0, 'bullet': 0, 'code': 0, 'table': 0}
+             'para': 0, 'bullet': 0, 'code': 0, 'table': 0, 'image': 0}
     for (kind, data) in iter_md_blocks(md_text):
         count[kind] = count.get(kind, 0) + 1
         if kind == 'heading1':
@@ -405,6 +405,19 @@ def insert_content(doc, md_text):
             run.font.size = Pt(8)
         elif kind == 'table':
             add_table_md(doc, data)
+        elif kind == 'image':
+            rel_path, alt = data
+            img_path = (md_dir / rel_path).resolve()
+            if img_path.exists():
+                p = doc.add_paragraph()
+                p.alignment = 1  # CENTER
+                run = p.add_run()
+                run.add_picture(str(img_path), width=Cm(14))
+                # Caption
+                cap = doc.add_paragraph(style='Legenda')
+                cap.add_run(alt)
+            else:
+                add_para(doc, f'[Imagem não encontrada: {rel_path}]', 'Normal')
     print(f"  Inserted: {count}")
 
 
@@ -443,7 +456,7 @@ def main():
 
     print("Parsing and inserting report content...")
     md_text = MARKDOWN.read_text(encoding='utf-8')
-    insert_content(doc, md_text)
+    insert_content(doc, md_text, MARKDOWN.parent)
 
     print("Inserting placeholder chapters 4 and 5...")
     insert_placeholders(doc)
