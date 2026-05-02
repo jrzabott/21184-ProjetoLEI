@@ -307,11 +307,22 @@ do projeto.
 
 **Contexto pedagógico**
 
-O problema do Goldilocks aplica-se ao treino auditivo: demasiado fácil e o utilizador
-desengaja; demasiado difícil e desiste. A dificuldade adaptativa existe para manter o
-utilizador na zona de aprendizagem efectiva - onde os exercícios são desafiantes mas
-alcançáveis. Sem adaptação, o utilizador ficaria preso num nível que entretanto dominou
-ou seria forçado a gerir a dificuldade manualmente, o que quebra o fluxo de prátcia.
+Enquanto desenhava o sistema de dificuldade adaptativa, o problema ficou claro
+rapidamente: se a dificuldade ficar muito alta, o utilizador desiste; se ficar muito
+baixa, os exercícios tornam-se apenas chatos e desinteressantes. Fui pesquisar
+estratégias para equilibrar isto - com o número de recursos pedagógicos e jogos
+existentes, alguém já devia ter pensado sobre o tema.
+
+Em minhas buscas, encontrei o princípio do Goldilocks (Csikszentmihalyi, 1990): a ideia
+de que existe uma zona óptima de desafio onde uma tarefa é suficientemente difícil para
+ser estimulante, mas alcançável o suficiente para não causar frustração e abandono. O
+conceito tem raízes na teoria do flow - o estado de absorção total numa actividade onde
+as capacidades do utilizador e o nível de desafio estão alinhados.
+
+No treino auditivo esta zona é especialmente estreita. A diferença entre "consigo
+identificar este intervalo com esforço" e "é sempre o mesmo erro" é pequena mas decisiva
+para manter a prática. A dificuldade adaptativa existe para manter o utilizador nessa
+zona, ajustando automaticamente com base no histórico recente, sem intervenção manual.
 
 **Alternativas consideradas**
 
@@ -336,7 +347,7 @@ fácil de testar e fácil de explicar ao utilizador.
 **Justificação dos parâmetros**
 
 - **80% para subir, 40% para descer**: o limiar de 80% aproxima-se da "zona de
-  desenvolvimento proximal" de Vygotsky - um nível onde o utilizador consegue resolver a
+  desenvolvimento proximal" (Vygotsky, 1978) - um nível onde o utilizador consegue resolver a
   maioria dos problemas com algum esforço, mas nao de forma automática. Abaixo de 40% o
   utilizador está claramente a falhar mais do que a acertar, o que é contraproducente
   pedagogicamente. A assimetria (80 vs 40) é intencional: é mais fácil descer do que
@@ -746,6 +757,8 @@ decisão implementada em feat/13-25 sem registo prévio, identificada na auditor
 Alur, D., Crupi, J., & Malks, D. (2003). *Core J2EE Patterns: Best Practices and
 Design Strategies* (2nd ed.). Prentice Hall.
 
+Csikszentmihalyi, M. (1990). *Flow: The psychology of optimal experience*. Harper & Row.
+
 Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of
 Software*. Addison-Wesley.
 
@@ -760,6 +773,9 @@ APIs*. https://www.rfc-editor.org/rfc/rfc7807
 
 Spring Team. (2024). *Spring Boot 3.3.0 Reference Documentation*.
 https://docs.spring.io/spring-boot/docs/3.3.0/reference/html/
+
+Vygotsky, L. S. (1978). *Mind in society: The development of higher psychological
+processes*. Harvard University Press.
 
 World Wide Web Consortium. (2021). *Web Audio API - W3C Recommendation*.
 https://www.w3.org/TR/webaudio/
