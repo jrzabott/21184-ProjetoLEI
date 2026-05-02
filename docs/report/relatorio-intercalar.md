@@ -103,16 +103,16 @@ Os critérios de aceitação observáveis do MVP estão organizados em nove obje
 
 As principais restrições que condicionaram as decisões de design e implementação:
 
-| ID | Restrição |
-|---|---|
-| CB01 | Sem autenticação nem login |
-| CB02 | Base de dados para um único utilizador implícito |
-| CB05 | Sem ditado rítmico - fora do âmbito desta versão |
-| CB06 | Aplicação web; sem versão mobile nativa |
-| CB07 | Frontend em HTML e JavaScript ES6+ vanilla - sem frameworks |
-| CB11 | Design visual não é prioridade - interface funcional e clara |
-| RNF01 | Backend: Java 21 + Spring Boot, JDBC puro sem ORM |
-| RNF06 | Tempo de resposta da validação < 200ms em ambiente local |
+| ID    | Restrição                                                    |
+|-------|--------------------------------------------------------------|
+| CB01  | Sem autenticação nem login                                   |
+| CB02  | Base de dados para um único utilizador implícito             |
+| CB05  | Sem ditado rítmico - fora do âmbito desta versão             |
+| CB06  | Aplicação web; sem versão mobile nativa                      |
+| CB07  | Frontend em HTML e JavaScript ES6+ vanilla - sem frameworks  |
+| CB11  | Design visual não é prioridade - interface funcional e clara |
+| RNF01 | Backend: Java 21 + Spring Boot, JDBC puro sem ORM            |
+| RNF06 | Tempo de resposta da validação < 200ms em ambiente local     |
 
 Para a lista completa de restrições e constraints, ver `docs/scope/requirements.md`.
 
@@ -208,20 +208,20 @@ por sobreposição com a Páscoa e a entrega de eFólios de outras unidades curr
 (risco R04, identificado na proposta). O backend foi concluído na semana 8, dentro do
 prazo previsto para o intercalar.
 
-| Semanas | Datas         | Realizado / Planeado                                                                                                                                                                                                                                                                                                                          | Marco                   |
-|---|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
-| Sem. 1-2 | 17-28 mar     | Kick-off com orientador. Proposta entregue: sinopse, MVP com critérios de aceitação, stack, calendário.                                                                                                                                                                                                                                       | **✅ Proposta (25 mar)** |
-| Sem. 3-4 | 31 mar-11 abr | Levantamento de requisitos MoSCoW (RF01-RF14, RNF, CB, OI). ADRs 001-011 formalizados. Diagramas C4 e modelo de dados. Repositório GitHub configurado.                                                                                                                                                                                        | -                       |
-| Sem. 5 | 14-18 abr     | Produtividade reduzida - Páscoa e eFólios concorrentes (risco R04).                                                                                                                                                                                                                                                                           | -                       |
-| Sem. 6 | 21-25 abr     | Fase 2 - Persistência: DTOs, DAOs JDBC, 24 testes de integração. Suporte multi-base-de-dados. ADR-012.                                                                                                                                                                                                                                        | -                       |
-| Sem. 7 | 28 abr-2 mai  | Fase 3-4 - Geradores de exercícios e REST API completa. 171 testes. ADR-013, ADR-014. Demo interna ao orientador não ocorreu. Estou atrasado e não contactei o orientador. RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa). Auditoria abrangente do backend e correcção de inconsistências. Backend revisto. 230 testes. | **❌ Demo interna**      |
-| Sem. 8 | 3-6 mai       | Relatório intercalar. Test funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                              | **Intercalar (6 mai)**  |
-| Sem. 9-10 | 7-16 mai      | Fase 5-6 - Frontend: teclado virtual, Web Audio API, Web MIDI API, ecrã de exercício.                                                                                                                                                                                                                                                         | -                       |
+| Semanas    | Datas         | Realizado / Planeado                                                                                                                                                                                                                                                                                                                          | Marco                   |
+|------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| Sem. 1-2   | 17-28 mar     | Kick-off com orientador. Proposta entregue: sinopse, MVP com critérios de aceitação, stack, calendário.                                                                                                                                                                                                                                       | **✅ Proposta (25 mar)** |
+| Sem. 3-4   | 31 mar-11 abr | Levantamento de requisitos MoSCoW (RF01-RF14, RNF, CB, OI). ADRs 001-011 formalizados. Diagramas C4 e modelo de dados. Repositório GitHub configurado.                                                                                                                                                                                        | -                       |
+| Sem. 5     | 14-18 abr     | Produtividade reduzida - Páscoa e eFólios concorrentes (risco R04).                                                                                                                                                                                                                                                                           | -                       |
+| Sem. 6     | 21-25 abr     | Fase 2 - Persistência: DTOs, DAOs JDBC, 24 testes de integração. Suporte multi-base-de-dados. ADR-012.                                                                                                                                                                                                                                        | -                       |
+| Sem. 7     | 28 abr-2 mai  | Fase 3-4 - Geradores de exercícios e REST API completa. 171 testes. ADR-013, ADR-014. Demo interna ao orientador não ocorreu. Estou atrasado e não contactei o orientador. RF07 (persistência), RF08 (dashboard), RF09 (dificuldade adaptativa). Auditoria abrangente do backend e correcção de inconsistências. Backend revisto. 230 testes. | **❌ Demo interna**      |
+| Sem. 8     | 3-6 mai       | Relatório intercalar. Test funcionais com Swagger para garantir funcionamento antes de começar implementação do UI. Tentar agendar demo interna.                                                                                                                                                                                              | **Intercalar (6 mai)**  |
+| Sem. 9-10  | 7-16 mai      | Fase 5-6 - Frontend: teclado virtual, Web Audio API, Web MIDI API, ecrã de exercício.                                                                                                                                                                                                                                                         | -                       |
 | Sem. 11-12 | 19-30 mai     | Fase 7 - Dashboard de progresso, ecrã de fim de sessão. Testes de integração.                                                                                                                                                                                                                                                                 | -                       |
-| Sem. 13 | 2-6 jun       | Revisão geral. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4.                                                                                                                                                                                                                                                    | -                       |
-| Sem. 14 | 9-13 jun      | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Anexos.                                                                                                                                                                                                                                                                     | -                       |
-| Sem. 15 | 16-20 jun     | Reunião de preparação para defesa. Ensaio de perguntas de júri.                                                                                                                                                                                                                                                                               | **Prep. defesa**        |
-| Sem. 16 | 24 jun        | Submissão do relatório final. Código e demo linkados no repositório.                                                                                                                                                                                                                                                                          | **Final (24 jun)**      |
+| Sem. 13    | 2-6 jun       | Revisão geral. Validação de todos os critérios de aceitação. Capturas de ecrã para Cap. 4.                                                                                                                                                                                                                                                    | -                       |
+| Sem. 14    | 9-13 jun      | Cap. 4 (Testes) e Cap. 5 (Conclusões). Revisão bibliográfica APA. Anexos.                                                                                                                                                                                                                                                                     | -                       |
+| Sem. 15    | 16-20 jun     | Reunião de preparação para defesa. Ensaio de perguntas de júri.                                                                                                                                                                                                                                                                               | **Prep. defesa**        |
+| Sem. 16    | 24 jun        | Submissão do relatório final. Código e demo linkados no repositório.                                                                                                                                                                                                                                                                          | **Final (24 jun)**      |
 
 ---
 
@@ -232,15 +232,15 @@ prazo previsto para o intercalar.
 A selecção tecnológica foi orientada por dois princípios: reduzir dependências
 externas ao mínimo e usar tecnologias com experiência prévia existente.
 
-| Componente | Tecnologia | Justificação |
-|---|---|---|
-| Backend | Java 21 + Spring Boot 3.3 | Experiência prévia; Spring Boot minimiza configuração de infraestrutura; JDBC puro sem ORM mantém controlo explícito das queries SQL (ADR-010) |
-| Frontend | HTML + JavaScript ES6+ vanilla | Sem experiência prévia com frameworks - React ou Vue adicionariam curva de aprendizagem desproporcional para o scope do projeto (ADR-008) |
-| Áudio | Web Audio API (nativa) | Zero dependências externas; funciona em qualquer browser moderno sem instalação adicional; suficiente para sintetizar notas isoladas (ADR-004) |
-| MIDI | Web MIDI API (nativa) | Zero dependências; detecção automática de controladores USB; o backend é agnóstico à origem da nota - MIDI ou teclado virtual produzem o mesmo tipo de resposta (ADR-005) |
-| Base de dados (dev) | H2 in-memory | Arranca sem configuração; schema recriado a cada reinício; consola web integrada para inspecção durante desenvolvimento (ADR-007) |
-| Base de dados (prod) | SQLite3 | Zero configuração de servidor, ficheiro único portátil, adequado para aplicação single-user; decidido em OI01 (ADR-001) |
-| Build | Maven | Standard no ecossistema Java/Spring; gestão de dependências madura e estável |
+| Componente           | Tecnologia                     | Justificação                                                                                                                                                              |
+|----------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Backend              | Java 21 + Spring Boot 3.3      | Experiência prévia; Spring Boot minimiza configuração de infraestrutura; JDBC puro sem ORM mantém controlo explícito das queries SQL (ADR-010)                            |
+| Frontend             | HTML + JavaScript ES6+ vanilla | Sem experiência prévia com frameworks - React ou Vue adicionariam curva de aprendizagem desproporcional para o scope do projeto (ADR-008)                                 |
+| Áudio                | Web Audio API (nativa)         | Zero dependências externas; funciona em qualquer browser moderno sem instalação adicional; suficiente para sintetizar notas isoladas (ADR-004)                            |
+| MIDI                 | Web MIDI API (nativa)          | Zero dependências; detecção automática de controladores USB; o backend é agnóstico à origem da nota - MIDI ou teclado virtual produzem o mesmo tipo de resposta (ADR-005) |
+| Base de dados (dev)  | H2 in-memory                   | Arranca sem configuração; schema recriado a cada reinício; consola web integrada para inspecção durante desenvolvimento (ADR-007)                                         |
+| Base de dados (prod) | SQLite3                        | Zero configuração de servidor, ficheiro único portátil, adequado para aplicação single-user; decidido em OI01 (ADR-001)                                                   |
+| Build                | Maven                          | Standard no ecossistema Java/Spring; gestão de dependências madura e estável                                                                                              |
 
 ---
 
@@ -296,57 +296,210 @@ mas não persistida - modo sandbox.
 
 ### 2.5 Algoritmos Principais
 
+A aplicação implementa três algoritmos centrais: adaptação de dificuldade, identificação
+de padrões fracos e geração procedural de exercícios. Nenhum deles é tecnicamente
+sofisticado - o objectivo foi que fossem simples, justificáveis e suficientes para o scope
+do projecto.
+
+---
+
 #### 2.5.1 Dificuldade Adaptativa (RF09)
 
-O `DifficultyService` calcula a dificuldade sugerida com base nos últimos 100
-exercícios completados do mesmo tipo:
+**Contexto pedagógico**
 
-    entrada: tipo T, dificuldade actual D
-    1. buscar os últimos 100 resultados onde exercises.type = T
-    2. taxa_acerto = correctos / total
-    3. se taxa_acerto >= 0.80  → sugerir D + 1
-       se taxa_acerto < 0.40   → sugerir D - 1
-       senão                   → sugerir D
-    4. clamp: sugestão entre 1 e 10
-    5. effectiveDiff = clamp(sugestão, D - 2, D + 2)
-    6. retornar effectiveDiff e sugestão informativa ao frontend
+O problema do Goldilocks aplica-se ao treino auditivo: demasiado fácil e o utilizador
+desengaja; demasiado difícil e desiste. A dificuldade adaptativa existe para manter o
+utilizador na zona de aprendizagem efectiva - onde os exercícios são desafiantes mas
+alcançáveis. Sem adaptação, o utilizador ficaria preso num nível que entretanto dominou
+ou seria forçado a gerir a dificuldade manualmente, o que quebra o fluxo de prática.
 
-A janela de 100 exercícios evita oscilações por variância em amostras pequenas -
-com 10 exercícios, 3 acertos consecutivos podiam inflar artificialmente a dificuldade.
+**Alternativas consideradas**
+
+Considerei três abordagens antes de optar pela actual:
+
+- **Dificuldade fixa**: simples de implementar, mas sem qualquer personalização. Dois
+  utilizadores com níveis muito diferentes teriam a mesma experiência. Rejeitada.
+
+- **Sistema Elo** (como no xadrez): teoricamente elegante, mas desenhado para contextos
+  competitivos com dois oponentes. Adaptá-lo para exercícios de treino individual
+  implicaria definir um "oponente" artificial e calibrar o K-factor para música. A
+  complexidade não era justificada para um MVP.
+
+- **Spaced Repetition (SRS)** (como no Anki): optimizado para memorização de factos
+  estáticos. Teoria musical requer construção de competência auditiva, não memorização de
+  flashcards. A curva de repetição espaçada não mapeia naturalmente para "quão bem tocas
+  um acorde diminuto".
+
+Optei por uma abordagem de limiar simples sobre uma janela deslizante. É transparente,
+fácil de testar e fácil de explicar ao utilizador.
+
+**Justificação dos parâmetros**
+
+- **80% para subir, 40% para descer**: o limiar de 80% aproxima-se da "zona de
+  desenvolvimento proximal" de Vygotsky - um nível onde o utilizador consegue resolver a
+  maioria dos problemas com algum esforço, mas não de forma automática. Abaixo de 40% o
+  utilizador está claramente a falhar mais do que a acertar, o que é contraproducente
+  pedagogicamente. A assimetria (80 vs 40) é intencional: é mais fácil descer do que
+  subir, o que reduz a frustração.
+
+- **Janela de 100 exercícios**: com uma janela de 10 (como previa a proposta original),
+  três acertos consecutivos produziam 100% de acerto e disparavam uma subida imediata.
+  Isso não reflecte o nível real - é ruído estatístico. Com 100 exercícios, 80% implica
+  80 acertos verificados, uma amostra genuinamente representativa.
+
+- **Clamp +-2 sobre a sugestão**: sem este clamp, um utilizador a praticar em dificuldade
+  1 que o sistema considera deveria estar em 7 seria forçado para 5 imediatamente. O
+  clamp preserva a intenção do utilizador dentro de um intervalo razoável. Se o utilizador
+  pede dificuldade 1, o sistema pode sugerir 3 no máximo, não 7.
+
+- **Backend em vez de frontend**: a proposta original colocava esta lógica no frontend.
+  Movi-a para o backend por três razões: consistência entre sessões (o estado não se
+  perde ao fechar o browser), impossibilidade de manipulação client-side, e centralização
+  da lógica de negócio no servidor onde pertence.
+
+**Pseudocódigo**
+
+    entrada: tipo T, dificuldade pedida D
+    1. taxa = (acertos nos últimos 100 resultados com exercises.type = T) / total
+    2. sugestão = D+1 se taxa >= 0.80 | D-1 se taxa < 0.40 | D caso contrário
+    3. sugestão = clamp(sugestão, 1, 10)
+    4. effectiveDiff = clamp(D, sugestão-2, sugestão+2)
+    5. retornar effectiveDiff ao gerador e sugestão informativa ao frontend
+
+**Limitações conhecidas**
+
+O algoritmo trata todos os tipos de exercício como independentes. Melhorar em intervalos
+não afecta a dificuldade de escalas. Isso é correcto para o MVP, mas num sistema mais
+sofisticado haveria transferência de aprendizagem entre tipos relacionados.
+
+---
 
 #### 2.5.2 Identificação de Padrões Fracos (RF08)
 
-O `ProgressService` identifica os padrões onde o utilizador tem pior desempenho:
+**Contexto pedagógico**
 
-    1. SELECT type, questionJson, COUNT(*) total, SUM(is_correct) correctos
+Saber que tenho 65% de acerto em intervalos não me diz o suficiente para melhorar.
+Saber que tenho 20% de acerto no trítono específico sim. A granularidade da identificação
+de fraquezas é o que torna o feedback útil - a dica pedagógica que a aplicação fornece
+deve ser específica o suficiente para orientar a prática.
+
+**Alternativas consideradas**
+
+- **Agregação apenas por tipo de exercício**: registar "intervalos: 65%", "escalas: 70%".
+  Demasiado grosseiro - não distingue onde dentro de cada tipo o utilizador falha.
+
+- **Análise por machine learning / clustering**: identificar padrões automaticamente sem
+  regras definidas à priori. Seria academicamente interessante mas completamente fora de
+  scope para um MVP, e requereria volume de dados que um utilizador individual nunca
+  produziria em tempo útil.
+
+- **Tags manuais pelo professor**: em aplicações como o Teoria existe marcação manual de
+  dificuldade. Não se aplica aqui - não há professor, é self-service.
+
+A abordagem escolhida é uma agregação SQL simples que agrupa por (tipo, padrão específico)
+e ordena pela taxa de acerto. É directa, sem dependências externas, e produz exactamente
+o nível de granularidade necessário.
+
+**Justificação dos parâmetros**
+
+- **Mínimo de 3 tentativas**: com 1 ou 2 tentativas, um único erro produz 0% de acerto
+  - estatisticamente irrelevante. 3 é o mínimo para que a taxa de acerto seja uma medida
+  com algum significado. Há aqui um compromisso: com poucos dados, algumas fraquezas
+  reais ficam fora da análise. Aceito essa limitação em favor de não mostrar falsos
+  positivos.
+
+- **LIMIT 10**: mostrar as 10 áreas com pior desempenho. Na prática, o utilizador não
+  consegue focar em mais do que 2-3 áreas de melhoria em simultâneo. 10 é um limite
+  superior conservador; a apresentação no dashboard pode filtrar mais.
+
+- **questionJson como chave de agrupamento**: para intervalos, o grupo é o intervalo
+  específico (trítono, 5ª Perfeita, etc.), não apenas "intervalos em geral". Para escalas
+  e acordes, o grupo é o tipo (DORIAN, DIMINISHED, etc.). Esta granularidade é a que
+  tem valor pedagógico real.
+
+**Pseudocódigo**
+
+    1. SELECT type, questionJson, COUNT(*) total, SUM(is_correct) acertos
        FROM results JOIN exercises ON exercise_id = id
        GROUP BY type, questionJson
        HAVING COUNT(*) >= 3
-       ORDER BY (correctos * 1.0 / COUNT(*)) ASC
+       ORDER BY acertos * 1.0 / COUNT(*) ASC
        LIMIT 10
-    2. para cada linha: extrair padrão do questionJson por tipo
-       INTERVAL → IntervalType.fromSemitones(|notes[1] - notes[0]|).internalName()
-       SCALE    → questionJson.type
-       CHORD    → questionJson.type
+    2. para cada linha: extrair padrão do questionJson
+       INTERVAL → fromSemitones(|notes[1]-notes[0]|).internalName()
+       SCALE / CHORD → questionJson.type
     3. WeaknessHintProvider.getHint(type, padrão) → dica pedagógica PT-PT
 
-O limiar de 3 tentativas evita que um único erro apareça com 0% de acerto.
+**Limitações conhecidas**
+
+O algoritmo não distingue entre "sempre errei este padrão" e "errei muito este padrão
+recentemente". Uma fraqueza antiga já superada pode continuar a aparecer se houver
+histórico suficiente. Uma solução futura seria aplicar um factor de decaimento temporal.
+
+---
 
 #### 2.5.3 Geração Procedural de Exercícios
 
-Os exercícios são gerados inteiramente a partir do modelo de domínio, sem datasets:
+**Contexto pedagógico**
+
+Um conjunto fixo de exercícios pode ser memorizado. Após algumas repetições, o
+utilizador reconhece o exercício pela sua "aparência" antes de o ouvir, o que invalida
+o treino auditivo. A geração procedural garante que cada sessão é genuinamente diferente,
+forçando o reconhecimento a partir do som e não da memória visual.
+
+**Alternativas consideradas**
+
+- **Banco de exercícios estático**: simples de implementar, mas finito e memorizável.
+  Aplicações como o Ear Trainer da Teoria usam bancos curados - funcionam para conteúdo
+  de alta qualidade, mas limitam a variedade.
+
+- **Conteúdo via API externa**: delegar a geração a um serviço externo. Rejeitado por
+  criar dependência externa, latência, impossibilidade de uso offline, e questões de
+  direitos de autor sobre conteúdo musical.
+
+- **Exercícios gerados por LLM**: tecnicamente possível mas não determinístico - um LLM
+  pode "inventar" intervalos ou escalas incorrectos. Teoria musical não tolera erros
+  factuais; um intervalo de "3.5 semítons" não existe.
+
+A abordagem escolhida constrói os exercícios directamente a partir do modelo de domínio
+Java - os mesmos objectos Scale, Chord, Interval que definem as regras musicais.
+A correcção de um exercício gerado é garantida pelo modelo, não por validação externa.
+
+**Justificação das escolhas de design**
+
+- **Notas brancas para iniciantes**: para utilizadores BEGINNER e ELEMENTARY, as raízes
+  são restritas às notas brancas do piano (C, D, E, F, G, A, B). Preto implica notação
+  enarmónica (C# = Db) que introduz complexidade conceptual antes do momento certo. A
+  música tonal básica - que é onde começa o treino auditivo - usa predominantemente notas
+  brancas.
+
+- **Filtragem de aliases (isAlias())**: o enum ScaleType contém IONIAN como alias de
+  MAJOR. Sem filtro, o gerador produziria exercícios "de escala IONIAN" e "de escala
+  MAJOR" que são musicalmente idênticos, confundindo o utilizador sem valor pedagógico.
+
+- **Selecção aleatória dentro da banda**: não sequencial, não ponderada. A aleatoriedade
+  garante que o utilizador não antecipa o próximo exercício, o que é o requisito central
+  do treino auditivo.
+
+**Pseudocódigo**
 
     entrada: tipo T, dificuldade D
     1. banda = DifficultyLevel.of(D)
-    2. tipos_disponíveis = T.availableFor(banda).filter(!isAlias)
-    3. tipo_escolhido = random(tipos_disponíveis)
-    4. raiz = escolher nota MIDI por banda:
+    2. disponíveis = T.availableFor(banda).filter(!isAlias)
+    3. tipo_escolhido = random(disponíveis)
+    4. raiz = MIDI aleatório por banda
        se banda <= ELEMENTARY: raiz ∈ notas brancas (C3-B4)
        senão: raiz ∈ [C2, C5] cromático
     5. objecto = domain.get(tipo_escolhido, Note.fromMidi(raiz))
-    6. questionJson = serialize(raiz, tipo_escolhido)
-    7. notesToPlay = objecto.getNotes() + [raiz + 12] se escala
-    8. guardar em BD e devolver ao frontend
+    6. notesToPlay = objecto.getNotes() + oitava_final se escala
+    7. guardar em BD; devolver ao frontend
+
+**Limitações conhecidas**
+
+A aleatoriedade uniforme dentro de uma banda significa que um iniciante pode receber
+PENTATONIC_MAJOR e MINOR_NATURAL com igual probabilidade, mesmo que MAJOR seja mais
+fundamental pedagogicamente. Uma versão futura poderia introduzir pesos por frequência
+de uso no ensino tradicional.
 
 ---
 
