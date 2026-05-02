@@ -29,3 +29,7 @@ ehthumbs.db
 # Environment
 .env
 .env.local
+
+# Generated report (binary - regenerate with scripts/build_docx.py)
+docs/report/*.docx
+docs/report/*.pdf
