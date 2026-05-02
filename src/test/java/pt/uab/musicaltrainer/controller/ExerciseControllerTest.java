@@ -138,6 +138,21 @@ class ExerciseControllerTest {
     }
 
     @Test
+    void shouldNotReturnOptionsFieldInGenerateResponse() throws Exception {
+        // ADR-014: protocolo baseado em notas MIDI — sem multipla escolha
+        // O campo options foi removido por ser um vestigio do design original
+        String resp = mockMvc.perform(post("/api/exercises/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"type\":\"INTERVAL\",\"difficulty\":1}"))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
+
+        com.fasterxml.jackson.databind.JsonNode node =
+            new com.fasterxml.jackson.databind.ObjectMapper().readTree(resp);
+        assertThat(node.has("options")).isFalse();
+    }
+
+    @Test
     void shouldReturnAnswerWithJsonArrayFormat() throws Exception {
         // correctAnswer e userAnswer devem ser JSON arrays sem espaços: [60,67]
         String genResp = mockMvc.perform(post("/api/exercises/generate")
