@@ -33,7 +33,7 @@ CREATE TABLE results (
     is_correct BOOLEAN NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE,
-    FOREIGN KEY (exercise_id) REFERENCES exercises (id) ON DELETE SET NULL
+    FOREIGN KEY (exercise_id) REFERENCES exercises (id) ON DELETE CASCADE
 );
 
 -- Indexes for performance
