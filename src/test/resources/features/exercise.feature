@@ -47,7 +47,7 @@ Feature: Ecrã de exercício activo
     When o utilizador clica em Terminar no exercício
     Then a página de resumo está visível
 
-  Scenario: botão Enviar desativado quando não há notas tocadas
+  Scenario: Botão Enviar desativado quando não há notas tocadas
     Then o botão Enviar resposta está desativado
     When o utilizador clica na tecla MIDI 60 no exercício
     Then o botão Enviar resposta está activo
