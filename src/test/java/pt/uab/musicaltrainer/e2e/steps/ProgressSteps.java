@@ -1,7 +1,6 @@
 package pt.uab.musicaltrainer.e2e.steps;
 
 import com.codeborne.selenide.Condition;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import pt.uab.musicaltrainer.e2e.pages.ProgressPage;
@@ -15,12 +14,6 @@ public class ProgressSteps {
 
     @When("o utilizador abre a página de progresso")
     public void openProgressPage() {
-        page.open();
-        waitForLoad();
-    }
-
-    @And("o utilizador abre a página de progresso")
-    public void openProgressPageAnd() {
         page.open();
         waitForLoad();
     }

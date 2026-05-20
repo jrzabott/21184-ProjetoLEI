@@ -47,10 +47,6 @@ public class IndexSteps {
     @When("o utilizador clica na tecla MIDI {int}")
     public void clickMidi(int midi) { indexPage.clickKey(midi); }
 
-    // "And o utilizador clica na tecla MIDI X" no Gherkin usa o mesmo step que @When
-    @And("o utilizador clica na tecla MIDI {int}")
-    public void clickMidiAnd(int midi) { indexPage.clickKey(midi); }
-
     @Then("o painel de notas sandbox contém {string}")
     public void notesPanelContains(String text) {
         indexPage.notesDisplay().shouldHave(Condition.partialText(text));

@@ -113,7 +113,7 @@ initMidi(midi => handleNoteOn(midi), updateLed);
 window.addEventListener('beforeunload', () => {
     const id = state.getSessionId();
     if (id && state.getMode() === 'session') {
-        navigator.sendBeacon(`http://localhost:8080/api/sessions/${id}/end`);
+        navigator.sendBeacon(`/api/sessions/${id}/end`);
     }
 });
 
