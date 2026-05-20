@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercício — Musical Trainer</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- cabecalho: logo, contador de acertos (sessao) ou label pratica, botao terminar, LED MIDI -->
+<header class="app-header">
+  <a class="app-logo" href="index.html">♩ Musical<span>Trainer</span></a>
+  <nav class="nav-links">
+    <div class="session-counter" id="session-counter"></div>
+    <button class="btn btn-ghost btn-sm" id="btn-end">Terminar</button>
+    <div class="midi-led" id="midi-led"></div>
+  </nav>
+</header>
+
+<!-- banner de modo pratica - oculto em sessao pontuada -->
+<div class="practice-banner hidden" id="practice-banner">
+  Modo prática — não conta para o progresso
+</div>
+
+<div class="p-16">
+
+  <!-- card com a pergunta do exercicio -->
+  <div class="exercise-card" id="exercise-card">
+    <h2 id="exercise-description">A carregar exercício...</h2>
+    <p id="exercise-hint" class="hidden"></p>
+    <button class="btn btn-primary btn-sm" id="btn-listen">▶ Ouvir</button>
+  </div>
+
+  <!-- painel de recolha de notas: mostra o que foi tocado, botao limpar -->
+  <div class="notes-panel mt-12">
+    <div class="flex justify-between items-center mb-6">
+      <span class="notes-hint" id="notes-hint"></span>
+      <button class="btn btn-ghost btn-sm" id="btn-clear">Limpar</button>
+    </div>
+    <div class="notes-display" id="notes-display">—</div>
+  </div>
+
+  <!-- botao de envio - oculto apos avaliacao ate ao proximo exercicio -->
+  <div class="flex justify-center mt-16" id="submit-area">
+    <button class="btn btn-secondary" id="btn-submit">Enviar resposta</button>
+  </div>
+
+  <!-- resultado da avaliacao - oculto ate enviar resposta -->
+  <div id="feedback-area" class="hidden">
+    <div class="feedback-panel mt-12" id="feedback-panel"></div>
+    <div class="flex justify-center mt-16">
+      <button class="btn btn-primary" id="btn-next">Próximo exercício</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- teclado virtual -->
+<div class="keyboard-outer">
+  <div class="keyboard" id="exercise-keyboard"></div>
+</div>
+
+<script type="module">
+import { generateExercise, submitAnswer, endSession } from './js/api.js';
+import * as state from './js/state.js';
+import { createNotesQueue }                           from './js/notes-queue.js';
+import {
+    buildKeyboard, onNoteOn,
+    highlightNotes, clearHighlights, getKeyboardRange,
+} from './js/keyboard.js';
+import { playNotes, playNote, playCorrect, playIncorrect } from './js/audio.js';
+import { initMidi }                                   from './js/midi.js';
+
+/* --- estado local desta pagina --- */
+let currentExercise  = null; // GenerateResponse recebido do backend
+let notesQueue       = null; // criado apos gerar exercicio (max = exercise.notes.length)
+let exerciseStartMs  = 0;    // para calcular responseTimeMs ao enviar resposta
+let awaitingNext     = false; // true entre avaliacao e clique em "Proximo exercicio"
+
+/* --- elementos do DOM --- */
+const counterEl      = document.getElementById('session-counter');
+const practiceBanner = document.getElementById('practice-banner');
+const descEl         = document.getElementById('exercise-description');
+const hintEl         = document.getElementById('exercise-hint');
+const notesHintEl    = document.getElementById('notes-hint');
+const notesDisplayEl = document.getElementById('notes-display');
+const submitArea     = document.getElementById('submit-area');
+const feedbackArea   = document.getElementById('feedback-area');
+const feedbackPanel  = document.getElementById('feedback-panel');
+const ledEl          = document.getElementById('midi-led');
+
+/* --- inicializacao da pagina --- */
+if (state.getMode() === 'practice') {
+    practiceBanner.classList.remove('hidden');
+}
+renderCounter();
+
+const [s, e] = getKeyboardRange();
+buildKeyboard('exercise-keyboard', s, e);
+
+// teclado virtual e MIDI fisico encaminham para o mesmo handler
+onNoteOn(midi => handleNoteOn(midi));
+
+function updateLed(ledState) {
+    ledEl.className = 'midi-led' + (ledState !== 'off' ? ` ${ledState}` : '');
+}
+initMidi(midi => handleNoteOn(midi), updateLed);
+
+// fecha a sessao no backend se o utilizador sair sem clicar "Terminar"
+// navigator.sendBeacon e preferido sobre fetch porque e sincrono o suficiente
+// para completar mesmo durante o evento beforeunload
+window.addEventListener('beforeunload', () => {
+    const id = state.getSessionId();
+    if (id && state.getMode() === 'session') {
+        navigator.sendBeacon(`http://localhost:8080/api/sessions/${id}/end`);
+    }
+});
+
+// carrega o primeiro exercicio ao abrir a pagina
+loadExercise();
+
+/* --- logica principal --- */
+
+async function loadExercise() {
+    awaitingNext = false;
+    feedbackArea.classList.add('hidden');
+    submitArea.classList.remove('hidden');
+    notesDisplayEl.textContent = '—';
+    clearHighlights();
+
+    try {
+        currentExercise = await generateExercise(
+            state.getType(),
+            state.getDifficulty(),
+            state.getSessionId(),
+        );
+        exerciseStartMs = Date.now();
+        state.setExercise(currentExercise);
+
+        descEl.textContent = currentExercise.description;
+
+        if (currentExercise.hint) {
+            hintEl.textContent = currentExercise.hint;
+            hintEl.classList.remove('hidden');
+        } else {
+            hintEl.classList.add('hidden');
+        }
+
+        // max da fila derivado directamente do backend - funciona para qualquer tipo de escala
+        notesQueue = createNotesQueue(currentExercise.notes.length);
+        const n = currentExercise.notes.length;
+        notesHintEl.textContent = `Esperado: ${n} nota${n !== 1 ? 's' : ''}`;
+
+    } catch (err) {
+        descEl.textContent = 'Erro ao carregar exercício. Verifica se o servidor está a correr.';
+        console.error('generateExercise falhou:', err);
+    }
+}
+
+function handleNoteOn(midi) {
+    // ignora input enquanto o utilizador nao clicou "Proximo exercicio"
+    if (awaitingNext || !notesQueue) return;
+    playNote(midi, 300);
+    notesQueue.push(midi);
+    notesDisplayEl.textContent = notesQueue.toDisplayString() || '—';
+}
+
+function renderCounter() {
+    if (state.getMode() === 'practice') {
+        counterEl.innerHTML = '<span class="color-accent">Prática</span>';
+    } else {
+        const c = state.getCounters();
+        counterEl.innerHTML = `<strong>${c.correct}</strong>/${c.total} correctas`;
+    }
+}
+
+/* --- botao Ouvir --- */
+document.getElementById('btn-listen').addEventListener('click', () => {
+    if (!currentExercise) return;
+    clearHighlights();
+    playNotes(currentExercise.notes);
+    // ilumina cada tecla sincronizada com a reproducao audio (300ms entre notas)
+    currentExercise.notes.forEach((midi, i) => {
+        setTimeout(() => highlightNotes([midi]),  i * 300);
+        setTimeout(() => clearHighlights(),       i * 300 + 380);
+    });
+});
+
+/* --- botao Limpar --- */
+document.getElementById('btn-clear').addEventListener('click', () => {
+    if (notesQueue) notesQueue.clear();
+    notesDisplayEl.textContent = '—';
+});
+
+/* --- botao Enviar resposta --- */
+document.getElementById('btn-submit').addEventListener('click', async () => {
+    if (!currentExercise || !notesQueue || awaitingNext) return;
+
+    const notes          = notesQueue.toArray();
+    const responseTimeMs = Date.now() - exerciseStartMs;
+
+    try {
+        const result = await submitAnswer(
+            currentExercise.exerciseId,
+            state.getSessionId(),
+            notes,
+            responseTimeMs,
+        );
+
+        awaitingNext = true;
+        submitArea.classList.add('hidden');
+        feedbackArea.classList.remove('hidden');
+
+        if (result.correct) {
+            feedbackPanel.className = 'feedback-panel correct mt-12';
+            feedbackPanel.textContent = '✓ ' + (result.explanation || 'Correcto!');
+            playCorrect();
+        } else {
+            feedbackPanel.className = 'feedback-panel incorrect mt-12';
+            feedbackPanel.textContent = '✗ ' + (result.explanation || 'Incorrecto.');
+            playIncorrect();
+        }
+
+        // actualiza a dificuldade para o proximo exercicio com a sugestao do backend
+        if (currentExercise.suggestedDifficulty) {
+            state.setDifficulty(currentExercise.suggestedDifficulty);
+        }
+        state.incrementCounters(result.correct);
+        renderCounter();
+
+    } catch (err) {
+        alert('Erro ao enviar resposta: ' + err.message);
+    }
+});
+
+/* --- botao Proximo exercicio --- */
+document.getElementById('btn-next').addEventListener('click', () => loadExercise());
+
+/* --- botao Terminar --- */
+document.getElementById('btn-end').addEventListener('click', async () => {
+    if (state.getMode() === 'session') {
+        try {
+            const result = await endSession(state.getSessionId());
+            state.setSessionResult(result);
+        } catch {
+            // beacon ja tentou fechar - continua para session-end na mesma
+        }
+    }
+    window.location.href = 'session-end.html';
+});
+</script>
+</body>
+</html>
