@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musical Trainer</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- cabecalho: logo, link para progresso, botao de ajuda, LED MIDI -->
+<header class="app-header">
+  <a class="app-logo" href="index.html">♩ Musical<span>Trainer</span></a>
+  <nav class="nav-links">
+    <a href="progress.html">Progresso</a>
+    <button class="help-btn" id="help-btn" aria-label="Ajuda">?</button>
+    <div class="midi-led" id="midi-led"></div>
+  </nav>
+</header>
+
+<!-- banner de sessao orfa - aparece se houver sessao activa em storage -->
+<div class="orphan-banner hidden" id="orphan-banner">
+  <span>Tens uma sessão em curso.</span>
+  <button class="btn btn-sm btn-secondary" id="orphan-continue">Continuar</button>
+  <button class="btn btn-sm btn-ghost"      id="orphan-end">Terminar</button>
+</div>
+
+<!-- seleccao de tipo de exercicio e modo de inicio -->
+<div class="p-16">
+  <p class="text-sm opacity-60 mb-8">O que queres praticar?</p>
+  <div class="type-selector" id="type-selector">
+    <button class="type-btn" data-type="INTERVAL">Intervalos</button>
+    <button class="type-btn" data-type="SCALE">Escalas</button>
+    <button class="type-btn" data-type="CHORD">Acordes</button>
+  </div>
+  <div class="flex gap-8 mt-16">
+    <button class="btn btn-secondary w-full" id="btn-practice">Praticar</button>
+    <button class="btn btn-primary w-full"   id="btn-session">Iniciar sessão</button>
+  </div>
+  <p class="text-xs opacity-60 text-center mt-12">Praticar não guarda resultados</p>
+</div>
+
+<!-- painel sandbox: notas tocadas + intervalo entre as duas mais recentes (F08) -->
+<div class="px-16 mb-12">
+  <div class="notes-panel">
+    <div class="notes-display" id="sandbox-notes">Toca uma tecla para começar...</div>
+    <div class="interval-info" id="sandbox-interval"></div>
+  </div>
+</div>
+
+<!-- teclado sandbox - tocavel livremente, sem recolha de resposta a exercicio -->
+<div class="keyboard-outer">
+  <div class="keyboard" id="sandbox-keyboard"></div>
+</div>
+
+<!-- modal de ajuda -->
+<div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Fechar">×</button>
+    <h3>Ajuda</h3>
+    <h4>Sobre</h4>
+    <p>Musical Trainer é uma ferramenta de treino auditivo. Identifica intervalos, escalas e acordes tocando no teclado virtual ou num controlador MIDI físico.</p>
+    <h4>Como funciona</h4>
+    <ul>
+      <li><strong>Praticar</strong> — ouve e toca as notas. Sem pontuação.</li>
+      <li><strong>Iniciar sessão</strong> — os resultados ficam guardados.</li>
+      <li><strong>Progresso</strong> — vê a evolução por tipo de exercício.</li>
+    </ul>
+    <h4>Perguntas frequentes</h4>
+    <div class="faq-q">A prática conta para o progresso?</div>
+    <div class="faq-a">Não. O modo prática é efémero — nada fica guardado quando sais.</div>
+    <div class="faq-q">Posso usar teclado MIDI físico?</div>
+    <div class="faq-a">Sim, se o browser suportar Web MIDI API (Chrome e Edge).</div>
+    <div class="flex justify-center mt-16">
+      <button class="btn btn-ghost btn-sm" id="modal-close-alt">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { startSession, endSession, getNoteInfo } from './js/api.js';
+import * as state from './js/state.js';
+import { createNotesQueue }                      from './js/notes-queue.js';
+import { buildKeyboard, onNoteOn, getKeyboardRange } from './js/keyboard.js';
+import { playNote }                              from './js/audio.js';
+import { initMidi }                              from './js/midi.js';
+
+/* --- seletor de tipo --- */
+const typeButtons = document.querySelectorAll('.type-btn');
+
+// restaura o tipo guardado da sessao anterior
+const savedType = state.getType();
+typeButtons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === savedType);
+    btn.addEventListener('click', () => {
+        typeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.setType(btn.dataset.type);
+    });
+});
+
+/* --- sandbox: painel de notas e intervalo (F08) --- */
+const sandboxQ   = createNotesQueue(8);
+const notesEl    = document.getElementById('sandbox-notes');
+const intervalEl = document.getElementById('sandbox-interval');
+
+/**
+ * Processa uma nota do sandbox - tanto do teclado virtual como do MIDI fisico.
+ * Optei por centralizar aqui em vez de dois handlers separados para garantir
+ * que o intervalo e calculado independentemente da origem da nota.
+ * @param {number} midi
+ */
+async function handleSandboxNote(midi) {
+    playNote(midi, 500);
+    sandboxQ.push(midi);
+    notesEl.textContent = sandboxQ.toDisplayString();
+
+    const arr = sandboxQ.toArray();
+    if (arr.length >= 2) {
+        try {
+            const info = await getNoteInfo(arr.slice(-2));
+            intervalEl.textContent = info.interval
+                ? `${info.interval.name} — ${info.interval.semitones} semítons`
+                : '';
+        } catch { intervalEl.textContent = ''; }
+    } else {
+        intervalEl.textContent = '';
+    }
+}
+
+// teclado virtual e MIDI fisico chamam o mesmo handler
+onNoteOn(midi => handleSandboxNote(midi));
+
+const [s, e] = getKeyboardRange();
+buildKeyboard('sandbox-keyboard', s, e);
+
+/* --- LED MIDI --- */
+const ledEl = document.getElementById('midi-led');
+function updateLed(ledState) {
+    ledEl.className = 'midi-led' + (ledState !== 'off' ? ` ${ledState}` : '');
+}
+initMidi(midi => handleSandboxNote(midi), updateLed);
+
+/* --- modal de ajuda --- */
+const modal    = document.getElementById('help-modal');
+const openBtn  = document.getElementById('help-btn');
+const closeBtn = document.getElementById('modal-close');
+const closeAlt = document.getElementById('modal-close-alt');
+openBtn.addEventListener('click',  () => modal.classList.add('visible'));
+closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
+closeAlt.addEventListener('click', () => modal.classList.remove('visible'));
+// fecha ao clicar fora do modal-box
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('visible'); });
+
+/* --- banner de sessao orfa --- */
+const banner      = document.getElementById('orphan-banner');
+const continueBtn = document.getElementById('orphan-continue');
+const endBtn      = document.getElementById('orphan-end');
+
+if (state.hasActiveSession()) {
+    banner.classList.remove('hidden');
+}
+continueBtn.addEventListener('click', () => {
+    window.location.href = 'exercise.html';
+});
+endBtn.addEventListener('click', async () => {
+    try { await endSession(state.getSessionId()); } catch { /* best effort - sessao pode ja estar fechada */ }
+    state.clearSession();
+    banner.classList.add('hidden');
+});
+
+/* --- botao Praticar --- */
+document.getElementById('btn-practice').addEventListener('click', () => {
+    state.setMode('practice');
+    state.setSessionId(0);
+    state.setCounters({ correct: 0, incorrect: 0, total: 0 });
+    window.location.href = 'exercise.html';
+});
+
+/* --- botao Iniciar sessao --- */
+document.getElementById('btn-session').addEventListener('click', async () => {
+    // se ja ha sessao activa, mostra o banner em vez de abrir outra em paralelo
+    if (state.hasActiveSession()) {
+        banner.classList.remove('hidden');
+        return;
+    }
+    try {
+        const session = await startSession();
+        state.setMode('session');
+        state.setSessionId(session.id);
+        state.setSessionTs(new Date().toISOString());
+        state.setCounters({ correct: 0, incorrect: 0, total: 0 });
+        window.location.href = 'exercise.html';
+    } catch (err) {
+        alert('Erro ao iniciar sessão: ' + err.message);
+    }
+});
+</script>
+</body>
+</html>
