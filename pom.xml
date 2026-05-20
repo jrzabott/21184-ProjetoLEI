@@ -23,6 +23,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <assertj.version>3.24.1</assertj.version>
+        <cucumber.version>7.15.0</cucumber.version>
+        <selenide.version>7.2.2</selenide.version>
     </properties>
 
     <dependencies>
@@ -88,6 +90,39 @@
             <groupId>net.jqwik</groupId>
             <artifactId>jqwik</artifactId>
             <version>1.9.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Cucumber BDD - ficheiros .feature como documentacao viva dos casos de uso (ADR-020) -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Selenide - Selenium wrapper com auto-waits e gestao automatica de ChromeDriver -->
+        <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>selenide</artifactId>
+            <version>${selenide.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
