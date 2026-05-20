@@ -1,6 +1,5 @@
 package pt.uab.musicaltrainer.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,11 +20,9 @@ public class ExerciseController {
     private static final Logger logger = LoggerFactory.getLogger(ExerciseController.class);
 
     private final ExerciseService service;
-    private final ObjectMapper objectMapper;
 
-    public ExerciseController(ExerciseService service, ObjectMapper objectMapper) {
+    public ExerciseController(ExerciseService service) {
         this.service = service;
-        this.objectMapper = objectMapper;
         logger.info("ExerciseController inicializado");
     }
 
@@ -56,10 +53,7 @@ public class ExerciseController {
         int[] expectedNotes = service.getExpectedNotes(request.exerciseId());
         String explanation  = service.buildExplanation(request.exerciseId(), request.notes(), correct);
 
-        String correctAnswerJson = objectMapper.writeValueAsString(expectedNotes);
-        String userAnswerJson    = objectMapper.writeValueAsString(request.notes());
-
-        AnswerResponse response = new AnswerResponse(correct, correctAnswerJson, userAnswerJson, explanation);
+        AnswerResponse response = new AnswerResponse(correct, expectedNotes, request.notes(), explanation);
         logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);
         return ResponseEntity.ok(response);
     }

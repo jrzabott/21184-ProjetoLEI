@@ -46,3 +46,9 @@ criaria risco de inconsistência. Para INTERVAL, guardar os dois MIDI numbers
 - OI07 em docs/scope/requirements.md
 - ADR-003 (geração procedural sem datasets)
 - ADR-010 (JDBC sem JPA)
+
+## Actualização - 2026-05-20
+
+`correctAnswer` e `userAnswer` em `AnswerResponse` foram corrigidos de `String`
+(JSON-dentro-de-JSON, e.g. `"[60,67]"`) para `int[]` (array nativo JSON, e.g. `[60,67]`).
+Correcção do bug P29. Alinha com o campo `notes` em `GenerateResponse` (ADR-014).
