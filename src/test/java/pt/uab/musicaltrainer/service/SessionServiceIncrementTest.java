@@ -52,4 +52,23 @@ class SessionServiceIncrementTest {
         assertThat(updated.correctAnswers()).isEqualTo(2);
         assertThat(updated.incorrectAnswers()).isEqualTo(1);
     }
+
+    @Test
+    void shouldNotIncrementCountersAfterSessionEnded() throws Exception {
+        SessionRecord session = service.startSession();
+        service.endSession(session.id());
+
+        // confirmar que esta terminada
+        SessionRecord ended = daoFactory.createSessionDao().findById(session.id()).orElseThrow();
+        assertThat(ended.endTime()).isNotNull();
+        int totalBefore = ended.totalExercises();
+
+        // tentar incrementar numa sessao ja terminada - nao deve alterar nada
+        service.incrementCounters(session.id(), true);
+
+        SessionRecord after = daoFactory.createSessionDao().findById(session.id()).orElseThrow();
+        assertThat(after.totalExercises())
+            .as("incrementCounters nao deve alterar sessao ja terminada")
+            .isEqualTo(totalBefore);
+    }
 }

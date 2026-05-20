@@ -81,14 +81,18 @@ public class SessionDao extends AbstractDao<SessionRecord> {
             "total_exercises   = total_exercises + 1, " +
             "correct_answers   = correct_answers + ?, " +
             "incorrect_answers = incorrect_answers + ? " +
-            "WHERE id = ?";
+            "WHERE id = ? AND end_time IS NULL";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, correct ? 1 : 0);
             ps.setInt(2, correct ? 0 : 1);
             ps.setLong(3, sessionId);
             int rows = ps.executeUpdate();
-            logger.info("Contadores actualizados: sessionId={}, correct={}, rows={}", sessionId, correct, rows);
+            if (rows == 0) {
+                logger.warn("incrementCounters ignorado: sessao {} ja terminada ou nao existe", sessionId);
+            } else {
+                logger.info("Contadores actualizados: sessionId={}, correct={}, rows={}", sessionId, correct, rows);
+            }
         }
     }
 
