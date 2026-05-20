@@ -88,9 +88,9 @@
 
 ## Sem. 11 · 19–23 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Frontend implementado (feat/54-57): main.css + 6 módulos JS (api, state, notes-queue, keyboard, audio, midi) + 4 páginas HTML (index, exercise, session-end, progress). Cobertura completa F03-F09. Gestão de sessões órfãs via beforeunload beacon + banner de recuperação. Fila de notas com tamanho dinâmico derivado do backend (suporta pentatónica 6 notas, cromática 13 notas, etc).
+**Bloqueou:** -
+**Próxima semana:** Validação funcional em browser. Testes de integração. Triagem bugs médios P18-P25, P29.
 
 ---
 
