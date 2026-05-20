@@ -111,3 +111,13 @@ com seta de scroll - o teclado faz scroll horizontal para mostrar a tecla em cau
 - W3C WCAG 2.5.8 Target Size: https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
 - Apple HIG: https://developer.apple.com/design/human-interface-guidelines/
 - Google Material Design 3: https://m3.material.io/foundations/layout/understanding-layout/overview
+
+
+## Limitação conhecida — eventos de toque (2026-05-20)
+
+O teclado virtual implementa `mousedown`/`mouseup`/`mouseleave`. Eventos de toque nativos
+(`touchstart`, `touchend`, `touchmove`) não estão implementados. Os breakpoints definidos neste
+ADR aplicam-se ao dimensionamento visual das teclas, não à experiência de toque. Em tablet, o
+clique simples funciona via evento de rato sintético, mas arrastar o dedo por várias teclas
+não dispara notas. Esta limitação foi aceite para MVP — a funcionalidade de toque pode ser
+adicionada como melhoria futura sem alterar este ADR.
