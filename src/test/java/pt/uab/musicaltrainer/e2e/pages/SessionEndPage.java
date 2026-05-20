@@ -2,12 +2,14 @@ package pt.uab.musicaltrainer.e2e.pages;
 
 import com.codeborne.selenide.SelenideElement;
 
+import com.codeborne.selenide.Selenide;
+
 import static com.codeborne.selenide.Selenide.*;
 
 /** Page object para session-end.html - resumo de sessao. */
 public class SessionEndPage {
 
-    public void open() { open("/session-end.html"); }
+    public void open() { Selenide.open("/session-end.html"); }
 
     public SelenideElement title()          { return $("#page-title"); }
     public SelenideElement practiceBanner() { return $("#practice-banner"); }

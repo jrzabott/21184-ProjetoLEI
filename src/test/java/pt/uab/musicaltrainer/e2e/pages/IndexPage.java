@@ -2,12 +2,15 @@ package pt.uab.musicaltrainer.e2e.pages;
 
 import com.codeborne.selenide.SelenideElement;
 
+import com.codeborne.selenide.Selenide;
+
 import static com.codeborne.selenide.Selenide.*;
 
 /** Page object para index.html - landing page e modo sandbox (F08). */
 public class IndexPage {
 
-    public void open() { open("/index.html"); }
+    /** Navega para index.html. Usa Selenide.open() explicitamente para evitar ambiguidade com o nome do metodo. */
+    public void open() { Selenide.open("/index.html"); }
 
     public SelenideElement typeBtn(String dataType) { return $(".type-btn[data-type='" + dataType + "']"); }
     public SelenideElement practiceBtn()    { return $("#btn-practice"); }
@@ -34,11 +37,11 @@ public class IndexPage {
      * A pagina so le sessionStorage ao carregar - precisa de refresh apos injectar.
      */
     public void injectActiveSession() {
-        open("/index.html");
+        Selenide.open("/index.html");
         executeJavaScript(
             "sessionStorage.setItem('mt_mode',       JSON.stringify('session'));" +
             "sessionStorage.setItem('mt_session_id', JSON.stringify(42));"
         );
-        refresh();
+        Selenide.refresh();
     }
 }

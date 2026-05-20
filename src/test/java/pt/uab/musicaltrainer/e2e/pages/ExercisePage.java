@@ -2,12 +2,14 @@ package pt.uab.musicaltrainer.e2e.pages;
 
 import com.codeborne.selenide.SelenideElement;
 
+import com.codeborne.selenide.Selenide;
+
 import static com.codeborne.selenide.Selenide.*;
 
 /** Page object para exercise.html - fluxo de exercicio activo (F03, F05, F09). */
 public class ExercisePage {
 
-    public void open() { open("/exercise.html"); }
+    public void open() { Selenide.open("/exercise.html"); }
 
     public SelenideElement description()    { return $("#exercise-description"); }
     public SelenideElement hint()           { return $("#exercise-hint"); }
