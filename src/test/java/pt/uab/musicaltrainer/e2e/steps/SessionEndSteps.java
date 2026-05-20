@@ -56,7 +56,7 @@ public class SessionEndSteps {
     @Given("que o utilizador concluiu uma sessão pontuada")
     public void completedScoredSession() {
         var session = rest.postForObject("/api/sessions/start", Map.of(), Map.class);
-        long sessionId = ((Number) session.get("id")).longValue();
+        long sessionId = ((Number) session.get("sessionId")).longValue();
 
         var ex = rest.postForObject("/api/exercises/generate",
             new GenerateRequest("INTERVAL", 1, sessionId), Map.class);

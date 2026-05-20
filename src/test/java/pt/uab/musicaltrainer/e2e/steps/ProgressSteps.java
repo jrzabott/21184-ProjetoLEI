@@ -34,7 +34,8 @@ public class ProgressSteps {
 
     @Then("a mensagem de estado vazio contém {string}")
     public void emptyMsgContains(String text) {
-        page.emptyMsg().shouldHave(Condition.text(text));
+        // "Ainda sem histórico" está no h2 de #empty-state, nao em #empty-msg
+        page.emptyState().$("h2").shouldHave(Condition.text(text));
     }
 
     @Then("o botão Iniciar sessão está visível no estado vazio")

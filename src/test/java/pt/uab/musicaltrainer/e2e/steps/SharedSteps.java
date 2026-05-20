@@ -82,7 +82,7 @@ public class SharedSteps {
     @Given("que existem sessões registadas")
     public void createSessionWithData() {
         var session = rest.postForObject("/api/sessions/start", Map.of(), Map.class);
-        long sessionId = ((Number) session.get("id")).longValue();
+        long sessionId = ((Number) session.get("sessionId")).longValue(); // campo e sessionId, nao id
 
         var ex = rest.postForObject("/api/exercises/generate",
             new GenerateRequest("INTERVAL", 1, sessionId), Map.class);
