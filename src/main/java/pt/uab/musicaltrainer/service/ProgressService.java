@@ -95,7 +95,9 @@ public class ProgressService {
         try {
             if ("INTERVAL".equals(exerciseType)) {
                 IntervalQuestion q = objectMapper.readValue(questionJson, IntervalQuestion.class);
-                return IntervalType.fromSemitones(Math.abs(q.notes()[1] - q.notes()[0])).internalName();
+                int delta = Math.abs(q.notes()[1] - q.notes()[0]);
+                int safeDelta = Math.min(delta, 12); // intervalos compostos > 12 semitones: clamp para OITAVA_PERFEITA
+                return IntervalType.fromSemitones(safeDelta).internalName();
             } else if ("SCALE".equals(exerciseType)) {
                 ScaleQuestion q = objectMapper.readValue(questionJson, ScaleQuestion.class);
                 return q.type();
