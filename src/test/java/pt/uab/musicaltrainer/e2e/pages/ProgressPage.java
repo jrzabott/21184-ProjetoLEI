@@ -20,6 +20,7 @@ public class ProgressPage {
     public SelenideElement byType()        { return $("#by-type"); }
     public SelenideElement recentSection() { return $("#recent-section"); }
     public SelenideElement backLink()      { return $("a[href='index.html']"); }
+    public SelenideElement midiLed()       { return com.codeborne.selenide.Selenide.$("#midi-led"); }
 
     public void clickStart() { startBtn().click(); }
     public void clickBack()  { backLink().click(); }
