@@ -116,13 +116,32 @@ async function load() {
         Object.entries(data.byType).forEach(([type, stats]) => {
             const label = TYPE_LABELS[type] ?? type;
             const p     = asPct(stats.accuracy);
-            byTypeEl.insertAdjacentHTML('beforeend', `
-              <div class="mb-8">
-                <div class="flex justify-between text-sm mb-6">
-                  <span>${label}</span><span>${p}%</span>
-                </div>
-                ${barHtml(stats.accuracy)}
-              </div>`);
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'mb-8';
+
+            const row = document.createElement('div');
+            row.className = 'flex justify-between text-sm mb-6';
+
+            const labelSpan = document.createElement('span');
+            labelSpan.textContent = label;
+
+            const pctSpan = document.createElement('span');
+            pctSpan.textContent = p + '%';
+
+            row.appendChild(labelSpan);
+            row.appendChild(pctSpan);
+
+            const barOuter = document.createElement('div');
+            barOuter.className = 'progress-bar';
+            const barInner = document.createElement('div');
+            barInner.className = 'progress-fill';
+            barInner.style.width = asPct(stats.accuracy) + '%';
+            barOuter.appendChild(barInner);
+
+            wrapper.appendChild(row);
+            wrapper.appendChild(barOuter);
+            byTypeEl.appendChild(wrapper);
         });
     }
 
@@ -132,11 +151,20 @@ async function load() {
         const weakEl = document.getElementById('weak-areas');
         data.weakestAreas.forEach(w => {
             const typeLabel = TYPE_LABELS[w.exerciseType] ?? w.exerciseType;
-            weakEl.insertAdjacentHTML('beforeend', `
-              <div class="hint-card mb-8">
-                <div class="hint-label">${typeLabel} · ${w.displayName} · ${asPct(w.accuracy)}%</div>
-                ${w.hint ?? ''}
-              </div>`);
+
+            const card = document.createElement('div');
+            card.className = 'hint-card mb-8';
+
+            const lbl = document.createElement('div');
+            lbl.className = 'hint-label';
+            lbl.textContent = `${typeLabel} · ${w.displayName} · ${asPct(w.accuracy)}%`;
+
+            const hintDiv = document.createElement('div');
+            hintDiv.textContent = w.hint ?? '';
+
+            card.appendChild(lbl);
+            card.appendChild(hintDiv);
+            weakEl.appendChild(card);
         });
     }
 
@@ -145,11 +173,19 @@ async function load() {
         document.getElementById('recent-section').classList.remove('hidden');
         const recEl = document.getElementById('recent-sessions');
         data.recentSessions.forEach(s => {
-            recEl.insertAdjacentHTML('beforeend', `
-              <div class="stat-row">
-                <span class="opacity-70">${formatDate(s.startedAt)}</span>
-                <span>${s.totalExercises} ex. · ${asPct(s.accuracy)}%</span>
-              </div>`);
+            const row = document.createElement('div');
+            row.className = 'stat-row';
+
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'opacity-70';
+            dateSpan.textContent = formatDate(s.startedAt);
+
+            const infoSpan = document.createElement('span');
+            infoSpan.textContent = `${s.totalExercises} ex. · ${asPct(s.accuracy)}%`;
+
+            row.appendChild(dateSpan);
+            row.appendChild(infoSpan);
+            recEl.appendChild(row);
         });
     }
 }
