@@ -1,6 +1,6 @@
--- Schema SQLite — sintaxe incompativel com H2 (H2 usa BIGINT AUTO_INCREMENT).
+-- Schema SQLite - incompativel com H2 (H2 usa BIGINT AUTO_INCREMENT).
 -- Em SQLite, INTEGER PRIMARY KEY e um alias do rowid e auto-incrementa automaticamente.
--- Ver SqliteOperationalIT para verificacao de compatibilidade.
+-- Ver DataSourceConfig: este ficheiro e usado quando db.type=SQLITE.
 
 DROP TABLE IF EXISTS results;
 DROP TABLE IF EXISTS sessions;
