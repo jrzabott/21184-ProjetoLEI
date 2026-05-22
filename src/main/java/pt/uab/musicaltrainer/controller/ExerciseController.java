@@ -56,10 +56,10 @@ public class ExerciseController {
         int[] expectedNotes = service.getExpectedNotes(request.exerciseId());
         String explanation  = service.buildExplanation(request.exerciseId(), request.notes(), correct);
 
-        String correctAnswerJson = objectMapper.writeValueAsString(expectedNotes);
-        String userAnswerJson    = objectMapper.writeValueAsString(request.notes());
-
-        AnswerResponse response = new AnswerResponse(correct, correctAnswerJson, userAnswerJson, explanation);
+        // atenção: correctAnswer e userAnswer eram serializados como strings JSON ("[ 60, 67]")
+        // obrigando o frontend a fazer double-parse. agora sao int[] directos, consistentes
+        // com o campo notes em GenerateResponse (ADR-014). correcção do bug P29.
+        AnswerResponse response = new AnswerResponse(correct, expectedNotes, request.notes(), explanation);
         logger.info("Resposta avaliada: exerciseId={}, correct={}", request.exerciseId(), correct);
         return ResponseEntity.ok(response);
     }
