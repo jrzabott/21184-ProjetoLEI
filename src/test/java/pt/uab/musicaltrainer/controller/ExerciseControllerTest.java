@@ -80,7 +80,8 @@ class ExerciseControllerTest {
                 .content(answerBody))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
-            .andExpect(jsonPath("$.correctAnswer").isString())
+            // correctAnswer e agora int[] nao String (bug P29 corrigido em feat/70)
+            .andExpect(jsonPath("$.correctAnswer").isArray())
             .andExpect(jsonPath("$.explanation").isString());
     }
 
@@ -134,7 +135,8 @@ class ExerciseControllerTest {
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
-            .andExpect(jsonPath("$.correctAnswer").isString());
+            // correctAnswer e agora int[] — sandbox mode incluido (bug P29)
+            .andExpect(jsonPath("$.correctAnswer").isArray());
     }
 
     @Test
@@ -167,12 +169,12 @@ class ExerciseControllerTest {
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,67],\"responseTimeMs\":500}"))
             .andReturn().getResponse().getContentAsString();
 
-        // correctAnswer deve ter formato [60,67] - sem espaços
+        // correctAnswer e agora um array JSON nativo int[] (bug P29 corrigido)
+        // nao mais uma string contendo JSON — verificar que e um array com numeros MIDI
         com.fasterxml.jackson.databind.JsonNode node =
             new com.fasterxml.jackson.databind.ObjectMapper().readTree(answerResp);
-        String correctAnswer = node.get("correctAnswer").asText();
-        assertThat(correctAnswer).doesNotContain(" ");
-        assertThat(correctAnswer).startsWith("[");
-        assertThat(correctAnswer).endsWith("]");
+        com.fasterxml.jackson.databind.JsonNode correctAnswer = node.get("correctAnswer");
+        assertThat(correctAnswer.isArray()).isTrue();
+        assertThat(correctAnswer.get(0).isNumber()).isTrue();
     }
 }
