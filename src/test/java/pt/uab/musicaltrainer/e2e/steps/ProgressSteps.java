@@ -78,4 +78,14 @@ public class ProgressSteps {
         // o LED deve existir - apos o fix, initMidi e chamado e o LED reage a dispositivos MIDI
         com.codeborne.selenide.Selenide.$("#midi-led").should(com.codeborne.selenide.Condition.exist);
     }
+
+    @Then("o texto do resumo global nao usa plural incorrecta para uma sessao")
+    public void globalMetaUsesSingular() {
+        // verifica que "1 sessões" (errado) nao aparece — deve ser "1 sessão"
+        // antes do fix: data.totalSessions === 1 mostrava "1 sessões" (concordância errada)
+        String meta = com.codeborne.selenide.Selenide.$("#global-meta").getText();
+        org.assertj.core.api.Assertions.assertThat(meta)
+            .as("com exactamente 1 sessao, deve usar singular 'sessão' nao 'sessões'")
+            .doesNotContain("1 sessões");
+    }
 }
