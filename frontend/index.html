@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Musical Trainer</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
   <nav class="nav-links">
     <a href="progress.html">Progresso</a>
     <button class="help-btn" id="help-btn" aria-label="Ajuda">?</button>
-    <div class="midi-led" id="midi-led"></div>
+    <div class="midi-led" id="midi-led" title="MIDI: verde = dispositivo ligado · cinzento = sem dispositivo"></div>
   </nav>
 </header>
 
@@ -96,6 +97,10 @@ typeButtons.forEach(btn => {
         typeButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         state.setType(btn.dataset.type);
+        // limpar painel ao mudar tipo — notas de "Intervalos" nao fazem sentido em "Escalas"
+        sandboxQ.clear();
+        notesEl.textContent = 'Toca uma tecla para começar...';
+        intervalEl.textContent = '';
     });
 });
 
@@ -187,12 +192,17 @@ document.getElementById('btn-session').addEventListener('click', async () => {
     try {
         const session = await startSession();
         state.setMode('session');
-        state.setSessionId(session.id);
+        // atenção: SessionResponse serializa o campo como "sessionId", não como "id".
+        // session.id seria undefined, causando sessionId=0, /api/sessions/0/end → 404,
+        // e todos os dados da sessão perdidos silenciosamente.
+        state.setSessionId(session.sessionId);
         state.setSessionTs(new Date().toISOString());
         state.setCounters({ correct: 0, incorrect: 0, total: 0 });
         window.location.href = 'exercise.html';
     } catch (err) {
-        alert('Erro ao iniciar sessão: ' + err.message);
+        // nunca usar alert() — interrompe o fluxo e expoe mensagens tecnicas ao utilizador
+        console.error('startSession falhou:', err);
+        document.getElementById('btn-session').textContent = 'Erro — tenta novamente';
     }
 });
 </script>
