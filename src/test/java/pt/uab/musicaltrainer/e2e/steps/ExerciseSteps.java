@@ -123,6 +123,9 @@ public class ExerciseSteps {
     @When("o utilizador clica em Terminar no exercício")
     public void clickEnd() { page.clickEnd(); }
 
+    @When("o utilizador clica no botão Ouvir")
+    public void clickListen() { page.clickListen(); }
+
     @Then("apenas uma tecla está destacada no teclado de exercício")
     public void onlyOneKeyHighlighted() {
         // verifica que Ouvir destaca apenas a nota raiz e nao todas as notas em sequencia
