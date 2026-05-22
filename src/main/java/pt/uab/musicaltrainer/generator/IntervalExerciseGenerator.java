@@ -72,8 +72,10 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             throw new RuntimeException(e);
         }
         String description   = "Reproduz o intervalo entre " + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName();
+        // atenção: plural de "semítom" em português é "semítons" (não "semítoms")
+        // a forma "semítoms" gerava texto incorreto como "12 semítoms" em vez de "12 semítons"
         String hint = type.displayName() + " - " + type.semitones()
-            + " semítom" + (type.semitones() == 1 ? "" : "s");
+            + (type.semitones() == 1 ? " semítom" : " semítons");
 
         logger.info("Intervalo gerado: type={}, low={}, high={}, difficulty={}",
             type.internalName(), low, high, difficulty);
@@ -97,7 +99,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             pt.uab.musicaltrainer.domain.IntervalType intervalType =
                 pt.uab.musicaltrainer.domain.IntervalType.fromSemitones(semitones);
             String hint = intervalType.displayName() + " - " + semitones
-                + " semítom" + (semitones == 1 ? "" : "s");
+                + (semitones == 1 ? " semítom" : " semítons");
             return new GeneratedExercise(ExerciseType.INTERVAL.name(), difficulty, questionJson,
                 correctAnswer, description, hint, new int[]{noteA, noteB});
         } catch (JsonProcessingException e) {
