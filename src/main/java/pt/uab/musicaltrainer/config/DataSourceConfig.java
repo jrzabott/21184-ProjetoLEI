@@ -42,9 +42,12 @@ public class DataSourceConfig {
         DataSource ds = buildDataSource(strategy);
 
         // H2 in-memory perde o estado entre reinícios - inicializar schema explicitamente.
-        // SQLite e Postgres gerem o seu próprio schema (criado na primeira instalação).
+        // atenção: SQLite rejeitava AUTO_INCREMENT do schema.sql (erro de sintaxe H2-specific)
+        // schema-sqlite.sql usa INTEGER PRIMARY KEY que é alias do rowid e auto-incrementa
         if (strategy instanceof H2Strategy) {
-            initSchema(ds);
+            initSchema(ds, "schema.sql");
+        } else if (strategy instanceof SqliteStrategy) {
+            initSchema(ds, "schema-sqlite.sql");
         }
 
         logger.info("DataSource pronto: strategy={}", strategy.getName());
@@ -82,11 +85,11 @@ public class DataSourceConfig {
         };
     }
 
-    private void initSchema(DataSource ds) {
+    private void initSchema(DataSource ds, String schemaFileName) {
         try {
-            ClassPathResource schemaFile = new ClassPathResource("schema.sql");
+            ClassPathResource schemaFile = new ClassPathResource(schemaFileName);
             if (!schemaFile.exists()) {
-                logger.warn("schema.sql não encontrado no classpath - BD pode estar vazia");
+                logger.warn("{} não encontrado no classpath - BD pode estar vazia", schemaFileName);
                 return;
             }
 
@@ -97,9 +100,9 @@ public class DataSourceConfig {
             }
 
             try (Connection conn = ds.getConnection(); Statement stmt = conn.createStatement()) {
-                // Executar cada statement separadamente (H2 não aceita múltiplos por execute())
+                // executar cada statement separadamente (H2 e SQLite nao aceitam multiplos por execute())
                 for (String statement : sql.split(";")) {
-                    // Remover apenas linhas de comentário, não o statement inteiro
+                    // remover apenas linhas de comentario, nao o statement inteiro
                     String cleaned = Arrays.stream(statement.split("\n"))
                         .filter(line -> !line.trim().startsWith("--"))
                         .collect(Collectors.joining("\n"))
@@ -108,10 +111,10 @@ public class DataSourceConfig {
                         stmt.execute(cleaned);
                     }
                 }
-                logger.info("Schema inicializado com sucesso a partir de schema.sql");
+                logger.info("Schema inicializado com sucesso a partir de {}", schemaFileName);
             }
         } catch (Exception e) {
-            logger.error("Erro ao inicializar schema: {}", e.getMessage(), e);
+            logger.error("Erro ao inicializar schema ({}): {}", schemaFileName, e.getMessage(), e);
             throw new RuntimeException("Falha na inicialização do schema da BD", e);
         }
     }
