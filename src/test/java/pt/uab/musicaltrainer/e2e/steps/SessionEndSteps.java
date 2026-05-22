@@ -121,4 +121,17 @@ public class SessionEndSteps {
 
     @When("o utilizador clica em Iniciar sessão no resumo")
     public void clickNewSession() { page.clickNewSession(); }
+
+    @Then("os totais da sessão mostram pelo menos um exercício")
+    public void totalsShowAtLeastOne() {
+        // verifica que os totais nao sao "—" — o que acontecia quando session.id era undefined:
+        // index.html usava session.id em vez de session.sessionId (campo do SessionResponse),
+        // o que resultava em sessionId=0, chamada a /api/sessions/0/end → 404,
+        // e todos os contadores ficavam no valor inicial "—"
+        String total = page.statTotal().getText();
+        Assertions.assertThat(total)
+            .as("total nao deve ser — (indica sessionId=0, sessao nao foi guardada)")
+            .isNotEqualTo("—");
+        Assertions.assertThat(Integer.parseInt(total.trim())).isGreaterThan(0);
+    }
 }
