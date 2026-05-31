@@ -167,22 +167,30 @@ public class ExerciseSteps {
 
     /**
      * Toca apenas a nota alvo (ultima nota do exercicio de intervalo), sem tocar a raiz.
-     * O Background garante que o exercicio e de tipo INTERVAL.
-     * RED: antes do fix, enviar 1 nota num exercicio de intervalo resultava em erro
-     * de notas insuficientes porque o handler nao fazia prepend da raiz.
+     * Usa clickKey() via WebDriver Actions — JS dispatch nao funciona em headless Chrome.
      */
     @When("o utilizador toca apenas a nota alvo do intervalo")
     public void clickOnlyTargetNote() {
-        executeJavaScript(
+        Long targetMidi = (Long) executeJavaScript(
             "const ex = JSON.parse(sessionStorage.getItem('mt_exercise'));" +
-            "if (!ex || !ex.notes || ex.notes.length < 2) return;" +
-            "const targetMidi = ex.notes[ex.notes.length - 1];" +
-            "const k = document.querySelector('[data-midi=\"' + targetMidi + '\"]');" +
-            "if (k) {" +
-            "  k.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));" +
-            "  k.dispatchEvent(new MouseEvent('mouseup',   {bubbles: true}));" +
-            "}"
+            "if (!ex || !ex.notes || ex.notes.length < 2) return null;" +
+            "return ex.notes[ex.notes.length - 1];"
         );
+        if (targetMidi != null) page.clickKey(targetMidi.intValue());
+    }
+
+    /**
+     * Toca a ultima nota do exercicio (que nao e a raiz) sem fazer prepend.
+     * Usado para verificar que tipos que nao sao INTERVAL nao activam o prepend automatico.
+     */
+    @When("o utilizador clica na tecla MIDI que nao e raiz")
+    public void clickNonRootKey() {
+        Long nonRoot = (Long) executeJavaScript(
+            "const ex = JSON.parse(sessionStorage.getItem('mt_exercise'));" +
+            "if (!ex || !ex.notes || ex.notes.length < 2) return null;" +
+            "return ex.notes[ex.notes.length - 1];"
+        );
+        if (nonRoot != null) page.clickKey(nonRoot.intValue());
     }
 
     /**
