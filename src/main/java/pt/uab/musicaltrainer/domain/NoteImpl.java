@@ -88,6 +88,15 @@ final class NoteImpl implements Note {
         return name + octave;
     }
 
+    /**
+     * Retorna o pitch class sem oitava (ex: C#, A).
+     * Usar em enunciados onde a oitava nao deve restringir o utilizador.
+     */
+    @Override
+    public String getPitchClassName() {
+        return name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
