@@ -83,7 +83,7 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             throw new RuntimeException(e);
         }
         String description  = "Toca o acorde " + ChordType.valueOf(chordType).displayName()
-            + " com raiz em " + root.getDisplayName();
+            + " com raiz em " + root.getPitchClassName();
         int[] iv = ChordType.valueOf(chordType).getIntervals();
         String hint = "Raiz + " + IntervalType.fromSemitones(iv[1]).displayName()
             + " + " + IntervalType.fromSemitones(iv[2]).displayName();

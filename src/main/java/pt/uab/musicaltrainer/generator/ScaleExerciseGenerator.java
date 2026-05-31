@@ -105,7 +105,7 @@ public class ScaleExerciseGenerator implements ExerciseGenerator {
             throw new RuntimeException(e);
         }
         String description  = "Toca a escala " + ScaleType.valueOf(scaleType).displayName()
-            + " com tónica em " + root.getDisplayName() + ", de raiz a raiz";
+            + " com tónica em " + root.getPitchClassName() + ", de raiz a raiz";
         String hint = buildScaleHint(scaleType);
 
         logger.info("Escala gerada: root={}({}), type={}, difficulty={}",
