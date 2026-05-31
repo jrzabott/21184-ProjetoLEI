@@ -40,6 +40,10 @@ public class ExerciseSteps {
         page.open();
         // espera que o exercicio carregue - o texto inicial muda apos a chamada ao backend
         page.description().shouldNotHave(Condition.text("A carregar exercício..."));
+        // espera que notesHint seja definido — confirma que notesQueue foi criada
+        // (notesQueue e criada imediatamente apos descEl.textContent no mesmo bloco sync,
+        // mas notesHint e o ultimo elemento a ser definido e serve de sentinela seguro)
+        page.notesHint().shouldNotBe(Condition.empty);
         ctx.lastExerciseDescription = page.description().getText();
     }
 
