@@ -82,3 +82,7 @@ Feature: Ecrã de exercício activo
 
   Scenario: Timbre sine esta seleccionado por defeito
     Then o radio button sine deve estar seleccionado
+
+  Scenario: Notas tocadas em rapida sucessao registam todas no painel
+    When o utilizador toca 3 notas em rapida sucessao
+    Then o painel de notas do exercício contém 3 notas registadas

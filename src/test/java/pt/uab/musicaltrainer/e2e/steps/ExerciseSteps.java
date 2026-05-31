@@ -206,6 +206,27 @@ public class ExerciseSteps {
         page.listenBtn().shouldNotBe(Condition.disabled);
     }
 
+    /**
+     * Toca 3 notas em rapida sucessao via WebDriver Actions.
+     * Verifica que o scheduling nativo Web Audio (feat/77) nao impede o registo de input.
+     * Notas C3(48), D3(50), E3(52) existem em qualquer configuracao de teclado C2-C6.
+     */
+    @When("o utilizador toca 3 notas em rapida sucessao")
+    public void clickThreeNotesFast() {
+        page.clickKey(48);
+        page.clickKey(50);
+        page.clickKey(52);
+    }
+
+    @Then("o painel de notas do exercício contém {int} notas registadas")
+    public void notesPanelHasNNotes(int expectedCount) {
+        String text = page.notesDisplay().getText();
+        int count = text.equals("—") ? 0 : text.split(" - ").length;
+        org.assertj.core.api.Assertions.assertThat(count)
+            .as("painel deve ter %d notas registadas, mas mostra: '%s'", expectedCount, text)
+            .isEqualTo(expectedCount);
+    }
+
     @Then("o radio button sine deve estar seleccionado")
     public void sineSelectedByDefault() {
         com.codeborne.selenide.Selenide.$("#timbre-selector input[value='sine']")
