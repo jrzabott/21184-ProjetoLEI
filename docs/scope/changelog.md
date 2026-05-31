@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** (31 mai) Backend fixes (feat/71-74) + frontend: feat/75 — exercise.html prepend raiz automático para intervalos com 1 nota tocada.
+**Bloqueou:** Chains backend/frontend separadas — merge pendente de OK.
+**Próxima semana:** feat/76-79 — timbres, scheduling, E2E, SQLite.
 
 ---
 
