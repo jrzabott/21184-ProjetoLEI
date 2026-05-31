@@ -181,6 +181,19 @@ public class ExerciseSteps {
         );
     }
 
+    /**
+     * RED feat/77: verifica que o botao Ouvir nao fica desactivado ou escondido
+     * apos a reproducao da sequencia. Antes do fix, setTimeout() podia criar
+     * race conditions em abas inactivas que deixavam o botao num estado errado.
+     * Aguarda o dobro da duracao maxima esperada (5 notas * 300ms + 400ms folga = 1900ms).
+     */
+    @Then("o botão Ouvir deve estar disponivel apos a reproducao")
+    public void listenBtnAvailableAfterPlayback() {
+        try { Thread.sleep(2000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        page.listenBtn().shouldBe(Condition.visible);
+        page.listenBtn().shouldNotBe(Condition.disabled);
+    }
+
     @Given("que o utilizador configurou uma sessão pontuada com tipo {string}")
     public void configureScoredSession(String type) {
         open("/index.html");
