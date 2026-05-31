@@ -29,6 +29,8 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(ChordExerciseGenerator.class);
     private static final Random random = new Random();
+    private static final java.util.Set<Integer> WHITE_KEY_PITCH_CLASSES =
+        java.util.Set.of(0, 2, 4, 5, 7, 9, 11);
 
     private final ObjectMapper mapper;
 
@@ -51,7 +53,16 @@ public class ChordExerciseGenerator implements ExerciseGenerator {
             .map(Enum::name)
             .collect(Collectors.toList());
 
-        int rootMidi = MusicConstants.MIDI_MEDIUM_LOW + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
+        int rootMidi;
+        if (band.ordinal() <= DifficultyLevel.ELEMENTARY.ordinal()) {
+            do {
+                rootMidi = MusicConstants.MIDI_MEDIUM_LOW
+                    + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
+            } while (!WHITE_KEY_PITCH_CLASSES.contains(rootMidi % 12));
+        } else {
+            rootMidi = MusicConstants.MIDI_MEDIUM_LOW
+                + random.nextInt(MusicConstants.MIDI_EASY_HIGH - MusicConstants.MIDI_MEDIUM_LOW);
+        }
         String chordType = available.get(random.nextInt(available.size()));
         logger.debug("Band para difficulty {}: {}", difficulty, band);
         return buildExercise(rootMidi, chordType, difficulty);
