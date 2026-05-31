@@ -13,6 +13,7 @@ const K = {
     counters:      'mt_counters',
     sessionTs:     'mt_session_ts',
     sessionResult: 'mt_session_result',
+    timbre:        'mt_timbre',
 };
 
 const get = k => { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } };
@@ -56,6 +57,9 @@ export function clearExercise() { del(K.exercise); }
 export function hasActiveSession() {
     return getMode() === 'session' && getSessionId() > 0;
 }
+
+export const getTimbre     = () => get(K.timbre)     ?? 'sine';
+export const setTimbre     = v  => set(K.timbre, v);
 
 /**
  * Incrementa os contadores locais de correcto/incorrecto.

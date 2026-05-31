@@ -1,11 +1,21 @@
-/* sintese de audio via Web Audio API (ADR-004).
- * onda sine porque e a mais proxima do timbre de piano simples -
- * square e sawtooth soam mais a sintetizador, menos util para treino auditivo.
+/* sintese de audio via Web Audio API (ADR-003, ADR-023).
+ * 4 presets de timbre: sine (referencia), triangle (mais quente),
+ * sawtooth (brilhante), piano (sawtooth + decay rapido).
  *
  * AudioContext criado em lazy init porque browsers modernos suspendem contextos
  * criados antes de uma interaccao do utilizador (politica autoplay Chrome/Firefox). */
 
 let ctx = null;
+let currentTimbre = 'sine';
+
+export function setCurrentTimbre(timbre) { currentTimbre = timbre; }
+
+const PRESETS = {
+    sine:     { type: 'sine',     attack: 0.005, sustain: 0.25, release: 0.4  },
+    triangle: { type: 'triangle', attack: 0.005, sustain: 0.25, release: 0.4  },
+    sawtooth: { type: 'sawtooth', attack: 0.005, sustain: 0.18, release: 0.3  },
+    piano:    { type: 'sawtooth', attack: 0.001, sustain: 0.05, release: 0.8  },
+};
 
 function getCtx() {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -20,29 +30,32 @@ function getCtx() {
  * @param {number} [durationMs=500]
  */
 export function playNote(midiNumber, durationMs = 500) {
-    const ac   = getCtx();
-    const freq = 440 * Math.pow(2, (midiNumber - 69) / 12);
-    const osc  = ac.createOscillator();
-    const gain = ac.createGain();
-
+    const ac     = getCtx();
+    const t      = ac.currentTime;
+    const dur    = durationMs / 1000;
+    const freq   = 440 * Math.pow(2, (midiNumber - 69) / 12);
+    const preset = PRESETS[currentTimbre] ?? PRESETS.sine;
+    const osc    = ac.createOscillator();
+    const gain   = ac.createGain();
     osc.connect(gain);
     gain.connect(ac.destination);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, ac.currentTime);
-
-    // envelope: attack de 10ms + decay exponencial para evitar clicks de audio
-    gain.gain.setValueAtTime(0, ac.currentTime);
-    gain.gain.linearRampToValueAtTime(0.35, ac.currentTime + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + durationMs / 1000);
-
-    osc.start(ac.currentTime);
-    osc.stop(ac.currentTime + durationMs / 1000);
+    osc.type = preset.type;
+    osc.frequency.setValueAtTime(freq, t);
+    const peak = preset.type === 'sawtooth' ? 0.22 : 0.35;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(peak, t + preset.attack);
+    if (currentTimbre === 'piano') {
+        gain.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.6);
+    } else {
+        gain.gain.setValueAtTime(preset.sustain * peak, t + dur - preset.release);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    }
+    osc.start(t);
+    osc.stop(t + dur + 0.05);
 }
 
 /**
  * Toca uma sequencia de notas em serie, com 300ms entre cada uma.
- * Optei por 300ms porque e o intervalo minimo para distinguir notas consecutivas
- * sem perder o senso de melodia - abaixo soa a acorde, acima a pausa abrupta.
  * @param {number[]} midiNumbers
  */
 export function playNotes(midiNumbers) {
@@ -51,17 +64,13 @@ export function playNotes(midiNumbers) {
 
 /**
  * Som de acerto: acorde maior ascendente curto (C5-E5-G5).
- * Consonante e "completo" - associacao clara com resposta correcta.
  */
 export function playCorrect() {
-    [0, 4, 7].forEach((semitones, i) => {
-        setTimeout(() => playNote(72 + semitones, 250), i * 70);
-    });
+    [0, 4, 7].forEach((st, i) => setTimeout(() => playNote(72 + st, 250), i * 70));
 }
 
 /**
  * Som de erro: descida de semitom (C5 -> B4).
- * Dissonante mas suave - inconfundivel com o som de acerto.
  */
 export function playIncorrect() {
     playNote(72, 180);
