@@ -73,3 +73,9 @@ Feature: Página principal e modo sandbox
     When o utilizador clica na tecla MIDI 60
     And o utilizador selecciona o tipo "SCALE"
     Then o painel de notas sandbox contém "Toca uma tecla"
+
+  Scenario: Escolha de timbre persiste ao navegar para exercicio
+    Given que o utilizador abre a aplicação
+    When o utilizador selecciona o timbre "piano"
+    And o utilizador clica em Praticar
+    Then o timbre "piano" deve estar seleccionado na pagina de exercicio

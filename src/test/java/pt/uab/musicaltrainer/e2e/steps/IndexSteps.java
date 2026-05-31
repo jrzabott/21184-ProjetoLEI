@@ -97,4 +97,23 @@ public class IndexSteps {
     public void orphanBannerNotVisible() {
         indexPage.orphanBanner().shouldHave(Condition.cssClass("hidden"));
     }
+
+    /**
+     * RED: selecciona um timbre pelo radio button no index.html.
+     * Antes da impl: #timbre-selector nao existe em index.html — o passo falha.
+     */
+    @When("o utilizador selecciona o timbre {string}")
+    public void selectTimbre(String timbre) {
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='" + timbre + "']").click();
+    }
+
+    /**
+     * RED: verifica que o timbre persiste apos navegar para exercise.html.
+     * Antes da impl: mt_timbre nao existe em sessionStorage — radio button nao e seleccionado.
+     */
+    @Then("o timbre {string} deve estar seleccionado na pagina de exercicio")
+    public void timbreSelectedInExercise(String timbre) {
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='" + timbre + "']")
+            .shouldBe(Condition.checked);
+    }
 }
