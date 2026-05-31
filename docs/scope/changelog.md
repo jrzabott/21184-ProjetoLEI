@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:** (31 mai) Code review funcional — 10+ bugs mapeados. feat/71: fix(interval-generator). feat/72: Note.getPitchClassName(). feat/73: ChordExerciseGenerator raízes brancas para BEGINNER/ELEMENTARY.
-**Bloqueou:** Chains backend/frontend separadas — merge pendente de OK.
-**Próxima semana:** feat/74 — deduplicação tonal por pitch class.
+**Feito:** (31 mai) Backend fixes completos (feat/71-74): enunciado intervalo omite tipo, getPitchClassName sem oitava, ChordGenerator raízes brancas para BEGINNER, ExerciseService deduplicação por (type, pitchClass).
+**Bloqueou:** Chains backend (feat/71-74) e frontend (feat/75-79) separadas — merge pendente de OK.
+**Próxima semana:** Frontend fixes (feat/75-79).
 
 ---
 
