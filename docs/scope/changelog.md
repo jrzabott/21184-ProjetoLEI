@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:** (31 mai) feat/71-76. feat/77: audio.js scheduling nativo Web Audio API — playNotes/playCorrect/playIncorrect eliminam drops em input rápido e botão Ouvir.
+**Feito:** (31 mai) feat/71-77. feat/78: E2E — WebDriver Actions para clickKey (fix headless Chrome), try-catch em handleNoteOn (AudioContext sem user gesture), 9 cenários novos (feat/75-77), 94 testes a passar.
 **Bloqueou:** -
-**Próxima semana:** feat/78-79.
+**Próxima semana:** feat/79. SQLite config.
 
 ---
 
