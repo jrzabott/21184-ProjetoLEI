@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:** (31 mai) Code review funcional — 10+ bugs mapeados. feat/71: fix(interval-generator) enunciado omite tipo do intervalo.
-**Bloqueou:** Chains backend (feat/71-74) e frontend (feat/75-79) separadas — merge pendente de OK.
-**Próxima semana:** feat/72-74 — nomes de nota, dificuldade acordes, deduplicação.
+**Feito:** (31 mai) Code review funcional — 10+ bugs mapeados. feat/71: fix(interval-generator). feat/72: Note.getPitchClassName(), geradores sem oitava nos enunciados.
+**Bloqueou:** Chains backend/frontend separadas — merge pendente de OK.
+**Próxima semana:** feat/73-74 — dificuldade acordes, deduplicação tonal.
 
 ---
 
