@@ -206,6 +206,12 @@ public class ExerciseSteps {
         page.listenBtn().shouldNotBe(Condition.disabled);
     }
 
+    @Then("o radio button sine deve estar seleccionado")
+    public void sineSelectedByDefault() {
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='sine']")
+            .shouldBe(Condition.checked);
+    }
+
     @Given("que o utilizador configurou uma sessão pontuada com tipo {string}")
     public void configureScoredSession(String type) {
         open("/index.html");

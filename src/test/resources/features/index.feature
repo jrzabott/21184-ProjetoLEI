@@ -79,3 +79,7 @@ Feature: Página principal e modo sandbox
     When o utilizador selecciona o timbre "piano"
     And o utilizador clica em Praticar
     Then o timbre "piano" deve estar seleccionado na pagina de exercicio
+
+  Scenario: Selector de timbre existe na pagina inicial
+    Given que o utilizador abre a aplicação
+    Then deve existir um selector de timbre na pagina inicial com as opcoes sine triangle sawtooth e piano

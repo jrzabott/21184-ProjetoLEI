@@ -79,3 +79,6 @@ Feature: Ecrã de exercício activo
     When o utilizador clica na tecla MIDI que nao e raiz
     And o utilizador clica em Enviar resposta
     Then o painel de feedback tem classe incorrect
+
+  Scenario: Timbre sine esta seleccionado por defeito
+    Then o radio button sine deve estar seleccionado
