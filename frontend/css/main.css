@@ -337,3 +337,23 @@ button:hover { opacity: .85; }
 .color-accent    { color: var(--accent); }
 .color-correct   { color: var(--correct); }
 .color-incorrect { color: var(--incorrect); }
+
+/* --- selector de timbre --- */
+.timbre-selector {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 8px 16px 12px;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+.timbre-selector label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.timbre-selector input[type="radio"] {
+  accent-color: var(--accent, #7c6fcd);
+  cursor: pointer;
+}

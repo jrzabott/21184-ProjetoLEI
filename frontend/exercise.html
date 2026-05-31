@@ -62,15 +62,25 @@
   <div class="keyboard" id="exercise-keyboard"></div>
 </div>
 
+<!-- selector de timbre: persiste via sessionStorage (mt_timbre) -->
+<div class="timbre-selector" id="timbre-selector">
+  <label><input type="radio" name="timbre" value="sine">     Sine</label>
+  <label><input type="radio" name="timbre" value="triangle"> Triangle</label>
+  <label><input type="radio" name="timbre" value="sawtooth"> Sawtooth</label>
+  <label><input type="radio" name="timbre" value="piano">    Piano</label>
+</div>
+
 <script type="module">
 import { generateExercise, submitAnswer, endSession } from './js/api.js';
 import * as state from './js/state.js';
+// getTimbre e setTimbre sao importados explicitamente para clareza de dependencias
+import { getTimbre, setTimbre } from './js/state.js';
 import { createNotesQueue, midiToName }               from './js/notes-queue.js';
 import {
     buildKeyboard, onNoteOn,
     highlightNotes, clearHighlights, getKeyboardRange,
 } from './js/keyboard.js';
-import { playNotes, playNote, playCorrect, playIncorrect } from './js/audio.js';
+import { playNotes, playNote, playCorrect, playIncorrect, setCurrentTimbre } from './js/audio.js';
 import { initMidi }                                   from './js/midi.js';
 
 /* --- estado local desta pagina --- */
@@ -120,6 +130,13 @@ window.addEventListener('beforeunload', () => {
 
 // carrega o primeiro exercicio ao abrir a pagina
 loadExercise();
+
+// inicializa o selector de timbre com o valor persistido
+setCurrentTimbre(getTimbre());
+document.querySelectorAll('input[name="timbre"]').forEach(r => {
+    if (r.value === getTimbre()) r.checked = true;
+    r.addEventListener('change', () => { setTimbre(r.value); setCurrentTimbre(r.value); });
+});
 
 /* --- logica principal --- */
 
