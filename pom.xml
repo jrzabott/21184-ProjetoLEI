@@ -163,4 +163,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>sqlite</id>
+            <properties>
+                <spring-boot.run.arguments>--spring.profiles.active=sqlite</spring-boot.run.arguments>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
