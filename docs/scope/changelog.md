@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:** (31 mai) feat/71-75. feat/76: audio.js 4 presets de timbre (sine/triangle/sawtooth/piano), envelopes melhorados, selector UI com radio buttons, persistência via sessionStorage.
+**Feito:** (31 mai) feat/71-76. feat/77: audio.js scheduling nativo Web Audio API — playNotes/playCorrect/playIncorrect eliminam drops em input rápido e botão Ouvir.
 **Bloqueou:** -
-**Próxima semana:** feat/77-79.
+**Próxima semana:** feat/78-79.
 
 ---
 
