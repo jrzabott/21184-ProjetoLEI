@@ -109,6 +109,11 @@ public class ExerciseSteps {
         page.feedbackPanel().shouldHave(Condition.cssClass("correct"));
     }
 
+    @Then("o painel de feedback tem classe incorrect")
+    public void feedbackIsIncorrect() {
+        page.feedbackPanel().shouldHave(Condition.cssClass("incorrect"));
+    }
+
     @Given("o utilizador enviou uma resposta qualquer")
     public void submitAnyAnswer() {
         // submete sem notas - o backend devolve incorrect, o que e suficiente para o teste

@@ -84,5 +84,7 @@ Feature: Ecrã de exercício activo
     Then o radio button sine deve estar seleccionado
 
   Scenario: Notas tocadas em rapida sucessao registam todas no painel
+    Given que o utilizador configurou o modo prática com tipo "CHORD"
+    And está na página de exercício
     When o utilizador toca 3 notas em rapida sucessao
     Then o painel de notas do exercício contém 3 notas registadas
