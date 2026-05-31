@@ -96,17 +96,17 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:** (31 mai) feat/71-77. feat/78: E2E — WebDriver Actions para clickKey (fix headless Chrome), try-catch em handleNoteOn (AudioContext sem user gesture), 9 cenários novos (feat/75-77), 94 testes a passar.
-**Bloqueou:** -
-**Próxima semana:** feat/79. SQLite config.
+**Feito:** (31 mai) Code review funcional completo + fixes: feat/71-74 backend (enunciados, nomes, dificuldade, deduplicação), feat/75-77 frontend (prepend raiz, 4 timbres, scheduling Web Audio), feat/78 E2E (94 testes), feat/79 perfil Maven sqlite + run config IntelliJ.
+**Bloqueou:** Branches feat/54-79 ausentes de main — merge sequencial --no-ff pendente de OK.
+**Próxima semana:** feat/80+ — teoria musical, submissão vazia, modal ajuda, backend guard evaluateScale.
 
 ---
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Code review em curso. feat/80+ em progresso.
+**Bloqueou:** -
+**Próxima semana:** Implementação feat/80-83. Relatório final Cap. 4 e 5.
 
 ---
 
