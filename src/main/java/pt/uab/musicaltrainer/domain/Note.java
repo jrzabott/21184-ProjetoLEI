@@ -41,4 +41,7 @@ public interface Note {
     int getMidiNumber();
 
     String getDisplayName();
+
+    /** Retorna o pitch class sem oitava, ex: "C#", "A". Usar em enunciados. */
+    String getPitchClassName();
 }

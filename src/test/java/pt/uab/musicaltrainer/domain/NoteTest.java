@@ -79,4 +79,21 @@ class NoteTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("MIDI number must be between 0 and 127");
     }
+
+    @Test
+    void getPitchClassNameShouldReturnNameWithoutOctave() {
+        assertThat(Note.fromMidi(60).getPitchClassName()).isEqualTo("C");
+        assertThat(Note.fromMidi(61).getPitchClassName()).isEqualTo("C#");
+        assertThat(Note.fromMidi(69).getPitchClassName()).isEqualTo("A");
+        assertThat(Note.fromMidi(70).getPitchClassName()).isEqualTo("A#");
+    }
+
+    @Test
+    void getPitchClassNameShouldNotContainOctaveDigit() {
+        for (int midi = 36; midi <= 84; midi++) {
+            String name = Note.fromMidi(midi).getPitchClassName();
+            assertThat(name).as("getPitchClassName() de MIDI %d nao deve conter digito", midi)
+                .doesNotMatch(".*\\d.*");
+        }
+    }
 }

@@ -110,4 +110,16 @@ class IntervalExerciseGeneratorTest {
         assertThat(ex.description()).contains("raiz");
         assertThat(ex.description()).doesNotContain("entre");
     }
+
+    @Test
+    void descriptionShouldUseOnlyPitchClassWithoutOctave() {
+        for (int i = 0; i < 30; i++) {
+            GeneratedExercise ex = generator.generate(3);
+            String desc = ex.description();
+            int raizIdx = desc.indexOf("raiz em ");
+            assertThat(raizIdx).isGreaterThanOrEqualTo(0);
+            String afterRaiz = desc.substring(raizIdx + 8).trim();
+            assertThat(afterRaiz).doesNotMatch("^[A-G]#?\\d.*");
+        }
+    }
 }
