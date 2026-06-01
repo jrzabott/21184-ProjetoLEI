@@ -32,3 +32,8 @@ Feature: Dashboard de progresso
     When o utilizador clica em Iniciar sessão no estado vazio
     Then a página de exercício está visível
     And o banner de prática não está visível no exercício
+
+  Scenario: LED MIDI presente e inicializado na página de progresso
+    Given que não existem sessões registadas
+    When o utilizador abre a página de progresso
+    Then o LED MIDI está presente na página de progresso

@@ -57,6 +57,7 @@
 <script type="module">
 import { startSession, endSession, getProgress } from './js/api.js';
 import * as state from './js/state.js';
+import { initMidi } from './js/midi.js';
 
 const isPractice = state.getMode() === 'practice';
 
@@ -137,6 +138,13 @@ document.getElementById('btn-new-session').addEventListener('click', async () =>
         alert('Erro ao iniciar sessão: ' + err.message);
     }
 });
+
+// inicializar LED MIDI - sem input de notas, apenas indicador de ligacao
+const midiLedElSe = document.getElementById('midi-led');
+function updateMidiLedSe(state) {
+    midiLedElSe.className = 'midi-led' + (state !== 'off' ? ` ${state}` : '');
+}
+initMidi(() => { /* sem input de notas nesta pagina */ }, updateMidiLedSe);
 </script>
 </body>
 </html>

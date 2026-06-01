@@ -72,4 +72,10 @@ public class ProgressSteps {
 
     @When("o utilizador clica em Iniciar sessão no estado vazio")
     public void clickStartFromEmpty() { page.clickStart(); }
+
+    @Then("o LED MIDI está presente na página de progresso")
+    public void midiLedPresentOnProgress() {
+        // o LED deve existir - apos o fix, initMidi e chamado e o LED reage a dispositivos MIDI
+        com.codeborne.selenide.Selenide.$("#midi-led").should(com.codeborne.selenide.Condition.exist);
+    }
 }

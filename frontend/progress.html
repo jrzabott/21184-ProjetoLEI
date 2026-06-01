@@ -62,6 +62,7 @@
 <script type="module">
 import { startSession, getProgress } from './js/api.js';
 import * as state from './js/state.js';
+import { initMidi } from './js/midi.js';
 
 const TYPE_LABELS = { INTERVAL: 'Intervalos', SCALE: 'Escalas', CHORD: 'Acordes' };
 const MONTHS      = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -205,6 +206,13 @@ document.getElementById('btn-start').addEventListener('click', async () => {
 });
 
 load();
+
+// inicializar LED MIDI - sem input de notas nesta pagina, apenas estado de ligacao
+const midiLedEl = document.getElementById('midi-led');
+function updateMidiLed(state) {
+    midiLedEl.className = 'midi-led' + (state !== 'off' ? ` ${state}` : '');
+}
+initMidi(() => { /* esta pagina nao aceita input de notas via MIDI */ }, updateMidiLed);
 </script>
 </body>
 </html>
