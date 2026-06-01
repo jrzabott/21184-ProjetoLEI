@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
@@ -90,6 +90,11 @@ const feedbackArea   = document.getElementById('feedback-area');
 const feedbackPanel  = document.getElementById('feedback-panel');
 const ledEl          = document.getElementById('midi-led');
 
+/** Sincroniza o estado do botao de envio com o tamanho da fila de notas. */
+function syncSubmitBtn() {
+    document.getElementById('btn-submit').disabled = !notesQueue || notesQueue.size() === 0;
+}
+
 /* --- inicializacao da pagina --- */
 if (state.getMode() === 'practice') {
     practiceBanner.classList.remove('hidden');
@@ -149,6 +154,7 @@ async function loadExercise() {
 
         // max da fila derivado directamente do backend - funciona para qualquer tipo de escala
         notesQueue = createNotesQueue(currentExercise.notes.length);
+        syncSubmitBtn(); // desativar no inicio de cada exercicio
         const n = currentExercise.notes.length;
         notesHintEl.textContent = `Esperado: ${n} nota${n !== 1 ? 's' : ''}`;
 
@@ -164,6 +170,7 @@ function handleNoteOn(midi) {
     playNote(midi, 300);
     notesQueue.push(midi);
     notesDisplayEl.textContent = notesQueue.toDisplayString() || '—';
+    syncSubmitBtn();
 }
 
 function renderCounter() {
@@ -191,6 +198,7 @@ document.getElementById('btn-listen').addEventListener('click', () => {
 document.getElementById('btn-clear').addEventListener('click', () => {
     if (notesQueue) notesQueue.clear();
     notesDisplayEl.textContent = '—';
+    syncSubmitBtn();
 });
 
 /* --- botao Enviar resposta --- */

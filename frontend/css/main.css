@@ -1,4 +1,4 @@
-/* estilos partilhados por todas as páginas.
+﻿/* estilos partilhados por todas as páginas.
  * paleta extraida dos wireframes (docs/design/wireframes.html) - nao alterar sem ADR.
  * tipografia via Google Fonts: Playfair Display (titulos) + EB Garamond (corpo). */
 
@@ -97,6 +97,7 @@ button, .btn {
   transition: opacity .15s;
 }
 button:hover { opacity: .85; }
+button:disabled { opacity: .4; cursor: not-allowed; }
 
 .btn-primary   { background: var(--accent); color: #fff; }
 .btn-secondary { background: transparent; color: var(--accent); border: 2px solid var(--accent); }

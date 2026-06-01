@@ -107,6 +107,8 @@ public class ExerciseSteps {
 
     @Given("o utilizador enviou uma resposta qualquer")
     public void submitAnyAnswer() {
+        // joga uma nota para activar o botao de envio antes de submeter
+        page.clickKey(60);
         // submete sem notas - o backend devolve incorrect, o que e suficiente para o teste
         page.clickSubmit();
         page.feedbackArea().shouldNotHave(Condition.cssClass("hidden"));
@@ -123,6 +125,15 @@ public class ExerciseSteps {
     @When("o utilizador clica em Terminar no exercício")
     public void clickEnd() { page.clickEnd(); }
 
+    @Then("o botão Enviar resposta está desativado")
+    public void submitBtnDisabled() {
+        page.submitBtn().shouldBe(com.codeborne.selenide.Condition.disabled);
+    }
+
+    @Then("o botão Enviar resposta está activo")
+    public void submitBtnEnabled() {
+        page.submitBtn().shouldNotBe(com.codeborne.selenide.Condition.disabled);
+    }
     @Given("que o utilizador configurou uma sessão pontuada com tipo {string}")
     public void configureScoredSession(String type) {
         open("/index.html");

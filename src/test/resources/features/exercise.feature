@@ -1,4 +1,4 @@
-# Testes para exercise.html: geração, recolha de notas, avaliação
+﻿# Testes para exercise.html: geração, recolha de notas, avaliação
 # Requisitos cobertos: F03 (teclado virtual), F05 (feedback imediato), F09 (dificuldade adaptativa)
 Feature: Ecrã de exercício activo
 
@@ -27,6 +27,7 @@ Feature: Ecrã de exercício activo
     Then o painel de notas mostra o traço inicial
 
   Scenario: Enviar resposta mostra painel de feedback
+    Given o utilizador clicou na tecla MIDI 60 no exercício
     When o utilizador clica em Enviar resposta
     Then o painel de feedback está visível
     And o painel tem classe correct ou incorrect
@@ -45,3 +46,10 @@ Feature: Ecrã de exercício activo
   Scenario: Terminar navega para o resumo de sessão
     When o utilizador clica em Terminar no exercício
     Then a página de resumo está visível
+
+  Scenario: Botão Enviar desativado quando não há notas tocadas
+    Then o botão Enviar resposta está desativado
+    When o utilizador clica na tecla MIDI 60 no exercício
+    Then o botão Enviar resposta está activo
+    When o utilizador clica em Limpar
+    Then o botão Enviar resposta está desativado
