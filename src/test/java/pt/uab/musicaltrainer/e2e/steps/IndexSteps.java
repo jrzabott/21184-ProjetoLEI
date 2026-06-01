@@ -76,6 +76,16 @@ public class IndexSteps {
         indexPage.helpModal().shouldNotHave(Condition.cssClass("visible"));
     }
 
+    @Then("o modal de ajuda contém {string}")
+    public void modalContains(String text) {
+        indexPage.helpModal().shouldHave(Condition.partialText(text));
+    }
+
+    @Then("o modal de ajuda nao contém {string}")
+    public void modalNotContains(String text) {
+        indexPage.helpModal().shouldNotHave(Condition.partialText(text));
+    }
+
     @When("o utilizador clica em Praticar")
     public void clickPractice() { indexPage.clickPractice(); }
 

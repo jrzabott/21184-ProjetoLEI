@@ -83,3 +83,9 @@ Feature: Página principal e modo sandbox
   Scenario: Selector de timbre existe na pagina inicial
     Given que o utilizador abre a aplicação
     Then deve existir um selector de timbre na pagina inicial com as opcoes sine triangle sawtooth e piano
+
+  Scenario: Modal de ajuda descreve teoria musical nao treino auditivo
+    Given que o utilizador abre a aplicação
+    When o utilizador clica no botão de ajuda
+    Then o modal de ajuda contém "teoria musical"
+    And o modal de ajuda nao contém "treino auditivo"
