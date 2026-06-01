@@ -238,6 +238,12 @@ public class ExerciseSteps {
             .shouldBe(Condition.checked);
     }
 
+    @Then("o painel de feedback nao mostra erro de API")
+    public void feedbackHasNoApiError() {
+        page.feedbackPanel().shouldNotHave(Condition.partialText("Erro ao enviar"));
+        page.feedbackPanel().shouldNotHave(Condition.partialText("tenta novamente"));
+    }
+
     @Given("que o utilizador configurou uma sessão pontuada com tipo {string}")
     public void configureScoredSession(String type) {
         open("/index.html");
