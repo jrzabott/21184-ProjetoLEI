@@ -119,4 +119,30 @@ class ChordExerciseGeneratorTest {
         int root = Integer.parseInt(json.replaceAll(".*\"root\":(\\d+).*", "$1"));
         assertThat(ex.notesToPlay()[0]).isEqualTo(root);
     }
+
+    private static final java.util.Set<Integer> WHITE_KEY_PITCH_CLASSES =
+        java.util.Set.of(0, 2, 4, 5, 7, 9, 11);
+
+    @org.junit.jupiter.api.RepeatedTest(50)
+    void beginnerRootShouldBeWhiteKey() {
+        GeneratedExercise ex = generator.generate(1);
+        int rootPitchClass = ex.notesToPlay()[0] % 12;
+        assertThat(WHITE_KEY_PITCH_CLASSES).contains(rootPitchClass);
+    }
+
+    @org.junit.jupiter.api.RepeatedTest(50)
+    void elementaryRootShouldBeWhiteKey() {
+        GeneratedExercise ex = generator.generate(3);
+        int rootPitchClass = ex.notesToPlay()[0] % 12;
+        assertThat(WHITE_KEY_PITCH_CLASSES).contains(rootPitchClass);
+    }
+
+    @org.junit.jupiter.api.Test
+    void intermediateRootCanBeBlackKey() {
+        java.util.Set<Integer> seen = new java.util.HashSet<>();
+        for (int i = 0; i < 200; i++) {
+            seen.add(generator.generate(5).notesToPlay()[0] % 12);
+        }
+        assertThat(seen).containsAnyElementsOf(java.util.Set.of(1, 3, 6, 8, 10));
+    }
 }
