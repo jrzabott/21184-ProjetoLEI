@@ -104,9 +104,9 @@
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:** feat/82: fix(frontend) — submissão sem notas conta como incorreta; sessao nao fica em estado inválido; equivalente a exercício pulado.
+**Feito:** feat/83: fix(frontend) — modal de ajuda corrigido: teoria musical, não treino auditivo; Praticar sem pressão.
 **Bloqueou:** -
-**Próxima semana:** feat/83.
+**Próxima semana:** Merge sequencial feat/54-83 → main quando aprovado. Relatório final Cap. 4 e 5.
 
 ---
 
