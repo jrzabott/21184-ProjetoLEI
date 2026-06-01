@@ -40,9 +40,9 @@
 
 ## Sem. 5 · 14–17 abr
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Semana de baixa produtividade - contexto externo limitou disponibilidade. Sem commits de código. Tarefas de setup e documentação transferidas para a semana seguinte.
+**Bloqueou:** -
+**Próxima semana:** Recuperar ritmo: persistência (DAOs + schema SQL), estratégias de base de dados.
 
 ---
 
@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Revisão multi-perspetiva do projecto (Backend, Frontend, QA, Product Owner, Music Teacher). Branches de correcção feat/59-69: P29 (correctAnswer como int[]), P19 (normalização extractPattern), P22 (guard incrementCounters), getDisplayName via enum, PIT 1.17.x, teste operacional SQLite, DOM seguro no frontend, botão Enviar desativado com fila vazia, LED MIDI em todas as páginas, actualizações de documentação.
+**Bloqueou:** -
+**Próxima semana:** Merge das branches de correcção. Capítulos 4 e 5 do relatório final.
 
 ---
 
