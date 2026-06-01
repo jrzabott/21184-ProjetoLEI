@@ -80,7 +80,7 @@ class ExerciseControllerTest {
                 .content(answerBody))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
-            .andExpect(jsonPath("$.correctAnswer").isString())
+            .andExpect(jsonPath("$.correctAnswer").isArray())
             .andExpect(jsonPath("$.explanation").isString());
     }
 
@@ -134,7 +134,7 @@ class ExerciseControllerTest {
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
-            .andExpect(jsonPath("$.correctAnswer").isString());
+            .andExpect(jsonPath("$.correctAnswer").isArray());
     }
 
     @Test
@@ -162,17 +162,11 @@ class ExerciseControllerTest {
         Long exerciseId = new com.fasterxml.jackson.databind.ObjectMapper()
             .readTree(genResp).get("exerciseId").asLong();
 
-        String answerResp = mockMvc.perform(post("/api/exercises/answer")
+        mockMvc.perform(post("/api/exercises/answer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,67],\"responseTimeMs\":500}"))
-            .andReturn().getResponse().getContentAsString();
-
-        // correctAnswer deve ter formato [60,67] - sem espaços
-        com.fasterxml.jackson.databind.JsonNode node =
-            new com.fasterxml.jackson.databind.ObjectMapper().readTree(answerResp);
-        String correctAnswer = node.get("correctAnswer").asText();
-        assertThat(correctAnswer).doesNotContain(" ");
-        assertThat(correctAnswer).startsWith("[");
-        assertThat(correctAnswer).endsWith("]");
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.correctAnswer").isArray())
+            .andExpect(jsonPath("$.userAnswer").isArray());
     }
 }

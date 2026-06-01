@@ -52,9 +52,11 @@ class DtoSerializationTest {
 
     @Test
     void shouldSerializeAnswerResponse() throws Exception {
-        AnswerResponse resp = new AnswerResponse(true, "[60,62,64]", "[60,62,64]", "Correcto!");
+        // correctAnswer e userAnswer sao int[] (ADR-014 / bug P29 fix)
+        AnswerResponse resp = new AnswerResponse(true, new int[]{60, 62, 64}, new int[]{60, 62, 64}, "Correcto!");
         String json = mapper.writeValueAsString(resp);
         assertThat(json).contains("\"correct\":true");
+        assertThat(json).contains("60");
     }
 
     @Test
