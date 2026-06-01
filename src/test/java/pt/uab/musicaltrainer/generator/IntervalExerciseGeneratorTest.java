@@ -95,4 +95,19 @@ class IntervalExerciseGeneratorTest {
         }
         assertThat(seenSemitones).containsAnyOf(6, 1); // TRITONO=6 ou SEGUNDA_MENOR=1
     }
+
+    @Test
+    void descriptionShouldExposeOnlyRootNoteNotTarget() {
+        GeneratedExercise ex = generator.generate(1);
+        assertThat(ex.description()).contains("raiz");
+        assertThat(ex.description()).doesNotContain("entre");
+    }
+
+    @Test
+    void fromStoredDescriptionShouldExposeOnlyRootNote() {
+        String questionJson = "{\"notes\":[60,67]}";
+        GeneratedExercise ex = generator.fromStored(questionJson, "PERFECT_FIFTH", 1);
+        assertThat(ex.description()).contains("raiz");
+        assertThat(ex.description()).doesNotContain("entre");
+    }
 }
