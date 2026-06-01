@@ -95,4 +95,27 @@ class IntervalExerciseGeneratorTest {
         }
         assertThat(seenSemitones).containsAnyOf(6, 1); // TRITONO=6 ou SEGUNDA_MENOR=1
     }
+
+    @Test
+    void descriptionShouldShowTypeAndRootNotBothNotes() {
+        for (int i = 0; i < 30; i++) {
+            GeneratedExercise ex = generator.generate(3);
+            String desc = ex.description();
+            assertThat(desc).contains("Toca uma");
+            assertThat(desc).contains("a partir de");
+            assertThat(desc).doesNotContain("entre");
+            String rootName = pt.uab.musicaltrainer.domain.Note.fromMidi(ex.notesToPlay()[0]).getName();
+            assertThat(desc).contains(rootName);
+        }
+    }
+
+    @Test
+    void fromStoredDescriptionShouldShowTypeAndRoot() {
+        String questionJson = "{\"notes\":[60,67]}";
+        GeneratedExercise ex = generator.fromStored(questionJson, "PERFECT_FIFTH", 3);
+        assertThat(ex.description()).contains("Toca uma");
+        assertThat(ex.description()).contains("a partir de");
+        assertThat(ex.description()).doesNotContain("entre");
+        assertThat(ex.description()).contains("C");
+    }
 }
