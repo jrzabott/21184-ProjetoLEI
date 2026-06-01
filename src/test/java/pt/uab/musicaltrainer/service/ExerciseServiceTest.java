@@ -266,6 +266,32 @@ class ExerciseServiceTest {
 
     // --- No-consecutive-repeat end-to-end (F02/P12) ---
 
+    // --- Guard defensivo: notas vazias ---
+
+    @Test
+    void evaluateScaleWithEmptyNotesShouldReturnFalseNotThrow() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("SCALE", 1);
+        assertThatCode(() ->
+            service.evaluateAnswer(saved.id(), 0L, new int[]{})
+        ).doesNotThrowAnyException();
+        boolean result = service.evaluateAnswer(saved.id(), 0L, new int[]{});
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void evaluateIntervalWithEmptyNotesShouldReturnFalse() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("INTERVAL", 1);
+        boolean result = service.evaluateAnswer(saved.id(), 0L, new int[]{});
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void evaluateChordWithEmptyNotesShouldReturnFalse() throws Exception {
+        ExerciseRecord saved = service.generateAndSave("CHORD", 1);
+        boolean result = service.evaluateAnswer(saved.id(), 0L, new int[]{});
+        assertThat(result).isFalse();
+    }
+
     @Test
     void shouldNotGenerateSameExerciseConsecutivelyInSession() throws Exception {
         // F02: sem exercícios consecutivos repetidos na mesma sessão
