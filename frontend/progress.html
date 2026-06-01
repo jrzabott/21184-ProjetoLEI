@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progresso — Musical Trainer</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a class="app-logo" href="index.html">♩ Musical<span>Trainer</span></a>
+  <nav class="nav-links">
+    <a href="index.html">← Início</a>
+    <div class="midi-led" id="midi-led"></div>
+  </nav>
+</header>
+
+<!-- estado vazio - visivel enquanto nao ha historico ou enquanto carrega -->
+<div id="empty-state" class="p-16 text-center" style="padding-top:60px">
+  <p style="font-size:2rem;margin-bottom:12px">♩</p>
+  <h2 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:8px">
+    A carregar...
+  </h2>
+  <p class="text-sm opacity-60 mb-20" id="empty-msg"></p>
+  <button class="btn btn-primary hidden" id="btn-start">Iniciar sessão</button>
+</div>
+
+<!-- dashboard - oculto ate receber dados do backend -->
+<div id="dashboard" class="p-16 hidden">
+
+  <!-- precisao global -->
+  <div class="mb-20">
+    <div class="flex justify-between text-sm mb-6">
+      <span class="opacity-60">Precisão global</span>
+      <strong id="global-pct" style="font-size:1.1rem">—</strong>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="global-bar" style="width:0%"></div>
+    </div>
+    <p class="text-xs opacity-60 mt-8" id="global-meta"></p>
+  </div>
+
+  <!-- precisao por tipo de exercicio -->
+  <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:12px">Por tipo</h3>
+  <div id="by-type" class="mb-20"></div>
+
+  <!-- areas mais fracas - apenas se houver dados suficientes (min 3 tentativas por area) -->
+  <div id="weak-section" class="hidden">
+    <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:10px">Áreas mais fracas</h3>
+    <div id="weak-areas"></div>
+  </div>
+
+  <!-- sessoes recentes -->
+  <div id="recent-section" class="hidden">
+    <h3 style="font-family:'Playfair Display',serif;font-size:.95rem;margin:20px 0 10px">Sessões recentes</h3>
+    <div id="recent-sessions"></div>
+  </div>
+
+</div>
+
+<script type="module">
+import { startSession, getProgress } from './js/api.js';
+import * as state from './js/state.js';
+
+const TYPE_LABELS = { INTERVAL: 'Intervalos', SCALE: 'Escalas', CHORD: 'Acordes' };
+const MONTHS      = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+const pad2   = n  => String(n).padStart(2, '0');
+const asPct  = v  => Math.round((v ?? 0) * 100);
+const barHtml = (v, cls = '') =>
+    `<div class="progress-bar"><div class="progress-fill ${cls}" style="width:${asPct(v)}%"></div></div>`;
+
+function formatDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return `${d.getDate()} ${MONTHS[d.getMonth()]} · ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+
+function showEmpty(msg) {
+    document.getElementById('empty-state').classList.remove('hidden');
+    document.getElementById('dashboard').classList.add('hidden');
+    document.querySelector('#empty-state h2').textContent = 'Ainda sem histórico';
+    document.getElementById('empty-msg').textContent = msg;
+    document.getElementById('btn-start').classList.remove('hidden');
+}
+
+async function load() {
+    let data;
+    try {
+        data = await getProgress();
+    } catch {
+        showEmpty('Erro ao carregar progresso. Verifica se o servidor está a correr.');
+        return;
+    }
+
+    if (!data.totalSessions || data.totalSessions === 0) {
+        showEmpty('Inicia uma sessão para começar a ver o teu progresso.');
+        return;
+    }
+
+    // tem dados - mostra o dashboard
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+
+    /* precisao global */
+    const gPct = asPct(data.overallAccuracy);
+    document.getElementById('global-pct').textContent  = gPct + '%';
+    document.getElementById('global-bar').style.width  = gPct + '%';
+    document.getElementById('global-meta').textContent =
+        `${data.totalExercises} exercícios · ${data.totalSessions} sessões`;
+
+    /* por tipo */
+    const byTypeEl = document.getElementById('by-type');
+    if (data.byType) {
+        Object.entries(data.byType).forEach(([type, stats]) => {
+            const label = TYPE_LABELS[type] ?? type;
+            const p     = asPct(stats.accuracy);
+            byTypeEl.insertAdjacentHTML('beforeend', `
+              <div class="mb-8">
+                <div class="flex justify-between text-sm mb-6">
+                  <span>${label}</span><span>${p}%</span>
+                </div>
+                ${barHtml(stats.accuracy)}
+              </div>`);
+        });
+    }
+
+    /* areas mais fracas */
+    if (data.weakestAreas?.length > 0) {
+        document.getElementById('weak-section').classList.remove('hidden');
+        const weakEl = document.getElementById('weak-areas');
+        data.weakestAreas.forEach(w => {
+            const typeLabel = TYPE_LABELS[w.exerciseType] ?? w.exerciseType;
+            weakEl.insertAdjacentHTML('beforeend', `
+              <div class="hint-card mb-8">
+                <div class="hint-label">${typeLabel} · ${w.displayName} · ${asPct(w.accuracy)}%</div>
+                ${w.hint ?? ''}
+              </div>`);
+        });
+    }
+
+    /* sessoes recentes */
+    if (data.recentSessions?.length > 0) {
+        document.getElementById('recent-section').classList.remove('hidden');
+        const recEl = document.getElementById('recent-sessions');
+        data.recentSessions.forEach(s => {
+            recEl.insertAdjacentHTML('beforeend', `
+              <div class="stat-row">
+                <span class="opacity-70">${formatDate(s.startedAt)}</span>
+                <span>${s.totalExercises} ex. · ${asPct(s.accuracy)}%</span>
+              </div>`);
+        });
+    }
+}
+
+/* --- botao iniciar sessao (estado vazio) --- */
+document.getElementById('btn-start').addEventListener('click', async () => {
+    try {
+        const session = await startSession();
+        state.setMode('session');
+        state.setSessionId(session.id);
+        state.setSessionTs(new Date().toISOString());
+        state.setCounters({ correct: 0, incorrect: 0, total: 0 });
+        window.location.href = 'exercise.html';
+    } catch (err) {
+        alert('Erro ao iniciar sessão: ' + err.message);
+    }
+});
+
+load();
+</script>
+</body>
+</html>
