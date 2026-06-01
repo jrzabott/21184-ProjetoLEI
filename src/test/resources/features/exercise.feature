@@ -71,3 +71,7 @@ Feature: Ecrã de exercício activo
 
   Scenario: Selector de timbre existe abaixo do teclado
     Then deve existir um selector de timbre com as opcoes sine triangle sawtooth e piano
+
+  Scenario: Botao Ouvir permanece activo apos reproducao da sequencia
+    When o utilizador clica no botão Ouvir
+    Then o botão Ouvir deve estar disponivel apos a reproducao

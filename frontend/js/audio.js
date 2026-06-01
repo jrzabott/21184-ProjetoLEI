@@ -26,12 +26,14 @@ function getCtx() {
 
 /**
  * Toca uma nota MIDI durante durationMs milissegundos.
+ * startTime opcional permite scheduling nativo Web Audio (evita setTimeout).
  * @param {number} midiNumber 0-127
  * @param {number} [durationMs=500]
+ * @param {number|null} [startTime=null] tempo absoluto em ac.currentTime; null = imediato
  */
-export function playNote(midiNumber, durationMs = 500) {
+export function playNote(midiNumber, durationMs = 500, startTime = null) {
     const ac     = getCtx();
-    const t      = ac.currentTime;
+    const t      = startTime ?? ac.currentTime;
     const dur    = durationMs / 1000;
     const freq   = 440 * Math.pow(2, (midiNumber - 69) / 12);
     const preset = PRESETS[currentTimbre] ?? PRESETS.sine;
@@ -55,24 +57,35 @@ export function playNote(midiNumber, durationMs = 500) {
 }
 
 /**
- * Toca uma sequencia de notas em serie, com 300ms entre cada uma.
+ * Toca uma sequencia de notas em serie usando scheduling nativo Web Audio.
+ * setTimeout() seria sujeito a throttling em abas inactivas — ac.currentTime e preciso.
  * @param {number[]} midiNumbers
+ * @param {number} [gapSec=0.3] intervalo em segundos entre notas
  */
-export function playNotes(midiNumbers) {
-    midiNumbers.forEach((midi, i) => setTimeout(() => playNote(midi, 400), i * 300));
+export function playNotes(midiNumbers, gapSec = 0.3) {
+    const ac = getCtx();
+    midiNumbers.forEach((midi, i) =>
+        playNote(midi, 400, ac.currentTime + i * gapSec)
+    );
 }
 
 /**
  * Som de acerto: acorde maior ascendente curto (C5-E5-G5).
+ * Usa scheduling nativo para garantir timing mesmo sob carga.
  */
 export function playCorrect() {
-    [0, 4, 7].forEach((st, i) => setTimeout(() => playNote(72 + st, 250), i * 70));
+    const ac = getCtx();
+    [0, 4, 7].forEach((st, i) =>
+        playNote(72 + st, 250, ac.currentTime + i * 0.07)
+    );
 }
 
 /**
  * Som de erro: descida de semitom (C5 -> B4).
+ * Usa scheduling nativo para timing consistente.
  */
 export function playIncorrect() {
-    playNote(72, 180);
-    setTimeout(() => playNote(71, 280), 140);
+    const ac = getCtx();
+    playNote(72, 180, ac.currentTime);
+    playNote(71, 280, ac.currentTime + 0.14);
 }
