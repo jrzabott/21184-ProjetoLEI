@@ -104,9 +104,9 @@
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:** feat/81: fix(exercise-service) — guard defensivo notas vazias; elimina ArrayIndexOutOfBoundsException em evaluateScale com input vazio.
+**Feito:** feat/82: fix(frontend) — submissão sem notas conta como incorreta; sessao nao fica em estado inválido; equivalente a exercício pulado.
 **Bloqueou:** -
-**Próxima semana:** feat/82-83.
+**Próxima semana:** feat/83.
 
 ---
 
