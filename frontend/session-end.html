@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sessão terminada — Musical Trainer</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a class="app-logo" href="index.html">♩ Musical<span>Trainer</span></a>
+  <nav class="nav-links">
+    <div class="midi-led" id="midi-led"></div>
+  </nav>
+</header>
+
+<!-- banner de pratica - oculto em sessao pontuada -->
+<div class="practice-banner hidden" id="practice-banner">
+  Modo prática — não foi guardado
+</div>
+
+<div class="p-16">
+
+  <h2 id="page-title" style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:4px"></h2>
+  <p  id="page-subtitle" class="text-sm opacity-60 mb-20"></p>
+
+  <!-- estatisticas da sessao -->
+  <div class="stat-row"><span class="opacity-70">Exercícios</span><strong id="stat-total">—</strong></div>
+  <div class="stat-row"><span class="opacity-70">Correctos</span><strong id="stat-correct" class="color-correct">—</strong></div>
+  <div class="stat-row"><span class="opacity-70">Errados</span><strong id="stat-incorrect" class="color-incorrect">—</strong></div>
+
+  <!-- barra de precisao -->
+  <div class="mt-16 mb-20">
+    <div class="flex justify-between text-sm mb-6">
+      <span class="opacity-60" id="accuracy-label">Precisão</span>
+      <strong id="accuracy-pct">—</strong>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill correct" id="accuracy-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- area mais fraca - apenas em sessao pontuada, carregada via GET /api/progress -->
+  <div class="hint-card mb-20 hidden" id="weak-area">
+    <div class="hint-label">Área mais fraca</div>
+    <div id="weak-area-text"></div>
+  </div>
+
+  <div class="flex gap-8">
+    <button class="btn btn-ghost w-full"   id="btn-back">← Voltar</button>
+    <button class="btn btn-primary w-full" id="btn-new-session">Iniciar sessão</button>
+  </div>
+
+</div>
+
+<script type="module">
+import { startSession, endSession, getProgress } from './js/api.js';
+import * as state from './js/state.js';
+
+const isPractice = state.getMode() === 'practice';
+
+/* --- banner --- */
+if (isPractice) {
+    document.getElementById('practice-banner').classList.remove('hidden');
+}
+
+/* --- utilitarios de formatacao --- */
+const pad2 = n => String(n).padStart(2, '0');
+const MONTHS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+
+/* --- preenche os stats consoante o modo --- */
+if (isPractice) {
+    const c = state.getCounters();
+    document.getElementById('page-title').textContent    = 'Prática terminada';
+    const sub = document.getElementById('page-subtitle');
+    sub.textContent  = 'Estes resultados não ficam guardados.';
+    sub.style.color  = 'var(--accent)';
+    document.getElementById('accuracy-label').textContent = 'Precisão nesta prática';
+    document.getElementById('stat-total').textContent     = c.total;
+    document.getElementById('stat-correct').textContent   = c.correct;
+    document.getElementById('stat-incorrect').textContent = c.incorrect;
+    const pct = c.total > 0 ? Math.round(c.correct / c.total * 100) : 0;
+    document.getElementById('accuracy-pct').textContent   = pct + '%';
+    document.getElementById('accuracy-bar').style.width   = pct + '%';
+
+} else {
+    // stats vem do SessionResponse guardado pelo exercise.html ao chamar endSession
+    const r = state.getSessionResult();
+    document.getElementById('page-title').textContent     = 'Sessão terminada';
+    document.getElementById('page-subtitle').textContent  = r ? formatDate(r.startedAt) : '';
+    document.getElementById('stat-total').textContent     = r?.totalExercises   ?? '—';
+    document.getElementById('stat-correct').textContent   = r?.correctAnswers   ?? '—';
+    document.getElementById('stat-incorrect').textContent = r?.incorrectAnswers ?? '—';
+    const pct = r?.accuracy != null ? Math.round(r.accuracy * 100) : 0;
+    document.getElementById('accuracy-pct').textContent   = pct + '%';
+    document.getElementById('accuracy-bar').style.width   = pct + '%';
+
+    // area mais fraca nao esta no SessionResponse - requer chamada separada a GET /api/progress
+    getProgress().then(p => {
+        if (p.weakestAreas?.length > 0) {
+            const w = p.weakestAreas[0];
+            document.getElementById('weak-area-text').textContent =
+                `${w.displayName} — ${w.hint ?? ''}`;
+            document.getElementById('weak-area').classList.remove('hidden');
+        }
+    }).catch(() => { /* progresso indisponivel - nao e critico para este ecra */ });
+}
+
+/* --- botao Voltar --- */
+document.getElementById('btn-back').addEventListener('click', () => {
+    state.clearSession();
+    window.location.href = 'index.html';
+});
+
+/* --- botao Iniciar sessao --- */
+document.getElementById('btn-new-session').addEventListener('click', async () => {
+    // fecha sessao activa se existir antes de iniciar nova
+    if (state.hasActiveSession()) {
+        try { await endSession(state.getSessionId()); } catch { /* best effort */ }
+    }
+    state.clearSession();
+    try {
+        const session = await startSession();
+        state.setMode('session');
+        state.setSessionId(session.id);
+        state.setSessionTs(new Date().toISOString());
+        state.setCounters({ correct: 0, incorrect: 0, total: 0 });
+        window.location.href = 'exercise.html';
+    } catch (err) {
+        alert('Erro ao iniciar sessão: ' + err.message);
+    }
+});
+</script>
+</body>
+</html>
