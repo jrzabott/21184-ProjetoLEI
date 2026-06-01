@@ -34,3 +34,9 @@ ehthumbs.db
 .~lock.*
 ~$*
 ~WRL*.tmp
+
+# Logs e artefactos de runtime
+logs/
+build/
+.jqwik-database
+musical-trainer.db

@@ -2,7 +2,10 @@
  * todas as páginas importam daqui - nenhuma usa fetch directamente.
  * mudar BASE aqui reflecte-se em toda a aplicação (ADR-017). */
 
-const BASE = 'http://localhost:8080';
+/* vazio = mesma origem que serviu a pagina (ADR-017).
+ * o frontend e sempre servido pelo Spring Boot, entao URLs relativas funcionam
+ * em qualquer porta - dev (8080), testes (porta aleatoria), producao. */
+const BASE = '';
 
 /**
  * Faz um pedido HTTP e devolve o JSON de resposta.
