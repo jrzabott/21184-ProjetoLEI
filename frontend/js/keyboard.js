@@ -26,6 +26,18 @@ export function onNoteOn(cb)  { noteOnListeners.push(cb); }
  */
 export function onNoteOff(cb) { noteOffListeners.push(cb); }
 
+/**
+ * Remove todos os listeners de note-on registados.
+ * Util quando uma pagina re-inicializa o teclado ou em teardown de testes,
+ * para evitar acumulacao de callbacks que disparariam varias vezes por nota.
+ */
+export function clearNoteOnListeners()  { noteOnListeners.length  = 0; }
+
+/**
+ * Remove todos os listeners de note-off registados.
+ */
+export function clearNoteOffListeners() { noteOffListeners.length = 0; }
+
 function fireNoteOn(midi)  { noteOnListeners.forEach(cb => cb(midi)); }
 function fireNoteOff(midi) { noteOffListeners.forEach(cb => cb(midi)); }
 
