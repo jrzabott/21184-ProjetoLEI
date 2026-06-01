@@ -58,4 +58,34 @@ class ProgressServiceWeaknessTest {
         assertThat(worst.totalAttempts()).isEqualTo(3);
         assertThat(worst.hint()).isNotBlank();
     }
+    @Test
+    void shouldNotMisidentifyCompoundIntervalAsSecondaMenor() throws Exception {
+        // Bug P19: delta=14 (9a maior) dava 14%13=1 -> SEGUNDA_MENOR (errado)
+        // Apos fix: Math.min(14,12)=12 -> OITAVA_PERFEITA (mais correcto para compound intervals)
+        SessionRecord session = daoFactory.createSessionDao().save(
+            new SessionRecord(null,
+                LocalDateTime.now(), null, 0, 0, 0,
+                LocalDateTime.now()));
+
+        ExerciseRecord exercise = daoFactory.createExerciseDao().save(
+            new ExerciseRecord(
+                null, "INTERVAL", 5,
+                "{\"notes\":[60,74]}",
+                "5a Perfeita",
+                LocalDateTime.now()));
+
+        for (int i = 0; i < 3; i++) {
+            daoFactory.createResultDao().save(
+                new ResultRecord(
+                    null, session.id(), exercise.id(),
+                    "[60,67]", false, null));
+        }
+
+        ProgressResponse progress = service.buildProgress();
+
+        progress.weakestAreas().forEach(area ->
+            assertThat(area.pattern())
+                .as("delta=14 nao deve mapear para 2a Menor via modulo 13 errado")
+                .isNotEqualTo("2a Menor"));
+    }
 }
