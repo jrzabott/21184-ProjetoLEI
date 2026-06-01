@@ -71,7 +71,7 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             logger.error("Erro a serializar IntervalQuestion", e);
             throw new RuntimeException(e);
         }
-        String description   = "Reproduz o intervalo entre " + Note.fromMidi(low).getDisplayName() + " e " + Note.fromMidi(high).getDisplayName();
+        String description   = "Toca uma " + type.displayName() + " a partir de " + Note.fromMidi(low).getName();
         // atenção: plural de "semítom" em português é "semítons" (não "semítoms")
         // a forma "semítoms" gerava texto incorreto como "12 semítoms" em vez de "12 semítons"
         String hint = type.displayName() + " - " + type.semitones()
@@ -93,11 +93,10 @@ public class IntervalExerciseGenerator implements ExerciseGenerator {
             IntervalQuestion q = mapper.readValue(questionJson, IntervalQuestion.class);
             int noteA = q.notes()[0];
             int noteB = q.notes()[1];
-            String description = "Reproduz o intervalo entre "
-                + Note.fromMidi(noteA).getDisplayName() + " e " + Note.fromMidi(noteB).getDisplayName();
             int semitones = Math.abs(noteB - noteA);
             pt.uab.musicaltrainer.domain.IntervalType intervalType =
                 pt.uab.musicaltrainer.domain.IntervalType.fromSemitones(semitones);
+            String description = "Toca uma " + intervalType.displayName() + " a partir de " + Note.fromMidi(noteA).getName();
             String hint = intervalType.displayName() + " - " + semitones
                 + (semitones == 1 ? " semítom" : " semítons");
             return new GeneratedExercise(ExerciseType.INTERVAL.name(), difficulty, questionJson,
