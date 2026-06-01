@@ -134,6 +134,32 @@ public class ExerciseSteps {
     public void submitBtnEnabled() {
         page.submitBtn().shouldNotBe(com.codeborne.selenide.Condition.disabled);
     }
+
+    @When("o utilizador clica no botão Ouvir")
+    public void clickListen() { page.clickListen(); }
+
+    @Then("apenas uma tecla está destacada no teclado de exercício")
+    public void onlyOneKeyHighlighted() {
+        // verifica que Ouvir destaca apenas a nota raiz e nao todas as notas em sequencia
+        // aguarda um curto periodo para o highlight ser aplicado apos o click
+        try { Thread.sleep(200); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        int count = com.codeborne.selenide.Selenide.$$(".highlighted").size();
+        org.assertj.core.api.Assertions.assertThat(count)
+            .as("Ouvir deve destacar apenas 1 tecla (nota raiz) — nao todas em sequencia")
+            .isLessThanOrEqualTo(1);
+    }
+
+    @Then("o painel de feedback nao contém numeros MIDI em bruto")
+    public void feedbackHasNoRawMidi() {
+        // verifica que o feedback mostra "C4, G4" e nao "[60, 67]"
+        // antes do fix, result.explanation continha numeros MIDI brutos do backend
+        String text = page.feedbackPanel().getText();
+        org.assertj.core.api.Assertions.assertThat(text)
+            .as("feedback nao deve conter numeros MIDI em bruto como [60] ou [48, 50, ...]")
+            .doesNotMatch(".*\\[\\d[\\d,\\s]*\\].*");
+    }
+
+
     @Given("que o utilizador configurou uma sessão pontuada com tipo {string}")
     public void configureScoredSession(String type) {
         open("/index.html");

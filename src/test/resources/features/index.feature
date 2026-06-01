@@ -67,3 +67,9 @@ Feature: Página principal e modo sandbox
     Given que existe uma sessão activa no storage
     When o utilizador termina a sessão em curso
     Then o banner de sessão em curso não está visível
+
+  Scenario: Mudar tipo de exercício limpa o painel de notas sandbox
+    Given que o utilizador abre a aplicação
+    When o utilizador clica na tecla MIDI 60
+    And o utilizador selecciona o tipo "SCALE"
+    Then o painel de notas sandbox contém "Toca uma tecla"

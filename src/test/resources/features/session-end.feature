@@ -29,3 +29,15 @@ Feature: Resumo de sessão
     When o utilizador clica em Iniciar sessão no resumo
     Then a página de exercício está visível
     And o banner de prática não está visível no exercício
+
+  Scenario: Sessão pontuada iniciada pela UI guarda exercícios correctamente
+    Given que o utilizador abre a aplicação
+    And o utilizador selecciona o tipo "INTERVAL"
+    When o utilizador clica em Iniciar sessão
+    Then a página de exercício está visível
+    And o banner de prática não está visível no exercício
+    When o utilizador toca as notas correctas do exercício
+    And o utilizador clica em Enviar resposta
+    And o utilizador clica em Terminar no exercício
+    Then o título do resumo é "Sessão terminada"
+    And os totais da sessão mostram pelo menos um exercício

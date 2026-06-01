@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Progresso — Musical Trainer</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -12,7 +13,7 @@
   <a class="app-logo" href="index.html">♩ Musical<span>Trainer</span></a>
   <nav class="nav-links">
     <a href="index.html">← Início</a>
-    <div class="midi-led" id="midi-led"></div>
+    <div class="midi-led" id="midi-led" title="MIDI: verde = dispositivo ligado · cinzento = sem dispositivo"></div>
   </nav>
 </header>
 
@@ -108,8 +109,11 @@ async function load() {
     const gPct = asPct(data.overallAccuracy);
     document.getElementById('global-pct').textContent  = gPct + '%';
     document.getElementById('global-bar').style.width  = gPct + '%';
+    // concordância gramatical: 1 exercício / N exercícios, 1 sessão / N sessões
+    const exLabel   = data.totalExercises === 1 ? 'exercício' : 'exercícios';
+    const sessLabel = data.totalSessions  === 1 ? 'sessão'   : 'sessões';
     document.getElementById('global-meta').textContent =
-        `${data.totalExercises} exercícios · ${data.totalSessions} sessões`;
+        `${data.totalExercises} ${exLabel} · ${data.totalSessions} ${sessLabel}`;
 
     /* por tipo */
     const byTypeEl = document.getElementById('by-type');
@@ -196,12 +200,14 @@ document.getElementById('btn-start').addEventListener('click', async () => {
     try {
         const session = await startSession();
         state.setMode('session');
-        state.setSessionId(session.id);
+        // atenção: mesmo bug que em index.html — session.sessionId, não session.id
+        state.setSessionId(session.sessionId);
         state.setSessionTs(new Date().toISOString());
         state.setCounters({ correct: 0, incorrect: 0, total: 0 });
         window.location.href = 'exercise.html';
     } catch (err) {
-        alert('Erro ao iniciar sessão: ' + err.message);
+        console.error('startSession falhou em progress:', err);
+        document.getElementById('btn-start').textContent = 'Erro — tenta novamente';
     }
 });
 

@@ -53,3 +53,12 @@ Feature: Ecrã de exercício activo
     Then o botão Enviar resposta está activo
     When o utilizador clica em Limpar
     Then o botão Enviar resposta está desativado
+
+  Scenario: Ouvir destaca apenas a nota raiz e nao todas as notas
+    When o utilizador clica no botão Ouvir
+    Then apenas uma tecla está destacada no teclado de exercício
+
+  Scenario: Feedback de resposta incorrecta mostra nomes de nota nao numeros MIDI
+    When o utilizador clica na tecla MIDI 60 no exercício
+    And o utilizador clica em Enviar resposta
+    Then o painel de feedback nao contém numeros MIDI em bruto

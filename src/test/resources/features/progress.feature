@@ -37,3 +37,9 @@ Feature: Dashboard de progresso
     Given que não existem sessões registadas
     When o utilizador abre a página de progresso
     Then o LED MIDI está presente na página de progresso
+
+  Scenario: Dashboard com uma sessao usa singular correcto
+    Given que não existem sessões registadas
+    And que existem sessões registadas
+    When o utilizador abre a página de progresso
+    Then o texto do resumo global nao usa plural incorrecta para uma sessao

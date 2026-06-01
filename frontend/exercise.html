@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Exercício — Musical Trainer</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
   <nav class="nav-links">
     <div class="session-counter" id="session-counter"></div>
     <button class="btn btn-ghost btn-sm" id="btn-end">Terminar</button>
-    <div class="midi-led" id="midi-led"></div>
+    <div class="midi-led" id="midi-led" title="MIDI: verde = dispositivo ligado · cinzento = sem dispositivo"></div>
   </nav>
 </header>
 
@@ -64,7 +65,7 @@
 <script type="module">
 import { generateExercise, submitAnswer, endSession } from './js/api.js';
 import * as state from './js/state.js';
-import { createNotesQueue }                           from './js/notes-queue.js';
+import { createNotesQueue, midiToName }               from './js/notes-queue.js';
 import {
     buildKeyboard, onNoteOn,
     highlightNotes, clearHighlights, getKeyboardRange,
@@ -178,7 +179,8 @@ function renderCounter() {
         counterEl.innerHTML = '<span class="color-accent">Prática</span>';
     } else {
         const c = state.getCounters();
-        counterEl.innerHTML = `<strong>${c.correct}</strong>/${c.total} correctas`;
+        // ortografia pós-reforma: "corretas" não "correctas"
+counterEl.innerHTML = `<strong>${c.correct}</strong>/${c.total} corretas`;
     }
 }
 
@@ -187,11 +189,15 @@ document.getElementById('btn-listen').addEventListener('click', () => {
     if (!currentExercise) return;
     clearHighlights();
     playNotes(currentExercise.notes);
-    // ilumina cada tecla sincronizada com a reproducao audio (300ms entre notas)
-    currentExercise.notes.forEach((midi, i) => {
-        setTimeout(() => highlightNotes([midi]),  i * 300);
-        setTimeout(() => clearHighlights(),       i * 300 + 380);
-    });
+    // atenção: destacar todas as notas em sequência distraía o utilizador e conflituava
+    // com o input — ao clicar teclas durante o destaque sequencial, a animação sobrepunha-se.
+    // destaca apenas a nota raiz (primeira nota) como referência de posição no teclado.
+    // o som e a parte importante; o destaque e apenas orientação visual da raiz.
+    if (currentExercise.notes.length > 0) {
+        highlightNotes([currentExercise.notes[0]]);
+        const duracao = currentExercise.notes.length * 300 + 400;
+        setTimeout(() => clearHighlights(), duracao);
+    }
 });
 
 /* --- botao Limpar --- */
@@ -222,11 +228,18 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 
         if (result.correct) {
             feedbackPanel.className = 'feedback-panel correct mt-12';
-            feedbackPanel.textContent = '✓ ' + (result.explanation || 'Correcto!');
+            // ortografia pós-reforma de 2009: "Correto" não "Correcto"
+            feedbackPanel.textContent = '✓ Correto!';
             playCorrect();
         } else {
             feedbackPanel.className = 'feedback-panel incorrect mt-12';
-            feedbackPanel.textContent = '✗ ' + (result.explanation || 'Incorrecto.');
+            // atenção: result.explanation contém números MIDI brutos (ex: "Tocaste [60] era [60,67]")
+            // — não legível para o utilizador. construir mensagem com nomes de nota via midiToName().
+            // result.correctAnswer é agora int[] após correcção do bug P29 em feat/59.
+            const correctNames = Array.isArray(result.correctAnswer)
+                ? result.correctAnswer.map(midiToName).join(', ')
+                : '';
+            feedbackPanel.textContent = `✗ Incorreto${correctNames ? ` — era: ${correctNames}` : '.'}`;
             playIncorrect();
         }
 
@@ -238,7 +251,11 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
         renderCounter();
 
     } catch (err) {
-        alert('Erro ao enviar resposta: ' + err.message);
+        // nunca usar alert() — interrompe o fluxo e expoe mensagens tecnicas
+        feedbackPanel.className = 'feedback-panel incorrect mt-12';
+        feedbackPanel.textContent = '⚠ Erro ao enviar — tenta novamente.';
+        feedbackArea.classList.remove('hidden');
+        console.error('submitAnswer falhou:', err);
     }
 });
 

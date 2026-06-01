@@ -80,6 +80,7 @@ class ExerciseControllerTest {
                 .content(answerBody))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
+            // correctAnswer e agora int[] nao String (bug P29 corrigido em feat/70)
             .andExpect(jsonPath("$.correctAnswer").isArray())
             .andExpect(jsonPath("$.explanation").isString());
     }
@@ -134,6 +135,7 @@ class ExerciseControllerTest {
                 .content("{\"exerciseId\":" + exerciseId + ",\"sessionId\":0,\"notes\":[60,64,67],\"responseTimeMs\":1000}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.correct").isBoolean())
+            // correctAnswer e agora int[] — sandbox mode incluido (bug P29)
             .andExpect(jsonPath("$.correctAnswer").isArray());
     }
 

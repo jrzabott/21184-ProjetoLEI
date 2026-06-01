@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sessão terminada — Musical Trainer</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -11,7 +12,7 @@
 <header class="app-header">
   <a class="app-logo" href="index.html">♩ Musical<span>Trainer</span></a>
   <nav class="nav-links">
-    <div class="midi-led" id="midi-led"></div>
+    <div class="midi-led" id="midi-led" title="MIDI: verde = dispositivo ligado · cinzento = sem dispositivo"></div>
   </nav>
 </header>
 
@@ -27,7 +28,7 @@
 
   <!-- estatisticas da sessao -->
   <div class="stat-row"><span class="opacity-70">Exercícios</span><strong id="stat-total">—</strong></div>
-  <div class="stat-row"><span class="opacity-70">Correctos</span><strong id="stat-correct" class="color-correct">—</strong></div>
+  <div class="stat-row"><span class="opacity-70">Corretos</span><strong id="stat-correct" class="color-correct">—</strong></div>
   <div class="stat-row"><span class="opacity-70">Errados</span><strong id="stat-incorrect" class="color-incorrect">—</strong></div>
 
   <!-- barra de precisao -->
@@ -130,12 +131,14 @@ document.getElementById('btn-new-session').addEventListener('click', async () =>
     try {
         const session = await startSession();
         state.setMode('session');
-        state.setSessionId(session.id);
+        // atenção: mesmo bug que em index.html — session.sessionId, não session.id
+        state.setSessionId(session.sessionId);
         state.setSessionTs(new Date().toISOString());
         state.setCounters({ correct: 0, incorrect: 0, total: 0 });
         window.location.href = 'exercise.html';
     } catch (err) {
-        alert('Erro ao iniciar sessão: ' + err.message);
+        console.error('startSession falhou em session-end:', err);
+        document.getElementById('btn-new-session').textContent = 'Erro — tenta novamente';
     }
 });
 

@@ -88,9 +88,9 @@
 
 ## Sem. 11 · 19–23 mai
 
-**Feito:** Frontend implementado (feat/54-57): main.css + 6 módulos JS (api, state, notes-queue, keyboard, audio, midi) + 4 páginas HTML (index, exercise, session-end, progress). Cobertura completa F03-F09. Gestão de sessões órfãs via beforeunload beacon + banner de recuperação. Fila de notas com tamanho dinâmico derivado do backend (suporta pentatónica 6 notas, cromática 13 notas, etc).
-**Bloqueou:** -
-**Próxima semana:** Validação funcional em browser. Testes de integração. Triagem bugs médios P18-P25, P29.
+**Feito:** Frontend completo (feat/54-58): 6 módulos JS, 4 páginas HTML, E2E Cucumber 76 cenários. Branches de correcção pós-revisão multi-perspectiva (feat/59-69): P29 correctAnswer int[], P19 extract pattern, P22 increment guard, getDisplayName via enum, PIT mutation 1.17, SQLite operacional, DOM seguro, botão Enviar, LED MIDI. feat/70 correcções UX pós-revisão black-box: session.sessionId (critico - sessões pontuadas nao guardavam dados), feedback com nomes de nota em vez de numeros MIDI, Ouvir destaca apenas nota raiz, ortografia pós-reforma (Correto/corretas), singular/plural no dashboard, schema-sqlite.sql compativel com SQLite 3, favicon SVG, tooltip LED MIDI, SQLiteEndToEndIT.
+**Bloqueou:** SqliteStrategy.getUrl() hardcodeia o caminho da BD - nao é possivel apontar o E2E test para ficheiro temporario sem refactoring adicional. Documentado no Javadoc de SqliteEndToEndIT.
+**Próxima semana:** Merge de todas as branches. Cap. 4 e 5 do relatório final.
 
 ---
 
