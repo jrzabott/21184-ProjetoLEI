@@ -212,13 +212,19 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
     if (!currentExercise || !notesQueue || awaitingNext) return;
 
     const notes          = notesQueue.toArray();
+    // se o exercicio e de intervalo e o utilizador tocou apenas a nota alvo,
+    // prepend da raiz automaticamente - a raiz esta destacada no teclado
+    // e o utilizador nao precisa de a tocar de novo
+    const toSubmit = (state.getType() === 'INTERVAL' && notes.length === 1)
+        ? [currentExercise.notes[0], ...notes]
+        : notes;
     const responseTimeMs = Date.now() - exerciseStartMs;
 
     try {
         const result = await submitAnswer(
             currentExercise.exerciseId,
             state.getSessionId(),
-            notes,
+            toSubmit,
             responseTimeMs,
         );
 

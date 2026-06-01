@@ -62,3 +62,9 @@ Feature: Ecrã de exercício activo
     When o utilizador clica na tecla MIDI 60 no exercício
     And o utilizador clica em Enviar resposta
     Then o painel de feedback nao contém numeros MIDI em bruto
+
+  Scenario: Intervalo aceita resposta com apenas a nota alvo
+    When o utilizador toca apenas a nota alvo do intervalo
+    And o utilizador clica em Enviar resposta
+    Then o painel de feedback está visível
+    And o painel tem classe correct ou incorrect

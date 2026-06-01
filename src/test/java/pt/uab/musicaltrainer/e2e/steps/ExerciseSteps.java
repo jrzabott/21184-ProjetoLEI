@@ -159,6 +159,25 @@ public class ExerciseSteps {
             .doesNotMatch(".*\\[\\d[\\d,\\s]*\\].*");
     }
 
+    /**
+     * Toca apenas a nota alvo (ultima nota do exercicio de intervalo), sem tocar a raiz.
+     * O Background garante que o exercicio e de tipo INTERVAL.
+     * RED: antes do fix, enviar 1 nota num exercicio de intervalo resultava em erro
+     * de notas insuficientes porque o handler nao fazia prepend da raiz.
+     */
+    @When("o utilizador toca apenas a nota alvo do intervalo")
+    public void clickOnlyTargetNote() {
+        executeJavaScript(
+            "const ex = JSON.parse(sessionStorage.getItem('mt_exercise'));" +
+            "if (!ex || !ex.notes || ex.notes.length < 2) return;" +
+            "const targetMidi = ex.notes[ex.notes.length - 1];" +
+            "const k = document.querySelector('[data-midi=\"' + targetMidi + '\"]');" +
+            "if (k) {" +
+            "  k.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));" +
+            "  k.dispatchEvent(new MouseEvent('mouseup',   {bubbles: true}));" +
+            "}"
+        );
+    }
 
     @Given("que o utilizador configurou uma sessão pontuada com tipo {string}")
     public void configureScoredSession(String type) {
