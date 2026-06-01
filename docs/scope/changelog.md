@@ -104,9 +104,9 @@
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:** feat/80: fix(interval-generator) — enunciado mostra tipo+raiz sem revelar nota alvo; app é de teoria musical, nao treino auditivo.
+**Feito:** feat/81: fix(exercise-service) — guard defensivo notas vazias; elimina ArrayIndexOutOfBoundsException em evaluateScale com input vazio.
 **Bloqueou:** -
-**Próxima semana:** feat/81-83.
+**Próxima semana:** feat/82-83.
 
 ---
 
