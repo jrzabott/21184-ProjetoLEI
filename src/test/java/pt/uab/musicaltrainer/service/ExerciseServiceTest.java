@@ -267,6 +267,31 @@ class ExerciseServiceTest {
     // --- No-consecutive-repeat end-to-end (F02/P12) ---
 
     @Test
+    void shouldExtractPitchClassFromIntervalQuestion() throws Exception {
+        int pc = service.extractRootPitchClass("INTERVAL", "{\"notes\":[60,67]}");
+        assertThat(pc).isEqualTo(0); // C
+    }
+
+    @Test
+    void shouldExtractPitchClassFromChordQuestion() throws Exception {
+        int pc = service.extractRootPitchClass("CHORD", "{\"root\":60,\"type\":\"MAJOR\"}");
+        assertThat(pc).isEqualTo(0); // C
+    }
+
+    @Test
+    void shouldExtractPitchClassFromScaleQuestion() throws Exception {
+        int pc = service.extractRootPitchClass("SCALE", "{\"root\":69,\"type\":\"MAJOR\"}");
+        assertThat(pc).isEqualTo(9); // A
+    }
+
+    @Test
+    void differentOctaveSamePitchClassIsEquivalent() throws Exception {
+        int pc48 = service.extractRootPitchClass("CHORD", "{\"root\":48,\"type\":\"MAJOR\"}");
+        int pc60 = service.extractRootPitchClass("CHORD", "{\"root\":60,\"type\":\"MAJOR\"}");
+        assertThat(pc48).isEqualTo(pc60).isEqualTo(0);
+    }
+
+    @Test
     void shouldNotGenerateSameExerciseConsecutivelyInSession() throws Exception {
         // F02: sem exercícios consecutivos repetidos na mesma sessão
         pt.uab.musicaltrainer.dto.SessionRecord session = sessionService.startSession();

@@ -67,13 +67,14 @@ public class ExerciseService {
                 difficulty, suggested, effectiveDiff);
         }
 
-        String lastQuestionJson = getLastQuestionJson(type, sessionId);
+        int lastPitchClass = getLastRootPitchClass(type, sessionId);
         ExerciseGenerator generator = getGenerator(type);
         ExerciseRecord saved = null;
 
         for (int attempt = 1; attempt <= MAX_REPEAT_ATTEMPTS; attempt++) {
             GeneratedExercise generated = generator.generate(effectiveDiff);
-            if (lastQuestionJson == null || !generated.questionJson().equals(lastQuestionJson)) {
+            int currentPitchClass = extractRootPitchClass(type, generated.questionJson());
+            if (lastPitchClass < 0 || lastPitchClass != currentPitchClass) {
                 String expectedNotesJson = toNotesJson(generated.notesToPlay());
                 saved = daoFactory.createExerciseDao().save(new ExerciseRecord(
                     null, generated.type(), generated.difficulty(),
@@ -95,13 +96,13 @@ public class ExerciseService {
         return saved;
     }
 
-    private String getLastQuestionJson(String type, Long sessionId) throws Exception {
-        if (sessionId == null || sessionId == MusicConstants.SESSION_NONE) return null;
+    private int getLastRootPitchClass(String type, Long sessionId) throws Exception {
+        if (sessionId == null || sessionId == MusicConstants.SESSION_NONE) return -1;
         return daoFactory.createResultDao()
             .findLastExerciseBySessionId(sessionId)
             .filter(ex -> ex.type().equals(type))
-            .map(ExerciseRecord::question)
-            .orElse(null);
+            .map(ex -> extractRootPitchClass(ex.type(), ex.question()))
+            .orElse(-1);
     }
 
     public int getSuggestedDifficulty(String type, int currentDifficulty) throws Exception {
@@ -254,6 +255,23 @@ public class ExerciseService {
     private ExerciseGenerator getGenerator(String type) {
         logger.debug("Obtendo gerador para tipo: {}", type);
         return generatorFactory.get(type);
+    }
+
+    /** Extrai o pitch class (0-11) da raiz. Package-private para teste. Retorna -1 em erro. */
+    int extractRootPitchClass(String type, String questionJson) {
+        try {
+            return switch (ExerciseType.valueOf(type)) {
+                case INTERVAL -> objectMapper.readValue(questionJson,
+                    pt.uab.musicaltrainer.dto.IntervalQuestion.class).notes()[0] % 12;
+                case SCALE    -> objectMapper.readValue(questionJson,
+                    pt.uab.musicaltrainer.dto.ScaleQuestion.class).root() % 12;
+                case CHORD    -> objectMapper.readValue(questionJson,
+                    pt.uab.musicaltrainer.dto.ChordQuestion.class).root() % 12;
+            };
+        } catch (Exception e) {
+            logger.warn("Nao foi possivel extrair pitch class de type={}: {}", type, questionJson);
+            return -1;
+        }
     }
 
     String toNotesJson(int[] notes) {
