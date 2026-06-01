@@ -96,17 +96,17 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:** Revisão multi-perspetiva do projecto (Backend, Frontend, QA, Product Owner, Music Teacher). Branches de correcção feat/59-69: P29 (correctAnswer como int[]), P19 (normalização extractPattern), P22 (guard incrementCounters), getDisplayName via enum, PIT 1.17.x, teste operacional SQLite, DOM seguro no frontend, botão Enviar desativado com fila vazia, LED MIDI em todas as páginas, actualizações de documentação.
-**Bloqueou:** -
-**Próxima semana:** Merge das branches de correcção. Capítulos 4 e 5 do relatório final.
+**Feito:** (31 mai) Code review funcional completo + fixes: feat/71-74 backend (enunciados, nomes, dificuldade, deduplicação), feat/75-77 frontend (prepend raiz, 4 timbres, scheduling Web Audio), feat/78 E2E (94 testes), feat/79 perfil Maven sqlite + run config IntelliJ.
+**Bloqueou:** Branches feat/54-79 ausentes de main — merge sequencial --no-ff pendente de OK.
+**Próxima semana:** feat/80+ — teoria musical, submissão vazia, modal ajuda, backend guard evaluateScale.
 
 ---
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Code review em curso. feat/80+ em progresso.
+**Bloqueou:** -
+**Próxima semana:** Implementação feat/80-83. Relatório final Cap. 4 e 5.
 
 ---
 
