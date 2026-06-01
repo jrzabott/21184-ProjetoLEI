@@ -33,7 +33,7 @@ class ProgressServiceWeaknessTest {
 
     @Test
     void shouldReturnWeakestAreasAsList() throws Exception {
-        // campo weakestAreas sempre presente - lista (pode estar vazia ou nao consoante histórico)
+        // campo weakestAreas sempre presente - lista (pode estar vazia ou nao consoante historico)
         ProgressResponse progress = service.buildProgress();
         assertThat(progress.weakestAreas()).isNotNull();
     }
@@ -87,5 +87,36 @@ class ProgressServiceWeaknessTest {
             assertThat(area.pattern())
                 .as("delta=14 nao deve mapear para 2a Menor via modulo 13 errado")
                 .isNotEqualTo("2a Menor"));
+    }
+
+    @Test
+    void shouldDisplayDorianNameAsDoricoNotLowercase() throws Exception {
+        // Bug: a cadeia de replaces produz "dorian" em vez de "Dórico"
+        // Fix: ScaleType.valueOf("DORIAN").displayName() => "Dórico"
+        SessionRecord session = daoFactory.createSessionDao().save(
+            new SessionRecord(null, LocalDateTime.now(), null, 0, 0, 0,
+                LocalDateTime.now()));
+
+        ExerciseRecord exercise = daoFactory.createExerciseDao().save(
+            new ExerciseRecord(
+                null, "SCALE", 5,
+                "{\"root\":60,\"type\":\"DORIAN\"}",
+                "DORIAN",
+                LocalDateTime.now()));
+
+        for (int i = 0; i < 3; i++) {
+            daoFactory.createResultDao().save(
+                new ResultRecord(
+                    null, session.id(), exercise.id(),
+                    "[60,62,63,65,67,69,70,72]", false, null));
+        }
+
+        ProgressResponse progress = service.buildProgress();
+
+        boolean foundDorian = progress.weakestAreas().stream()
+            .anyMatch(a -> "Dórico".equals(a.displayName()));
+        assertThat(foundDorian)
+            .as("displayName de DORIAN deve ser Dórico (via enum), nao dorian (via replaces)")
+            .isTrue();
     }
 }

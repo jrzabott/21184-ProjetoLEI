@@ -118,14 +118,20 @@ public class ProgressService {
                 .map(IntervalType::displayName)
                 .findFirst().orElse(pattern);
         }
-        // SCALE/CHORD: formatar nome enum para legível
-        return pattern.replace("_", " ")
-            .toLowerCase()
-            .replace("harmonic", "Harmónica")
-            .replace("natural", "Natural")
-            .replace("major", "Maior")
-            .replace("minor", "Menor")
-            .replace("diminished", "Diminuto")
-            .replace("augmented", "Aumentado");
+        if ("SCALE".equals(exerciseType)) {
+            try {
+                return pt.uab.musicaltrainer.domain.ScaleType.valueOf(pattern).displayName();
+            } catch (IllegalArgumentException e) {
+                logger.warn("ScaleType desconhecido em getDisplayName: {}", pattern);
+            }
+        }
+        if ("CHORD".equals(exerciseType)) {
+            try {
+                return pt.uab.musicaltrainer.domain.ChordType.valueOf(pattern).displayName();
+            } catch (IllegalArgumentException e) {
+                logger.warn("ChordType desconhecido em getDisplayName: {}", pattern);
+            }
+        }
+        return pattern.replace("_", " ").toLowerCase();
     }
 }
