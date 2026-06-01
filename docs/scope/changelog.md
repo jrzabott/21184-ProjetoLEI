@@ -104,9 +104,9 @@
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:** Code review em curso. feat/80+ em progresso.
+**Feito:** feat/80: fix(interval-generator) — enunciado mostra tipo+raiz sem revelar nota alvo; app é de teoria musical, nao treino auditivo.
 **Bloqueou:** -
-**Próxima semana:** Implementação feat/80-83. Relatório final Cap. 4 e 5.
+**Próxima semana:** feat/81-83.
 
 ---
 
