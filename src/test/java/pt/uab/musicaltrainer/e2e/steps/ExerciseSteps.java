@@ -160,6 +160,20 @@ public class ExerciseSteps {
     }
 
     /**
+     * RED: verifica que o selector de timbre existe com as 4 opcoes esperadas.
+     * Antes da impl: o elemento #timbre-selector nao existe — o teste falha imediatamente.
+     */
+    @Then("deve existir um selector de timbre com as opcoes sine triangle sawtooth e piano")
+    public void timbreSelectorExists() {
+        com.codeborne.selenide.Selenide.$$("#timbre-selector input[type='radio']")
+            .shouldHave(com.codeborne.selenide.CollectionCondition.size(4));
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='sine']").shouldBe(Condition.exist);
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='triangle']").shouldBe(Condition.exist);
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='sawtooth']").shouldBe(Condition.exist);
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='piano']").shouldBe(Condition.exist);
+    }
+
+    /**
      * Toca apenas a nota alvo (ultima nota do exercicio de intervalo), sem tocar a raiz.
      * O Background garante que o exercicio e de tipo INTERVAL.
      * RED: antes do fix, enviar 1 nota num exercicio de intervalo resultava em erro

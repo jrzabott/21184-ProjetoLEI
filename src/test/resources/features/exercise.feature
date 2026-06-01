@@ -68,3 +68,6 @@ Feature: Ecrã de exercício activo
     And o utilizador clica em Enviar resposta
     Then o painel de feedback está visível
     And o painel tem classe correct ou incorrect
+
+  Scenario: Selector de timbre existe abaixo do teclado
+    Then deve existir um selector de timbre com as opcoes sine triangle sawtooth e piano

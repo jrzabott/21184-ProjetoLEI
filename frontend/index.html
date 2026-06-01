@@ -54,6 +54,14 @@
   <div class="keyboard" id="sandbox-keyboard"></div>
 </div>
 
+<!-- selector de timbre: persiste via sessionStorage (mt_timbre) -->
+<div class="timbre-selector" id="timbre-selector">
+  <label><input type="radio" name="timbre" value="sine">     Sine</label>
+  <label><input type="radio" name="timbre" value="triangle"> Triangle</label>
+  <label><input type="radio" name="timbre" value="sawtooth"> Sawtooth</label>
+  <label><input type="radio" name="timbre" value="piano">    Piano</label>
+</div>
+
 <!-- modal de ajuda -->
 <div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true">
   <div class="modal-box">
@@ -83,8 +91,16 @@ import { startSession, endSession, getNoteInfo } from './js/api.js';
 import * as state from './js/state.js';
 import { createNotesQueue }                      from './js/notes-queue.js';
 import { buildKeyboard, onNoteOn, getKeyboardRange } from './js/keyboard.js';
-import { playNote }                              from './js/audio.js';
+import { playNote, setCurrentTimbre }             from './js/audio.js';
 import { initMidi }                              from './js/midi.js';
+import { getTimbre, setTimbre }                  from './js/state.js';
+
+/* --- seletor de timbre --- */
+setCurrentTimbre(getTimbre());
+document.querySelectorAll('input[name="timbre"]').forEach(r => {
+    if (r.value === getTimbre()) r.checked = true;
+    r.addEventListener('change', () => { setTimbre(r.value); setCurrentTimbre(r.value); });
+});
 
 /* --- seletor de tipo --- */
 const typeButtons = document.querySelectorAll('.type-btn');
