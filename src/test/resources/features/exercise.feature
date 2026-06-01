@@ -75,3 +75,24 @@ Feature: Ecrã de exercício activo
   Scenario: Botao Ouvir permanece activo apos reproducao da sequencia
     When o utilizador clica no botão Ouvir
     Then o botão Ouvir deve estar disponivel apos a reproducao
+
+  Scenario: Intervalo com 2 notas nao activa prepend
+    When o utilizador toca as notas correctas do exercício
+    And o utilizador clica em Enviar resposta
+    Then o painel de feedback tem classe correct
+
+  Scenario: Modo escala nao faz prepend ao tocar so a nota alvo
+    Given que o utilizador configurou o modo prática com tipo "SCALE"
+    And está na página de exercício
+    When o utilizador clica na tecla MIDI que nao e raiz
+    And o utilizador clica em Enviar resposta
+    Then o painel de feedback tem classe incorrect
+
+  Scenario: Timbre sine esta seleccionado por defeito
+    Then o radio button sine deve estar seleccionado
+
+  Scenario: Notas tocadas em rapida sucessao registam todas no painel
+    Given que o utilizador configurou o modo prática com tipo "CHORD"
+    And está na página de exercício
+    When o utilizador toca 3 notas em rapida sucessao
+    Then o painel de notas do exercício contém 3 notas registadas

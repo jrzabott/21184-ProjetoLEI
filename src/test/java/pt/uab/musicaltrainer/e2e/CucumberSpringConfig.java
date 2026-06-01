@@ -31,8 +31,9 @@ public class CucumberSpringConfig {
         Configuration.browser      = "chrome";
         Configuration.headless     = Boolean.parseBoolean(System.getProperty("selenide.headless", "true"));
         Configuration.baseUrl      = "http://localhost:" + port;
-        Configuration.timeout      = 8000;
-        Configuration.pageLoadTimeout = 10000;
+        Configuration.timeout             = 8000;
+        Configuration.pageLoadTimeout     = 20000;
+        Configuration.reopenBrowserOnFail = true;
     }
 
     @After

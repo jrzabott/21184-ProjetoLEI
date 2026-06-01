@@ -31,25 +31,33 @@ public class ExercisePage {
     public void clickSubmit()      { submitBtn().click(); }
     public void clickNext()        { nextBtn().click(); }
     public void clickEnd()         { endBtn().click(); }
-    public void clickKey(int midi) { key(midi).click(); }
+    public void clickKey(int midi) {
+        SelenideElement k = key(midi).scrollIntoView(true);
+        // Actions gera eventos reais de mouse (mousedown+mouseup) via WebDriver,
+        // ao contrario de JS dispatch que pode ser ignorado pelo browser em alguns contextos
+        com.codeborne.selenide.Selenide.actions()
+            .moveToElement(k.getWrappedElement())
+            .clickAndHold()
+            .release()
+            .perform();
+    }
 
     /**
-     * Le as notas correctas do exercicio activo via sessionStorage e dispara mousedown+mouseup
-     * em cada tecla correspondente. Simula uma resposta correcta sem precisar de saber
-     * as notas antecipadamente - o backend devolve-as ao gerar o exercicio e o frontend
-     * guarda-as em mt_exercise.
+     * Le as notas correctas do exercicio activo via sessionStorage e usa clickKey() por cada nota.
+     * clickKey() usa WebDriver Actions que gera eventos reais de mouse, ao contrario de JS dispatch
+     * que pode ser bloqueado pelo browser em contexto headless.
      */
+    @SuppressWarnings("unchecked")
     public void clickCorrectNotes() {
-        executeJavaScript(
+        Object result = executeJavaScript(
             "const ex = JSON.parse(sessionStorage.getItem('mt_exercise'));" +
-            "if (!ex || !ex.notes) return;" +
-            "ex.notes.forEach(function(midi) {" +
-            "  const k = document.querySelector('[data-midi=\"' + midi + '\"]');" +
-            "  if (k) {" +
-            "    k.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));" +
-            "    k.dispatchEvent(new MouseEvent('mouseup',   {bubbles: true}));" +
-            "  }" +
-            "});"
+            "if (!ex || !ex.notes) return null;" +
+            "return ex.notes;"
         );
+        if (result == null) return;
+        java.util.List<Long> notes = (java.util.List<Long>) result;
+        for (Long midi : notes) {
+            clickKey(midi.intValue());
+        }
     }
 }

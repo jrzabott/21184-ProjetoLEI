@@ -185,7 +185,7 @@ async function loadExercise() {
 function handleNoteOn(midi) {
     // ignora input enquanto o utilizador nao clicou "Proximo exercicio"
     if (awaitingNext || !notesQueue) return;
-    playNote(midi, 300);
+    try { playNote(midi, 300); } catch (e) { /* audio nao disponivel (headless, politica autoplay) */ }
     notesQueue.push(midi);
     notesDisplayEl.textContent = notesQueue.toDisplayString() || '—';
     syncSubmitBtn();

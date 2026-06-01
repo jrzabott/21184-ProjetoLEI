@@ -111,6 +111,16 @@ public class IndexSteps {
      * RED: verifica que o timbre persiste apos navegar para exercise.html.
      * Antes da impl: mt_timbre nao existe em sessionStorage — radio button nao e seleccionado.
      */
+    @Then("deve existir um selector de timbre na pagina inicial com as opcoes sine triangle sawtooth e piano")
+    public void timbreSelectorExistsOnIndex() {
+        com.codeborne.selenide.Selenide.$$("#timbre-selector input[type='radio']")
+            .shouldHave(com.codeborne.selenide.CollectionCondition.size(4));
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='sine']").shouldBe(Condition.exist);
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='triangle']").shouldBe(Condition.exist);
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='sawtooth']").shouldBe(Condition.exist);
+        com.codeborne.selenide.Selenide.$("#timbre-selector input[value='piano']").shouldBe(Condition.exist);
+    }
+
     @Then("o timbre {string} deve estar seleccionado na pagina de exercicio")
     public void timbreSelectedInExercise(String timbre) {
         com.codeborne.selenide.Selenide.$("#timbre-selector input[value='" + timbre + "']")
