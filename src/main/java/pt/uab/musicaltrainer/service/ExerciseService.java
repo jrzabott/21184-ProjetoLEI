@@ -192,6 +192,7 @@ public class ExerciseService {
 
     /** INTERVAL: notas exactas (ADR-014 - treino enraizado). */
     private boolean evaluateInterval(int[] expected, int[] user) {
+        if (user == null || user.length == 0) return false;
         if (user.length != 2) return false;
         return Arrays.equals(expected, user);
     }
@@ -201,6 +202,7 @@ public class ExerciseService {
      * Qualquer oitava é válida; pitch class da raiz deve coincidir.
      */
     private boolean evaluateScale(String questionJson, int[] user) {
+        if (user == null || user.length == 0) return false;
         ScaleQuestion q;
         try {
             q = objectMapper.readValue(questionJson, ScaleQuestion.class);
@@ -233,6 +235,7 @@ public class ExerciseService {
      * CHORD: voicing I-III-V ascendente, qualquer oitava, mesmo pitch class na raiz (ADR-014).
      */
     private boolean evaluateChord(String questionJson, int[] expected, int[] user) {
+        if (user == null || user.length == 0) return false;
         if (user.length != 3) return false;
         if (user[0] >= user[1] || user[1] >= user[2]) return false;
         if (expected[0] % 12 != user[0] % 12) return false;
