@@ -96,3 +96,8 @@ Feature: Ecrã de exercício activo
     And está na página de exercício
     When o utilizador toca 3 notas em rapida sucessao
     Then o painel de notas do exercício contém 3 notas registadas
+
+  Scenario: Submissao sem notas conta como incorreta sem erro de API
+    When o utilizador clica em Enviar resposta
+    Then o painel de feedback tem classe incorrect
+    And o painel de feedback nao mostra erro de API

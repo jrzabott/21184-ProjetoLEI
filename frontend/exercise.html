@@ -229,6 +229,18 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
     if (!currentExercise || !notesQueue || awaitingNext) return;
 
     const notes          = notesQueue.toArray();
+    // exercicio pulado (sem notas) = resposta incorreta, tal como numa prova
+    if (notesQueue.size() === 0) {
+        feedbackPanel.className = 'feedback-panel incorrect mt-12';
+        feedbackPanel.textContent = '✗ Incorreto — nenhuma nota tocada.';
+        awaitingNext = true;
+        submitArea.classList.add('hidden');
+        feedbackArea.classList.remove('hidden');
+        state.incrementCounters(false);
+        renderCounter();
+        playIncorrect();
+        return;
+    }
     // se o exercicio e de intervalo e o utilizador tocou apenas a nota alvo,
     // prepend da raiz automaticamente - a raiz esta destacada no teclado
     // e o utilizador nao precisa de a tocar de novo
