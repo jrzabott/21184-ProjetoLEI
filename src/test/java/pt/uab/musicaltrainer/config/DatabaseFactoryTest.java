@@ -77,9 +77,30 @@ class DatabaseFactoryTest {
         @Test
         void testInvalidDatabaseTypeThrowsException() {
             DatabaseFactory factory = new DatabaseFactory(
-                "INVALID_TYPE", "localhost", 5432, "db", "user", ""
+                "INVALID_TYPE", "localhost", 5432, "db", "user", "", "musical-trainer.db"
             );
             assertThrows(IllegalArgumentException.class, factory::getStrategy);
+        }
+    }
+
+    @Nested
+    class SqliteStrategyWithCustomPathTests {
+        @Test
+        void testSqliteStrategyWithCustomPath() {
+            DatabaseFactory factory = new DatabaseFactory(
+                "SQLITE", "localhost", 5432, "db", "user", "", "/data/musical-trainer.db"
+            );
+            DatabaseStrategy strategy = factory.getStrategy();
+            assertEquals("jdbc:sqlite:/data/musical-trainer.db", strategy.getUrl());
+        }
+
+        @Test
+        void testSqliteStrategyWithDefaultPath() {
+            DatabaseFactory factory = new DatabaseFactory(
+                "SQLITE", "localhost", 5432, "db", "user", "", "musical-trainer.db"
+            );
+            DatabaseStrategy strategy = factory.getStrategy();
+            assertEquals("jdbc:sqlite:musical-trainer.db", strategy.getUrl());
         }
     }
 }
