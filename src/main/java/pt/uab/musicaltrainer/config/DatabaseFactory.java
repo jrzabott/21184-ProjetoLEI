@@ -15,6 +15,7 @@ public class DatabaseFactory {
     private final String postgresDatabase;
     private final String postgresUsername;
     private final String postgresPassword;
+    private final String sqlitePath;
 
     public DatabaseFactory(
             @Value("${db.type:H2}") String databaseType,
@@ -22,13 +23,15 @@ public class DatabaseFactory {
             @Value("${db.postgres.port:5432}") int postgresPort,
             @Value("${db.postgres.database:musical_trainer}") String postgresDatabase,
             @Value("${db.postgres.username:postgres}") String postgresUsername,
-            @Value("${db.postgres.password:}") String postgresPassword) {
+            @Value("${db.postgres.password:}") String postgresPassword,
+            @Value("${db.sqlite.path:musical-trainer.db}") String sqlitePath) {
         this.databaseType = databaseType;
         this.postgresHost = postgresHost;
         this.postgresPort = postgresPort;
         this.postgresDatabase = postgresDatabase;
         this.postgresUsername = postgresUsername;
         this.postgresPassword = postgresPassword;
+        this.sqlitePath = sqlitePath;
     }
 
     /**
@@ -36,7 +39,7 @@ public class DatabaseFactory {
      */
     public DatabaseStrategy getStrategy() {
         return switch (databaseType.toUpperCase()) {
-            case "SQLITE" -> new SqliteStrategy();
+            case "SQLITE" -> new SqliteStrategy(sqlitePath);
             case "POSTGRES" -> new PostgresStrategy(postgresHost, postgresPort, postgresDatabase, postgresUsername, postgresPassword);
             case "H2" -> new H2Strategy();
             default -> throw new IllegalArgumentException("Tipo de BD desconhecido: " + databaseType);
