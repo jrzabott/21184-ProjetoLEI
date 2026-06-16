@@ -1,0 +1,9 @@
+target/
+.git/
+.github/
+.idea/
+*.iml
+*.db
+logs/
+docs/
+plans/
