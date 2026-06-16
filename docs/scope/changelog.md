@@ -120,9 +120,9 @@
 
 ## Sem. 15 · 16–20 jun · PREP. DEFESA
 
-**Feito:** chore/84: remover PITest do pom.xml — conflito irresolvivel com JUnit Platform/Cucumber; qualidade verificada por jqwik (property-based tests).  
+**Feito:** chore/84: remover PITest; feat/85: db.sqlite.path configuravel (TDD RED/GREEN); feat/86: Dockerfile + fly.toml; docs/87: artefactos de entrega.  
 **Bloqueou:** -  
-**Próxima semana:** feat/85 (sqlite path), feat/86 (docker), docs/87 (artefactos). Relatorio final Cap. 4 e 5.
+**Próxima semana:** Relatorio final Cap. 4 e 5. Video demo. Entrega 24 jun.
 
 ---
 

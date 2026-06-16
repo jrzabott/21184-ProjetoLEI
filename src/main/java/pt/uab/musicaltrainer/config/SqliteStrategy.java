@@ -1,10 +1,14 @@
 package pt.uab.musicaltrainer.config;
 
 /**
- * Estratégia para SQLite (produção por defeito).
+ * Estratégia para SQLite. Caminho configuravel via db.sqlite.path (default: musical-trainer.db).
  */
 public class SqliteStrategy implements DatabaseStrategy {
-    private static final String DB_PATH = "musical-trainer.db";
+    private final String dbPath;
+
+    public SqliteStrategy(String dbPath) {
+        this.dbPath = dbPath;
+    }
 
     @Override
     public String getDriverClassName() {
@@ -13,7 +17,7 @@ public class SqliteStrategy implements DatabaseStrategy {
 
     @Override
     public String getUrl() {
-        return "jdbc:sqlite:" + DB_PATH;
+        return "jdbc:sqlite:" + dbPath;
     }
 
     @Override
