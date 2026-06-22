@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static pt.uab.musicaltrainer.dao.JdbcDateHelper.get;
 
 /**
  * DAO para Resultado de Exercício.
@@ -77,7 +78,7 @@ public class ResultDao extends AbstractDao<ResultRecord> {
             rs.getLong("exercise_id"),
             rs.getString("user_answer"),
             rs.getBoolean("is_correct"),
-            rs.getTimestamp("created_at").toLocalDateTime()
+            get(rs, "created_at")
         );
     }
 
@@ -191,7 +192,7 @@ public class ResultDao extends AbstractDao<ResultRecord> {
                         rs.getInt("difficulty"),
                         rs.getString("question"),
                         rs.getString("correct_answer"),
-                        rs.getTimestamp("created_at").toLocalDateTime()
+                        get(rs, "created_at")
                     ));
                 }
                 logger.debug("Nenhum exercício encontrado para sessionId={}", sessionId);
