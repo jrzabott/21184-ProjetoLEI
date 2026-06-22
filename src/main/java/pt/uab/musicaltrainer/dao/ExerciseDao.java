@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static pt.uab.musicaltrainer.dao.JdbcDateHelper.get;
 
 /**
  * DAO para Exercício.
@@ -73,7 +74,7 @@ public class ExerciseDao extends AbstractDao<ExerciseRecord> {
             rs.getInt("difficulty"),
             rs.getString("question"),
             rs.getString("correct_answer"),
-            rs.getTimestamp("created_at").toLocalDateTime()
+            get(rs, "created_at")
         );
     }
 }

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static pt.uab.musicaltrainer.dao.JdbcDateHelper.get;
+import static pt.uab.musicaltrainer.dao.JdbcDateHelper.set;
 
 /**
  * DAO para Sessão de Treino.
@@ -26,8 +28,8 @@ public class SessionDao extends AbstractDao<SessionRecord> {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setTimestamp(1, Timestamp.valueOf(session.startTime()));
-            ps.setTimestamp(2, session.endTime() != null ? Timestamp.valueOf(session.endTime()) : null);
+            set(ps, 1, session.startTime());
+            set(ps, 2, session.endTime());
             ps.setInt(3, session.totalExercises());
             ps.setInt(4, session.correctAnswers());
             ps.setInt(5, session.incorrectAnswers());
@@ -57,8 +59,8 @@ public class SessionDao extends AbstractDao<SessionRecord> {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(session.startTime()));
-            ps.setTimestamp(2, session.endTime() != null ? Timestamp.valueOf(session.endTime()) : null);
+            set(ps, 1, session.startTime());
+            set(ps, 2, session.endTime());
             ps.setInt(3, session.totalExercises());
             ps.setInt(4, session.correctAnswers());
             ps.setInt(5, session.incorrectAnswers());
@@ -99,12 +101,12 @@ public class SessionDao extends AbstractDao<SessionRecord> {
     private SessionRecord mapRow(ResultSet rs) throws SQLException {
         return new SessionRecord(
             rs.getLong("id"),
-            rs.getTimestamp("start_time").toLocalDateTime(),
-            rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime() : null,
+            get(rs, "start_time"),
+            get(rs, "end_time"),
             rs.getInt("total_exercises"),
             rs.getInt("correct_answers"),
             rs.getInt("incorrect_answers"),
-            rs.getTimestamp("created_at").toLocalDateTime()
+            get(rs, "created_at")
         );
     }
 }
