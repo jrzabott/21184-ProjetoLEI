@@ -3,15 +3,12 @@ package pt.uab.musicaltrainer.config;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
-import java.io.File;
 import java.util.*;
 import java.util.regex.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class LogbackConfigTest {
-
-    private static final String LOGBACK_PATH = "src/main/resources/logback-spring.xml";
 
     @Test
     void naoDeveConterVariaveisIndefinidas() throws Exception {
@@ -44,7 +41,10 @@ class LogbackConfigTest {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new File(LOGBACK_PATH));
+        try (var stream = getClass().getClassLoader().getResourceAsStream("logback-spring.xml")) {
+            assertNotNull(stream, "logback-spring.xml nao encontrado no classpath");
+            return builder.parse(stream);
+        }
     }
 
     private Set<String> collectDeclaredKeys(Document doc) {
