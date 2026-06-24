@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:Sources SelectedStyle="\APA.XSL" StyleName="APA" xmlns:b="http://schemas.openxmlformats.org/officeDocument/2006/bibliography" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/bibliography">
+
+  <b:Source>
+    <b:Tag>Alur2003</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Alur</b:Last><b:First>Deepak</b:First></b:Person>
+        <b:Person><b:Last>Crupi</b:Last><b:First>John</b:First></b:Person>
+        <b:Person><b:Last>Malks</b:Last><b:First>Dan</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Core J2EE Patterns: Best Practices and Design Strategies</b:Title>
+    <b:Year>2003</b:Year>
+    <b:Publisher>Prentice Hall</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Anthropic2025</b:Tag>
+    <b:SourceType>ElectronicSource</b:SourceType>
+    <b:Author>
+      <b:Corporate>Anthropic</b:Corporate>
+    </b:Author>
+    <b:Title>Claude Code [ferramenta IA]</b:Title>
+    <b:Year>2025</b:Year>
+    <b:URL>https://www.anthropic.com</b:URL>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Bloom1984</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Bloom</b:Last><b:First>Benjamin S.</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>The 2 Sigma Problem: The Search for Methods of Group Instruction as Effective as One-to-One Tutoring</b:Title>
+    <b:Year>1984</b:Year>
+    <b:JournalName>Educational Researcher</b:JournalName>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Csikszentmihalyi1990</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Csikszentmihalyi</b:Last><b:First>Mihaly</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Flow: The Psychology of Optimal Experience</b:Title>
+    <b:Year>1990</b:Year>
+    <b:Publisher>Harper and Row</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Ebbinghaus1885</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Ebbinghaus</b:Last><b:First>Hermann</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Memory: A Contribution to Experimental Psychology</b:Title>
+    <b:Year>1964</b:Year>
+    <b:Publisher>Dover Publications</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Elo1978</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Elo</b:Last><b:First>Arpad E.</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>The Rating of Chessplayers, Past and Present</b:Title>
+    <b:Year>1978</b:Year>
+    <b:Publisher>Arco Publishing</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Embretson2000</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Embretson</b:Last><b:First>Susan E.</b:First></b:Person>
+        <b:Person><b:Last>Reise</b:Last><b:First>Steven P.</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Item Response Theory for Psychologists</b:Title>
+    <b:Year>2000</b:Year>
+    <b:Publisher>Lawrence Erlbaum Associates</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Evans2003</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Evans</b:Last><b:First>Eric</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Domain-Driven Design: Tackling Complexity in the Heart of Software</b:Title>
+    <b:Year>2003</b:Year>
+    <b:Publisher>Addison-Wesley</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Fowler2002</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Fowler</b:Last><b:First>Martin</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Patterns of Enterprise Application Architecture</b:Title>
+    <b:Year>2002</b:Year>
+    <b:Publisher>Addison-Wesley</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Gamma1994</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Gamma</b:Last><b:First>Erich</b:First></b:Person>
+        <b:Person><b:Last>Helm</b:Last><b:First>Richard</b:First></b:Person>
+        <b:Person><b:Last>Johnson</b:Last><b:First>Ralph</b:First></b:Person>
+        <b:Person><b:Last>Vlissides</b:Last><b:First>John</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Design Patterns: Elements of Reusable Object-Oriented Software</b:Title>
+    <b:Year>1994</b:Year>
+    <b:Publisher>Addison-Wesley</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>IETF2016</b:Tag>
+    <b:SourceType>ElectronicSource</b:SourceType>
+    <b:Author>
+      <b:Corporate>IETF</b:Corporate>
+    </b:Author>
+    <b:Title>RFC 7807 - Problem Details for HTTP APIs</b:Title>
+    <b:Year>2016</b:Year>
+    <b:URL>https://tools.ietf.org/html/rfc7807</b:URL>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>SpringTeam2024</b:Tag>
+    <b:SourceType>ElectronicSource</b:SourceType>
+    <b:Author>
+      <b:Corporate>Spring Team</b:Corporate>
+    </b:Author>
+    <b:Title>Spring Boot 3.3.0 Reference Documentation</b:Title>
+    <b:Year>2024</b:Year>
+    <b:URL>https://docs.spring.io/spring-boot/docs/3.3.0/reference/html/</b:URL>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Vygotsky1978</b:Tag>
+    <b:SourceType>Book</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Vygotsky</b:Last><b:First>Lev S.</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Mind in Society: The Development of Higher Psychological Processes</b:Title>
+    <b:Year>1978</b:Year>
+    <b:Publisher>Harvard University Press</b:Publisher>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>W3C2021</b:Tag>
+    <b:SourceType>ElectronicSource</b:SourceType>
+    <b:Author>
+      <b:Corporate>W3C</b:Corporate>
+    </b:Author>
+    <b:Title>Web Audio API — W3C Recommendation</b:Title>
+    <b:Year>2021</b:Year>
+    <b:URL>https://www.w3.org/TR/webaudio/</b:URL>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>W3C2015</b:Tag>
+    <b:SourceType>ElectronicSource</b:SourceType>
+    <b:Author>
+      <b:Corporate>W3C</b:Corporate>
+    </b:Author>
+    <b:Title>Web MIDI API — W3C Editor's Draft</b:Title>
+    <b:Year>2015</b:Year>
+    <b:URL>https://www.w3.org/TR/webmidi/</b:URL>
+  </b:Source>
+
+  <b:Source>
+    <b:Tag>Wozniak1994</b:Tag>
+    <b:SourceType>JournalArticle</b:SourceType>
+    <b:Author>
+      <b:Author><b:NameList>
+        <b:Person><b:Last>Wozniak</b:Last><b:First>Piotr A.</b:First></b:Person>
+        <b:Person><b:Last>Gorzelańczyk</b:Last><b:First>Edward J.</b:First></b:Person>
+      </b:NameList></b:Author>
+    </b:Author>
+    <b:Title>Optimization of Repetition Spacing in the Practice of Learning</b:Title>
+    <b:Year>1994</b:Year>
+    <b:JournalName>Acta Neurobiologiae Experimentalis</b:JournalName>
+  </b:Source>
+
+</b:Sources>
