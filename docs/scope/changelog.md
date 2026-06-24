@@ -112,9 +112,9 @@
 
 ## Sem. 14 · 9–13 jun
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Semana de consolidação. Merge sequencial feat/54–83 → main concluído. 342 testes unitários e de integração a passar. Início da redação do relatório final Cap. 4 (Testes) e Cap. 5 (Conclusões). chore/89: logback BY_DATE corrigido, precisão de rolling diária.  
+**Bloqueou:** Cap. 4 dependia de contagem exata de testes — aguardou merge completo.  
+**Próxima semana:** Finalizar Cap. 4 e Cap. 5. Artefactos de entrega. Docker + deploy.
 
 ---
 
@@ -128,6 +128,6 @@
 
 ## Sem. 16 · 24 jun · ENTREGA FINAL
 
-**Feito:**  
+**Feito:** fix/90: correção de compatibilidade de timestamps SQLite (JdbcDateHelper, ISO-8601 com milissegundos) — 12/12 testes verdes (H2 9/9 + SQLite 3/3). docs/88: relatório final submetido (Cap. 1-5, ADR-001 a ADR-023, bibliografia APA) — aprovado pelo orientador Pedro Pestana. Apresentação de defesa (PPTX) atualizada: taxonomia de dificuldade corrigida, framing pedagógico revisto. README e changelog atualizados para estado final.  
 **Bloqueou:** -  
-**Próxima semana:** - Defesa pública (6–10 Jul).
+**Próxima semana:** Defesa pública (6–10 Jul).

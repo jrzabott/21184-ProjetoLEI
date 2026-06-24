@@ -11,11 +11,11 @@
 
 ## Estado actual
 
-🟢 **Backend completo** - Fases 0-4.3 concluídas. 230 testes a passar. API REST funcional e documentada.  
-🟢 **Relatório intercalar entregue** - Cap. 1-3 completos. Deadline 6 Mai cumprida.  
-🟡 **Frontend a iniciar** - Wireframes prontos. Implementação agendada para Sem. 9-12.
+🟢 **Projeto completo** - Backend + frontend implementados. 442 testes a passar. Deploy em Render.  
+🟢 **Relatório final entregue** - Cap. 1-5 completos. Deadline 24 Jun cumprida. Aprovado pelo orientador.  
+🟢 **Defesa pública** - 6–10 Jul 2026.
 
-**Última actualização:** Sem. 8 · 2 Mai 2026
+**Última actualização:** Sem. 16 · 24 Jun 2026
 
 ---
 
@@ -33,7 +33,7 @@ mvn spring-boot:run
 - **Swagger UI (documentação interactiva):** `http://localhost:8080/swagger-ui.html`
 - **Frontend:** ainda não implementado (Sem. 9+)
 
-Por defeito usa H2 em memória (sem configuração adicional). Para SQLite: `--spring.profiles.active=sqlite`.
+Por defeito usa H2 em memória (sem configuração adicional). Para SQLite: `mvn spring-boot:run -P sqlite`.
 
 ---
 
@@ -50,20 +50,23 @@ Por defeito usa H2 em memória (sem configuração adicional). Para SQLite: `--s
 - [x] API REST completa: `/generate`, `/answer`, `/sessions`, `/progress`, `/sandbox`
 - [x] RFC 7807 `ProblemDetail` em todos os erros (`GlobalExceptionHandler`)
 - [x] Hints pedagógicos por tipo de exercício
-- [x] 230 testes: unitários, integração, property-based (jqwik)
+- [x] 342 testes: unitários, integração, property-based (jqwik)
+- [x] 100 testes E2E: Cucumber + Selenide, Chrome headless
+
+### Frontend (completo)
+- [x] Teclado virtual C2-C6, 4 presets de timbre, Web Audio API nativa
+- [x] Exercícios de intervalos, escalas (28 tipos) e acordes
+- [x] Modo sessão pontuado + modo sandbox (SESSION_NONE)
+- [x] Dashboard de progresso: taxa por tipo, áreas mais fracas
+- [x] Web MIDI API (controlador externo opcional)
+- [x] Feedback imediato + hints por tipo de exercício
 
 ### Documentação (completa)
-- [x] 19 ADRs em `docs/architecture/adr/`
+- [x] 23 ADRs em `docs/architecture/adr/`
 - [x] Diagramas C4 nível 1 e 2 em `docs/architecture/`
 - [x] Modelo de dados ER em `docs/architecture/data-model.png`
 - [x] Wireframes dos 4 ecrãs em `docs/design/wireframes.pdf`
-- [x] Relatório intercalar em `docs/report/` (Markdown + .docx)
-
-### Pendente
-- [ ] Frontend: teclado virtual + Web Audio API (Sem. 9-10)
-- [ ] Frontend: ecrã de exercício + MIDI input (Sem. 11)
-- [ ] Frontend: dashboard + session-end (Sem. 12)
-- [ ] Cap. 4 (Testes) e Cap. 5 (Conclusões) — relatório final (24 Jun)
+- [x] Relatório intercalar + relatório final em `docs/report/`
 
 ---
 
@@ -73,7 +76,13 @@ Por defeito usa H2 em memória (sem configuração adicional). Para SQLite: `--s
 mvn test
 ```
 
-Resultado esperado: `Tests run: 230, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+Resultado esperado: `Tests run: 342, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+
+Para correr também os testes E2E (Cucumber + Selenide, requer Chrome):
+
+```bash
+mvn verify
+```
 
 ---
 
@@ -114,9 +123,21 @@ Detalhe completo: `docs/architecture/adr/`
 
 ## Changelog
 
+### Sem. 16 · 24 Jun · Entrega Final
+
+Relatório final submetido e aprovado (Cap. 1-5, 23 ADRs, bibliografia APA). fix/90: timestamps SQLite corrigidos via JdbcDateHelper (H2 + SQLite + PostgreSQL). Apresentação de defesa atualizada. 442 testes (342 unit/integração + 100 E2E). Deploy activo em Render.
+
+### Sem. 15 · 16–20 Jun · Prep. Defesa
+
+chore/84: PITest removido (conflito irresolvível JUnit Platform/Cucumber). feat/85: db.sqlite.path configurável. feat/86: Dockerfile multi-stage + fly.toml (SQLite persistente em /data). docs/87: artefactos de entrega (screenshots, performance-results, PPTX).
+
+### Sem. 13 · 2–6 Jun
+
+Merge sequencial feat/54–83 → main. feat/80: enunciado intervalo mostra tipo+raiz (teoria, não ear training). feat/82: submissão vazia conta como incorreta. feat/83: modal de ajuda corrigido. 342 testes unitários e de integração.
+
 ### Sem. 8 · 28 Abr–6 Mai · Intercalar
 
-Auditoria abrangente do backend: 40 inconsistências identificadas e corrigidas. Gerador de escalas passa a usar sistema de dificuldade correctamente. Campo `options` removido da API (violava ADR-014). Controllers corrigidos para propagar erros via `GlobalExceptionHandler`. Schema SQL corrigido. Testes de fronteira RF09 adicionados. ADR-019 (expansão domínio de escalas). Relatório intercalar completo: Cap. 1-3, 19 ADRs resumidos, Goldilocks + Vygotsky referenciados, .docx gerado a partir do template UAb. 230 testes.
+Auditoria abrangente do backend: 40 inconsistências identificadas e corrigidas. Relatório intercalar completo: Cap. 1-3, 19 ADRs. 230 testes.
 
 ### Sem. 7 · 28 Abr–2 Mai
 
@@ -132,4 +153,4 @@ Repositório GitHub criado com estrutura do template. ADR-001 a ADR-011 formaliz
 
 ---
 
-*Última actualização: 2 Mai 2026 · Sem. 8*
+*Última actualização: 24 Jun 2026 · Sem. 16*
