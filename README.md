@@ -11,7 +11,7 @@
 
 ## Estado actual
 
-🟢 **Projeto completo** - Backend + frontend implementados. 442 testes a passar. Deploy em Render.  
+🟢 **Projeto completo** - Backend + frontend implementados. 442 testes a passar. Deploy em Render: https://musical-trainer-uab.onrender.com  
 🟢 **Relatório final entregue** - Cap. 1-5 completos. Deadline 24 Jun cumprida. Aprovado pelo orientador.  
 🟢 **Defesa pública** - 6–10 Jul 2026.
 
